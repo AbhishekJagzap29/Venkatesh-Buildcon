@@ -6,7 +6,6 @@ import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_testin
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
 import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
-import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 
 class CubeRecordsScreen extends StatefulWidget {
   final int floorId;
@@ -29,6 +28,8 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
   Future<void> getCubeRecords() async {
     final data = await repo.getRecords(floorId: widget.floorId);
 
+    if (!mounted) return;
+
     setState(() {
       records = data;
       isLoading = false;
@@ -39,12 +40,6 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
   void initState() {
     super.initState();
     getCubeRecords();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getCubeRecords(); // REFRESH WHEN BACK
   }
 
   @override
@@ -66,10 +61,13 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                 : records.isEmpty
                     ? const Center(child: Text("No Cube Records Found"))
                     : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(0, 12, 0, 20),
+                        padding: const EdgeInsets.only(top: 12),
                         itemCount: records.length,
                         itemBuilder: (context, index) {
                           final record = records[index];
+                          final srNo = record["sr_no"]?.toString() ?? "";
+                          final towerName =
+                              record["tower_id"]?.toString() ?? "";
 
                           return GestureDetector(
                             onTap: () async {
@@ -77,13 +75,14 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => CubeDetailsScreen(
-                                    cubeId: record["id"],
+                                    data: record,
+                                    isEditable: false,
                                   ),
                                 ),
                               );
 
                               if (result == true) {
-                                getCubeRecords(); // ✅ refresh list
+                                getCubeRecords();
                               }
                             },
                             child: Container(
@@ -98,19 +97,15 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  /// Cube ID
-                                  "${record["cube_id"] ?? ""}"
+                                  "Sr.No : $srNo"
                                       .boldRobotoTextStyle(fontSize: 16),
-
                                   const SizedBox(height: 6),
-
-                                  /// Casting Date
+                                  "Tower Name : $towerName"
+                                      .regularRobotoTextStyle(fontSize: 13),
+                                  const SizedBox(height: 4),
                                   "Casting Date : ${record["date_casting"] ?? ""}"
                                       .regularRobotoTextStyle(fontSize: 13),
-
                                   const SizedBox(height: 4),
-
-                                  /// Testing Date
                                   "Test Date : ${record["date_testing"] ?? ""}"
                                       .regularRobotoTextStyle(fontSize: 13),
                                 ],
@@ -120,8 +115,6 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                         },
                       ),
           ),
-
-          /// ADD BUTTON
           Positioned(
             bottom: 20,
             left: 20,
@@ -129,7 +122,7 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
               heroTag: "addCubeRecord",
               backgroundColor: Colors.black,
               onPressed: () async {
-                await Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => CubeTestingFormScreen(
@@ -138,8 +131,9 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                   ),
                 );
 
-                /// Refresh records after form submit
-                getCubeRecords();
+                if (result == true) {
+                  getCubeRecords();
+                }
               },
               child: const Icon(
                 Icons.add,

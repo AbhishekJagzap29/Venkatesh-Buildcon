@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
 import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
-import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 
 class CubeUpdateScreen extends StatefulWidget {
   final Map<String, dynamic> record;
@@ -22,213 +22,331 @@ class CubeUpdateScreen extends StatefulWidget {
 class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
   final CubeTestingRepository repo = CubeTestingRepository();
   final TextEditingController srNoController = TextEditingController();
-  final TextEditingController cubeIdController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController sourceController = TextEditingController();
 
-  final TextEditingController weight1 = TextEditingController();
-  final TextEditingController weight2 = TextEditingController();
-  final TextEditingController weight3 = TextEditingController();
+  final List<TextEditingController> cubeIds =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> lengths =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> breadths =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> heights =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> weights =
+      List.generate(3, (_) => TextEditingController());
+  final List<TextEditingController> loads =
+      List.generate(3, (_) => TextEditingController());
 
-  final TextEditingController load1 = TextEditingController();
-  final TextEditingController load2 = TextEditingController();
-  final TextEditingController load3 = TextEditingController();
-
-  Map<String, String> sourceMap = {
-    "inhouse": "In-house",
-    "rmc": "RMC Plant",
-  };
-
-  Map<String, String> gradeMap = {
+  final Map<String, String> gradeMap = {
+    "m15": "M15",
     "m20": "M20",
     "m25": "M25",
     "m30": "M30",
+    "m35": "M35",
+    "m40": "M40",
+    "m45": "M45",
+    "m50": "M50",
+    "m55": "M55",
+    "m60": "M60",
+    "m30ff": "M30 FF",
+    "m35ff": "M35 FF",
+    "m40ff": "M40 FF",
+    "m45ff": "M45 FF",
+    "m50ff": "M50 FF",
+    "m55ff": "M55 FF",
+    "m60ff": "M60 FF",
+    "m35pt": "M35 PT",
+    "m40pt": "M40 PT",
+    "m45pt": "M45 PT",
   };
 
   DateTime? castingDate;
   DateTime? testingDate;
-
   String grade = "m20";
   double gradeValue = 20;
-  String source = "inhouse";
-
   int ageDays = 0;
-
-  double density1 = 0;
-  double density2 = 0;
-  double density3 = 0;
-
-  double strength1 = 0;
-  double strength2 = 0;
-  double strength3 = 0;
-
+  final List<double> densities = [0, 0, 0];
+  final List<double> strengths = [0, 0, 0];
   double avgStrength = 0;
   double strengthPercent = 0;
 
-  ///  PREFILL DATA
   @override
   void initState() {
     super.initState();
+    setData(widget.record);
+  }
 
-    final r = widget.record;
+  @override
+  void dispose() {
+    srNoController.dispose();
+    quantityController.dispose();
+    locationController.dispose();
+    sourceController.dispose();
+    for (final controller in [
+      ...cubeIds,
+      ...lengths,
+      ...breadths,
+      ...heights,
+      ...weights,
+      ...loads,
+    ]) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
-    srNoController.text = r["sr_no"]?.toString() ?? "";
-    cubeIdController.text = r["cube_id"] ?? "";
-    quantityController.text = r["quantity"]?.toString() ?? "";
-    locationController.text = r["location_structure"] ?? "";
+  String _textFrom(dynamic value) {
+    if (value == null) return "";
+    final text = value.toString().trim();
+    if (text.toLowerCase() == "null") return "";
+    return text;
+  }
 
-    weight1.text = r["weight1"]?.toString() ?? "";
-    weight2.text = r["weight2"]?.toString() ?? "";
-    weight3.text = r["weight3"]?.toString() ?? "";
+  DateTime? _parseDate(dynamic value) {
+    final text = _textFrom(value);
+    if (text.isEmpty) return null;
+    return DateTime.tryParse(text);
+  }
 
-    load1.text = r["load1"]?.toString() ?? "";
-    load2.text = r["load2"]?.toString() ?? "";
-    load3.text = r["load3"]?.toString() ?? "";
+  double _extractGradeValue(String gradeKey) {
+    final gradeText = gradeMap[gradeKey] ?? gradeKey;
+    final match = RegExp(r'\d+').firstMatch(gradeText);
+    return double.tryParse(match?.group(0) ?? "") ?? 20;
+  }
 
-    if (r["date_casting"] != null) {
-      castingDate = DateTime.parse(r["date_casting"]);
+  void setData(Map<String, dynamic> data) {
+    srNoController.text = _textFrom(data["sr_no"]);
+    quantityController.text = _textFrom(data["quantity"]);
+    locationController.text = _textFrom(data["location_structure"]);
+    sourceController.text = _textFrom(
+      data["source_concrete"] ?? data["concrete_source"],
+    );
+
+    castingDate = _parseDate(data["date_casting"]);
+    testingDate = _parseDate(data["date_testing"]);
+//28/03/2026
+    grade = _textFrom(data["grade_concrete"]).isNotEmpty
+        ? _textFrom(data["grade_concrete"]).toLowerCase()
+        : "m20";
+
+    if (!gradeMap.containsKey(grade)) {
+      grade = "m20";
     }
 
-    if (r["date_testing"] != null) {
-      testingDate = DateTime.parse(r["date_testing"]);
+    gradeValue = _extractGradeValue(grade);
+//
+
+    final cubeLinesRaw = data["cube_lines"] ?? data["cubes"];
+    final cubeLines = cubeLinesRaw is List
+        ? cubeLinesRaw
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList()
+        : <Map<String, dynamic>>[];
+
+    for (int i = 0; i < 3; i++) {
+      cubeIds[i].clear();
+      lengths[i].clear();
+      breadths[i].clear();
+      heights[i].clear();
+      weights[i].clear();
+      loads[i].clear();
+      densities[i] = 0;
+      strengths[i] = 0;
     }
 
-    grade = r["grade_concrete"] ?? "m20";
-    source = r["concrete_source"] ?? "inhouse";
-    gradeValue = (r["grade_value"] is num)
-        ? (r["grade_value"] as num).toDouble()
-        : double.tryParse(r["grade_value"]?.toString() ?? "") ??
-            double.tryParse(grade.replaceAll(RegExp(r'[^0-9.]'), "")) ??
-            20;
+    for (int i = 0; i < cubeLines.length && i < 3; i++) {
+      final cube = cubeLines[i];
+      cubeIds[i].text = _textFrom(cube["cube_no"] ?? cube["cube_id"]);
+      lengths[i].text = _textFrom(cube["length"]);
+      breadths[i].text = _textFrom(cube["breadth"]);
+      heights[i].text = _textFrom(cube["height"]);
+      weights[i].text = _textFrom(cube["weight"]);
+      loads[i].text = _textFrom(cube["load"]);
+    }
+
+    if (cubeLines.isEmpty) {
+      cubeIds[0].text = _textFrom(data["cube_id"]);
+      weights[0].text = _textFrom(data["weight1"]);
+      weights[1].text = _textFrom(data["weight2"]);
+      weights[2].text = _textFrom(data["weight3"]);
+      loads[0].text = _textFrom(data["load1"]);
+      loads[1].text = _textFrom(data["load2"]);
+      loads[2].text = _textFrom(data["load3"]);
+    }
 
     calculateAge();
-    calculateValues();
+    calculateValues(isInit: true);
   }
 
   void calculateAge() {
     if (castingDate != null && testingDate != null) {
       ageDays = testingDate!.difference(castingDate!).inDays;
+    } else {
+      ageDays = 0;
     }
   }
 
-  void calculateValues() {
-    double w1 = double.tryParse(weight1.text) ?? 0;
-    double w2 = double.tryParse(weight2.text) ?? 0;
-    double w3 = double.tryParse(weight3.text) ?? 0;
+  void calculateValues({bool isInit = false}) {
+    double total = 0;
+    int validCount = 0;
 
-    double l1 = double.tryParse(load1.text) ?? 0;
-    double l2 = double.tryParse(load2.text) ?? 0;
-    double l3 = double.tryParse(load3.text) ?? 0;
+    for (int i = 0; i < 3; i++) {
+      final weight = double.tryParse(weights[i].text) ?? 0;
+      final length = double.tryParse(lengths[i].text) ?? 0;
+      final breadth = double.tryParse(breadths[i].text) ?? 0;
+      final height = double.tryParse(heights[i].text) ?? 0;
+      final load = double.tryParse(loads[i].text) ?? 0;
 
-    density1 = w1 / 0.003375;
-    density2 = w2 / 0.003375;
-    density3 = w3 / 0.003375;
+      final volume = (length / 1000) * (breadth / 1000) * (height / 1000);
+      densities[i] = volume == 0 ? 0 : weight / volume;
 
-    strength1 = l1 / 22.5;
-    strength2 = l2 / 22.5;
-    strength3 = l3 / 22.5;
+      final area = length * breadth;
+      strengths[i] = area == 0 ? 0 : (load * 1000) / area;
 
-    avgStrength = (strength1 + strength2 + strength3) / 3;
-    strengthPercent = (avgStrength / gradeValue) * 100;
+      total += strengths[i];
+      if (cubeIds[i].text.trim().isNotEmpty) {
+        validCount++;
+      }
+    }
 
-    setState(() {});
+    avgStrength = validCount == 0 ? 0 : total / validCount;
+    strengthPercent = gradeValue == 0 ? 0 : (avgStrength / gradeValue) * 100;
+
+    if (!isInit && mounted) {
+      setState(() {});
+    }
   }
 
-  // void onUpdateClick() {
-  //   print("Updated data ready");
-  //   Navigator.pop(context, true);
-  // }
-//
-  Future<void> onUpdateClick() async {
-    print("Update button clicked");
+  Future<void> pickDate(bool isCasting) async {
+    final initialDate = isCasting
+        ? (castingDate ?? DateTime.now())
+        : (testingDate ?? DateTime.now());
 
-    if (srNoController.text.isEmpty ||
-        cubeIdController.text.isEmpty ||
-        quantityController.text.isEmpty ||
-        locationController.text.isEmpty) {
-      errorSnackBar(
-  "Validation",
-  "Please fill all required fields",
-);
+    final picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+      initialDate: initialDate,
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isCasting) {
+          castingDate = picked;
+        } else {
+          testingDate = picked;
+        }
+        calculateAge();
+      });
+    }
+  }
+
+  Future<void> onUpdateClick() async {
+    if (srNoController.text.trim().isEmpty ||
+        quantityController.text.trim().isEmpty ||
+        locationController.text.trim().isEmpty ||
+        sourceController.text.trim().isEmpty) {
+      errorSnackBar("Validation", "Please fill all required fields");
       return;
     }
 
     if (castingDate == null || testingDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select dates")),
-      );
+      errorSnackBar("Validation", "Please select casting and testing date");
       return;
     }
 
-    /// ✅ CREATE BODY (same as create API)
-    Map<String, dynamic> body = {
+    final hasAnyCube = List.generate(
+      3,
+      (i) =>
+          cubeIds[i].text.trim().isNotEmpty ||
+          weights[i].text.trim().isNotEmpty ||
+          loads[i].text.trim().isNotEmpty,
+    ).any((value) => value);
+
+    if (!hasAnyCube) {
+      errorSnackBar("Validation", "Please enter at least one cube");
+      return;
+    }
+
+    calculateValues();
+
+    final cubeLines = List.generate(3, (i) {
+      if (cubeIds[i].text.trim().isEmpty &&
+          weights[i].text.trim().isEmpty &&
+          loads[i].text.trim().isEmpty) {
+        return null;
+      }
+
+      final weight = double.tryParse(weights[i].text) ?? 0;
+      final load = double.tryParse(loads[i].text) ?? 0;
+
+      return {
+        "cube_no": cubeIds[i].text.trim(),
+        "length": double.tryParse(lengths[i].text) ?? 150,
+        "breadth": double.tryParse(breadths[i].text) ?? 150,
+        "height": double.tryParse(heights[i].text) ?? 150,
+        "weight": weight,
+        "load": load,
+      };
+    }).whereType<Map<String, dynamic>>().toList();
+
+    if (cubeLines.isEmpty) {
+      errorSnackBar("Validation", "Please enter at least one cube");
+      return;
+    }
+
+    final body = {
       "sr_no": srNoController.text.trim(),
-      "cube_id": cubeIdController.text.trim(),
       "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
       "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
       "grade_concrete": grade,
-      // "grade_value": gradeValue,
-      // "quantity": double.tryParse(quantityController.text) ?? 0.0,
       "grade_value": gradeValue.toInt(),
-      "quantity": double.tryParse(quantityController.text)?.toInt() ?? 0,
+      "quantity": double.tryParse(quantityController.text) ?? 0,
       "location_structure": locationController.text.trim(),
-      "concrete_source": source,
+      "source_concrete": sourceController.text.trim(),
       "age_days": ageDays,
-      "weight1": double.tryParse(weight1.text) ?? 0,
-      "weight2": double.tryParse(weight2.text) ?? 0,
-      "weight3": double.tryParse(weight3.text) ?? 0,
-      "density1": density1,
-      "density2": density2,
-      "density3": density3,
-      "load1": double.tryParse(load1.text) ?? 0,
-      "load2": double.tryParse(load2.text) ?? 0,
-      "load3": double.tryParse(load3.text) ?? 0,
-      "strength1": strength1,
-      "strength2": strength2,
-      "strength3": strength3,
       "avg_strength": avgStrength,
       "strength_percent": strengthPercent,
+      "cube_lines": cubeLines,
     };
 
     try {
-      ///  CALL UPDATE API
-      bool success = await repo.updateCubeRecord(
-        widget.record["id"], 
-        body,
-      );
+      final success = await repo.updateCubeRecord(widget.record["id"], body);
+
+      if (!mounted) return;
 
       if (success) {
-       successSnackBar(
-  "Success",
-  "Record Updated Successfully",
-);
-
-       Navigator.pop(context, true); 
-       
+        successSnackBar("Success", "Record Updated Successfully");
+        Navigator.pop(context, true);
       } else {
-       errorSnackBar(
-  "Error",
-  "Update Failed",
-);
+        errorSnackBar("Error", "Update Failed");
       }
-    } catch (e) {
-      print("UPDATE ERROR: $e");
-
+    } catch (_) {
+      if (!mounted) return;
       errorSnackBar("Error", "Something went wrong");
     }
   }
 
-//
-  Widget textField(String label, TextEditingController controller,
-      {TextInputType type = TextInputType.text}) {
+  Widget textField(
+    String label,
+    TextEditingController controller, {
+    TextInputType type = TextInputType.text,
+    bool isCalc = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("$label:",
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800])),
+        Text(
+          "$label:",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[800],
+          ),
+        ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -240,7 +358,7 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
           child: TextField(
             controller: controller,
             keyboardType: type,
-            onChanged: (v) => calculateValues(),
+            onChanged: isCalc ? (_) => calculateValues() : null,
             decoration: const InputDecoration(border: InputBorder.none),
           ),
         ),
@@ -249,15 +367,18 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
     );
   }
 
-  Widget buildDateField(String label, DateTime? date, Function() onTap) {
+  Widget buildDateField(String label, DateTime? date, VoidCallback onTap) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("$label:",
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800])),
+        Text(
+          "$label:",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[800],
+          ),
+        ),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: onTap,
@@ -271,9 +392,11 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(date != null
-                    ? DateFormat('dd MMM yyyy').format(date)
-                    : "Select Date"),
+                Text(
+                  date != null
+                      ? DateFormat('dd MMM yyyy').format(date)
+                      : "Select Date",
+                ),
                 const Icon(Icons.calendar_today, size: 20),
               ],
             ),
@@ -284,16 +407,23 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
     );
   }
 
-  Widget dropdownField(String label, String value, List<String> items,
-      Function(String?) onChanged) {
+  Widget dropdownField(
+    String label,
+    String value,
+    List<String> items,
+    ValueChanged<String?> onChanged,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("$label:",
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800])),
+        Text(
+          "$label:",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[800],
+          ),
+        ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -309,7 +439,7 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
             items: items.map((e) {
               return DropdownMenuItem(
                 value: e,
-                child: Text(sourceMap[e] ?? gradeMap[e] ?? e),
+                child: Text(gradeMap[e] ?? e),
               );
             }).toList(),
             onChanged: onChanged,
@@ -320,24 +450,67 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
     );
   }
 
-  Future pickDate(bool casting) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2035),
-      initialDate: DateTime.now(),
+  Widget cubeCard(int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          "Cube ${index + 1}".boldRobotoTextStyle(fontSize: 18),
+          const SizedBox(height: 10),
+          textField("Cube ID", cubeIds[index]),
+          Row(
+            children: [
+              Expanded(
+                child: textField(
+                  "Length",
+                  lengths[index],
+                  type: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: textField(
+                  "Breadth",
+                  breadths[index],
+                  type: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: textField(
+                  "Height",
+                  heights[index],
+                  type: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          textField(
+            "Weight (kg)",
+            weights[index],
+            type: TextInputType.number,
+            isCalc: true,
+          ),
+          textField(
+            "Load (kN)",
+            loads[index],
+            type: TextInputType.number,
+            isCalc: true,
+          ),
+          "Density : ${densities[index].toStringAsFixed(2)} Kg/m3"
+              .regularRobotoTextStyle(fontSize: 14),
+          "Strength : ${strengths[index].toStringAsFixed(2)} N/mm2"
+              .regularRobotoTextStyle(fontSize: 14),
+        ],
+      ),
     );
-
-    if (picked != null) {
-      setState(() {
-        if (casting) {
-          castingDate = picked;
-        } else {
-          testingDate = picked;
-        }
-        calculateAge();
-      });
-    }
   }
 
   @override
@@ -357,55 +530,39 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
           children: [
             const SizedBox(height: 20),
             textField("Sr. No", srNoController),
-            textField("Cube ID", cubeIdController),
             buildDateField(
                 "Date of Casting", castingDate, () => pickDate(true)),
             dropdownField(
               "Grade of Concrete",
               grade,
               gradeMap.keys.toList(),
-              (v) {
+              (value) {
                 setState(() {
-                  grade = v!;
-                  gradeValue = double.parse(gradeMap[v]!.replaceAll("M", ""));
+                  grade = value!;
+                  gradeValue = _extractGradeValue(grade);
+                  calculateValues(isInit: true);
                 });
               },
             ),
-            "Grade Value : $gradeValue N/mm²"
+            "Grade Value : $gradeValue N/mm2"
                 .regularRobotoTextStyle(fontSize: 14),
             const SizedBox(height: 16),
-            textField("Quantity (m³)", quantityController,
-                type: TextInputType.number),
+            textField(
+              "Quantity (m3)",
+              quantityController,
+              type: TextInputType.number,
+            ),
             textField("Location / Structure", locationController),
-            dropdownField("Concrete Source", source, sourceMap.keys.toList(),
-                (v) => setState(() => source = v!)),
+            textField("Concrete Source", sourceController),
             buildDateField(
                 "Date of Testing", testingDate, () => pickDate(false)),
             "Age (Days): $ageDays".boldRobotoTextStyle(fontSize: 16),
-            const SizedBox(height: 25),
-            "Weight of Cube (kg)".boldRobotoTextStyle(fontSize: 18),
-            textField("Cube 1 Weight", weight1, type: TextInputType.number),
-            textField("Cube 2 Weight", weight2, type: TextInputType.number),
-            textField("Cube 3 Weight", weight3, type: TextInputType.number),
-            "Cube 1 Density : ${density1.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 2 Density : ${density2.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 3 Density : ${density3.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
             const SizedBox(height: 20),
-            "Load (kN)".boldRobotoTextStyle(fontSize: 18),
-            textField("Cube 1 Load", load1, type: TextInputType.number),
-            textField("Cube 2 Load", load2, type: TextInputType.number),
-            textField("Cube 3 Load", load3, type: TextInputType.number),
-            "Cube 1 Strength : ${strength1.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 2 Strength : ${strength2.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 3 Strength : ${strength3.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            const SizedBox(height: 20),
-            "Average Strength : ${avgStrength.toStringAsFixed(2)} N/mm²"
+            cubeCard(0),
+            cubeCard(1),
+            cubeCard(2),
+            const SizedBox(height: 10),
+            "Average Strength : ${avgStrength.toStringAsFixed(2)}"
                 .boldRobotoTextStyle(fontSize: 16),
             const SizedBox(height: 8),
             "Compressive Strength % : ${strengthPercent.toStringAsFixed(2)} %"
@@ -416,16 +573,15 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
               child: Container(
                 height: 55,
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: const Color.fromARGB(255, 17, 12, 147),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Center(
                   child: Text(
                     "Update",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

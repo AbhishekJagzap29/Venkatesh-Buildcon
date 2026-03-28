@@ -1,11 +1,11 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/CubeTestingResponseModel/cube_testing_form_model.dart';
 import 'package:venkatesh_buildcon_app/Api/Services/base_service.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 
 class CubeTestingRepository {
-  //14/03/26
   /// CREATE RECORD
   Future<CubeTestingModel?> createRecord(Map<String, dynamic> body) async {
     print("CREATE CUBE API CALLED");
@@ -33,38 +33,7 @@ class CubeTestingRepository {
     }
   }
 
-  //13/03/26
-  /// GET ALL RECORDS
-//   Future<List<dynamic>> getRecords({int? floorId}) async {
-
-//   print("GET CUBE RECORDS API CALLED");
-
-//   final response = await http.post(
-//     Uri.parse(ApiRouts.getCubeTestingList),
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: jsonEncode({
-//       "floor_id": floorId
-//     }),
-//   );
-
-//   print("Status Code: ${response.statusCode}");
-//   print("Response: ${response.body}");
-
-//   if (response.statusCode == 200) {
-
-//     final data = jsonDecode(response.body);
-
-//     if (data["status"] == "success") {
-
-//       return data["data"] ?? [];
-
-//     }
-//   }
-
-//   return [];
-// }
+  //fetch all records
   Future<List<dynamic>> getRecords({int? floorId}) async {
     print("GET CUBE RECORDS API CALLED");
 
@@ -80,10 +49,10 @@ class CubeTestingRepository {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      final result = data["result"]; // ✅ FIX HERE
+      final result = data["result"];
 
       if (result["status"] == "success") {
-        return result["data"] ?? []; // ✅ FIX HERE
+        return result["data"] ?? [];
       }
     }
 
@@ -102,20 +71,23 @@ class CubeTestingRepository {
         "Content-Type": "application/json",
       },
       body: jsonEncode({
-        "jsonrpc": "2.0",
-        "params": {
-          "id": id, // ✅ PASS HERE
-        }
+        "id": id,
       }),
     );
 
     print("URL: $url");
+    print("Sent ID: $id");
     print("Status Code: ${response.statusCode}");
     print("Response: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data["result"]["data"];
+
+      if (data["result"]["status"] == "success") {
+        return data["result"]["data"];
+      } else {
+        print("ERROR: ${data["result"]["message"]}");
+      }
     }
 
     return null;
@@ -132,7 +104,7 @@ class CubeTestingRepository {
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode({}), // required
+      body: jsonEncode({}),
     );
 
     print("Status Code: ${response.statusCode}");
@@ -149,20 +121,21 @@ class CubeTestingRepository {
     return false;
   }
 
-//21/03/2026
   /// UPDATE RECORD
   Future<bool> updateCubeRecord(int id, Map<String, dynamic> body) async {
     final url = Uri.parse("${ApiRouts.updateCubeTesting}/$id");
+    final requestBody = Map<String, dynamic>.from(body);
+
     print("UPDATE API CALLED");
     print("URL: $url");
-    print("BODY: $body");
+    print("BODY: $requestBody");
 
     final response = await http.post(
       url,
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode(body), // ✅ DIRECT BODY (NO jsonrpc)
+      body: jsonEncode(requestBody),
     );
 
     print("Status Code: ${response.statusCode}");
@@ -171,14 +144,18 @@ class CubeTestingRepository {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // ✅ backend returns direct status (no "result")
-      // if (data["status"] == "success") {
-      //   return true;
-      // }
+      if (data["error"] != null) {
+        print("UPDATE API ERROR: ${data["error"]}");
+        return false;
+      }
+
+      if (data["status"] == "success") {
+        return true;
+      }
+
       if (data["result"] != null && data["result"]["status"] == "success") {
         return true;
       }
-//
     }
 
     return false;

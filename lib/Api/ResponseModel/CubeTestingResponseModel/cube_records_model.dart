@@ -1,12 +1,14 @@
 class CubeRecordsModel {
   final int id;
-  final String cubeId;
+  final String srNo;
+  final String towerName;
   final String dateCasting;
   final String dateTesting;
 
   CubeRecordsModel({
     required this.id,
-    required this.cubeId,
+    required this.srNo,
+    required this.towerName,
     required this.dateCasting,
     required this.dateTesting,
   });
@@ -14,9 +16,10 @@ class CubeRecordsModel {
   factory CubeRecordsModel.fromJson(Map<String, dynamic> json) {
     return CubeRecordsModel(
       id: json['id'] ?? 0,
-      cubeId: json['cube_id'] ?? "",
-      dateCasting: json['date_casting'] ?? "",
-      dateTesting: json['date_testing'] ?? "",
+      srNo: json['sr_no']?.toString() ?? "",
+      towerName: json['tower_id']?.toString() ?? "",
+      dateCasting: json['date_casting']?.toString() ?? "",
+      dateTesting: json['date_testing']?.toString() ?? "",
     );
   }
 }

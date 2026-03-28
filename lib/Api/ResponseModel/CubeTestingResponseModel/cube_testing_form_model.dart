@@ -1,8 +1,6 @@
 class CubeTestingModel {
-
   int? id;
   int? floorId;
-  String? towerName;
 
   String srNo;
   String cubeId;
@@ -37,7 +35,6 @@ class CubeTestingModel {
   CubeTestingModel({
     this.id,
     this.floorId,
-    this.towerName,
     required this.srNo,
     required this.cubeId,
     required this.dateCasting,
@@ -66,12 +63,9 @@ class CubeTestingModel {
 
   /// JSON → MODEL
   factory CubeTestingModel.fromJson(Map<String, dynamic> json) {
-
     return CubeTestingModel(
       id: json['id'],
       floorId: json['floor_id'],
-      towerName: json['tower_name']?.toString() ?? json['tower_id']?.toString(),
-
       srNo: json['sr_no'] ?? "",
       cubeId: json['cube_id'] ?? "",
       dateCasting: json['date_casting'] ?? "",
@@ -82,23 +76,18 @@ class CubeTestingModel {
       locationStructure: json['location_structure'] ?? "",
       concreteSource: json['concrete_source'] ?? "",
       ageDays: json['age_days'] ?? 0,
-
       weight1: (json['weight1'] ?? 0).toDouble(),
       weight2: (json['weight2'] ?? 0).toDouble(),
       weight3: (json['weight3'] ?? 0).toDouble(),
-
       density1: (json['density1'] ?? 0).toDouble(),
       density2: (json['density2'] ?? 0).toDouble(),
       density3: (json['density3'] ?? 0).toDouble(),
-
       load1: (json['load1'] ?? 0).toDouble(),
       load2: (json['load2'] ?? 0).toDouble(),
       load3: (json['load3'] ?? 0).toDouble(),
-
       strength1: (json['strength1'] ?? 0).toDouble(),
       strength2: (json['strength2'] ?? 0).toDouble(),
       strength3: (json['strength3'] ?? 0).toDouble(),
-
       avgStrength: (json['avg_strength'] ?? 0).toDouble(),
       strengthPercent: (json['strength_percent'] ?? 0).toDouble(),
     );
@@ -107,11 +96,8 @@ class CubeTestingModel {
   /// MODEL → JSON (POST API)
 
   Map<String, dynamic> toJson() {
-
     return {
-
       "floor_id": floorId,
-
       "sr_no": srNo,
       "cube_id": cubeId,
       "date_casting": dateCasting,
@@ -122,23 +108,18 @@ class CubeTestingModel {
       "location_structure": locationStructure,
       "concrete_source": concreteSource,
       "age_days": ageDays,
-
       "weight1": weight1,
       "weight2": weight2,
       "weight3": weight3,
-
       "density1": density1,
       "density2": density2,
       "density3": density3,
-
       "load1": load1,
       "load2": load2,
       "load3": load3,
-
       "strength1": strength1,
       "strength2": strength2,
       "strength3": strength3,
-
       "avg_strength": avgStrength,
       "strength_percent": strengthPercent,
     };

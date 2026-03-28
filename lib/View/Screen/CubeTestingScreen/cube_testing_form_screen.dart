@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/CubeTestingResponseModel/cube_testing_form_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_testing_form_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
@@ -20,51 +22,76 @@ class CubeTestingFormScreen extends StatefulWidget {
 }
 
 class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
+  final cubeController = CubeTestingController();
   final TextEditingController srNoController = TextEditingController();
-  final TextEditingController cubeIdController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
 
-  final TextEditingController weight1 = TextEditingController();
-  final TextEditingController weight2 = TextEditingController();
-  final TextEditingController weight3 = TextEditingController();
+  /// -------- MULTI CUBE CONTROLLERS --------
+  List<TextEditingController> cubeIds =
+      List.generate(3, (_) => TextEditingController());
+  final TextEditingController sourceController = TextEditingController();
 
-  final TextEditingController load1 = TextEditingController();
-  final TextEditingController load2 = TextEditingController();
-  final TextEditingController load3 = TextEditingController();
+  List<TextEditingController> lengths =
+      List.generate(3, (_) => TextEditingController());
+
+  List<TextEditingController> breadths =
+      List.generate(3, (_) => TextEditingController());
+
+  List<TextEditingController> heights =
+      List.generate(3, (_) => TextEditingController());
+
+  List<TextEditingController> weights =
+      List.generate(3, (_) => TextEditingController());
+
+  List<TextEditingController> loads =
+      List.generate(3, (_) => TextEditingController());
 
   final CubeTestingRepository cubeRepo = CubeTestingRepository();
-  Map<String, String> sourceMap = {
-    "inhouse": "In-house",
-    "rmc": "RMC Plant",
-  };
+
+  // Map<String, String> sourceMap = {
+  //   "inhouse": "In-house",
+  //   "rmc": "RMC Plant",
+  // };
 
   Map<String, String> gradeMap = {
-    // ✅ MOVE HERE
+    "m15": "M15",
     "m20": "M20",
     "m25": "M25",
     "m30": "M30",
-  };
+    "m35": "M35",
+    "m40": "M40",
+    "m45": "M45",
+    "m50": "M50",
+    "m55": "M55",
+    "m60": "M60",
 
+    // FF grades
+    "m30ff": "M30 FF",
+    "m35ff": "M35 FF",
+    "m40ff": "M40 FF",
+    "m45ff": "M45 FF",
+    "m50ff": "M50 FF",
+    "m55ff": "M55 FF",
+    "m60ff": "M60 FF",
+
+    // PT grades
+    "m35pt": "M35 PT",
+    "m40pt": "M40 PT",
+    "m45pt": "M45 PT",
+  };
   DateTime? castingDate;
   DateTime? testingDate;
 
   String grade = "m20";
   double gradeValue = 20;
 
-  // String source = "In-house";
-  String source = "inhouse";
-  // String source = "in_house";   // ✅ backend key
+  // String source = "inhouse";
 
   int ageDays = 0;
 
-  double density1 = 0;
-  double density2 = 0;
-  double density3 = 0;
-
-  double strength1 = 0;
-  double strength2 = 0;
-  double strength3 = 0;
+  List<double> densities = [0, 0, 0];
+  List<double> strengths = [0, 0, 0];
 
   double avgStrength = 0;
   double strengthPercent = 0;
@@ -72,109 +99,72 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
   void calculateAge() {
     if (castingDate != null && testingDate != null) {
       ageDays = testingDate!.difference(castingDate!).inDays;
-    }
+    }  
   }
 
   void calculateValues() {
-    double w1 = double.tryParse(weight1.text) ?? 0;
-    double w2 = double.tryParse(weight2.text) ?? 0;
-    double w3 = double.tryParse(weight3.text) ?? 0;
+    double total = 0;
+    int validCount = 0;
 
-    double l1 = double.tryParse(load1.text) ?? 0;
-    double l2 = double.tryParse(load2.text) ?? 0;
-    double l3 = double.tryParse(load3.text) ?? 0;
+    for (int i = 0; i < 3; i++) {
+      double w = double.tryParse(weights[i].text) ?? 0;
+      double lVal = double.tryParse(lengths[i].text) ?? 0;
+      double bVal = double.tryParse(breadths[i].text) ?? 0;
+      double hVal = double.tryParse(heights[i].text) ?? 0;
+      double loadVal = double.tryParse(loads[i].text) ?? 0;
 
-    density1 = w1 / 0.003375;
-    density2 = w2 / 0.003375;
-    density3 = w3 / 0.003375;
+      // Density
+      double volume = (lVal / 1000) * (bVal / 1000) * (hVal / 1000);
+      densities[i] = volume != 0 ? w / volume : 0;
 
-    strength1 = l1 / 22.5;
-    strength2 = l2 / 22.5;
-    strength3 = l3 / 22.5;
+      // Strength
+      double area = lVal * bVal;
+      strengths[i] = area != 0 ? (loadVal * 1000) / area : 0;
 
-    avgStrength = (strength1 + strength2 + strength3) / 3;
+      total += strengths[i];
+      if (cubeIds[i].text.trim().isNotEmpty) {
+        validCount++;
+      }
+    }
+
+    avgStrength = validCount == 0 ? 0 : total / validCount;
+
+    //COMPRESSIVE STRENGTH %
     strengthPercent = (avgStrength / gradeValue) * 100;
 
     setState(() {});
   }
 
-  Future<void> submitCubeRecord() async {
-    print("Submit button clicked");
+  Future pickDate(bool casting) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+      initialDate: DateTime.now(),
+    );
 
-    /// VALIDATION
-    if (srNoController.text.isEmpty ||
-        cubeIdController.text.isEmpty ||
-        quantityController.text.isEmpty ||
-        locationController.text.isEmpty) {
-      errorSnackBar("Validation", "Please fill all required fields");
-
-      return;
-    }
-
-    if (castingDate == null || testingDate == null) {
-      errorSnackBar("Validation", "Please select casting and testing date");
-      return;
-    }
-
-    Map<String, dynamic> body = {
-      "sr_no": srNoController.text.trim(),
-      "floor_id": widget.floorId,
-      "cube_id": cubeIdController.text.trim(),
-      "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
-      "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
-      "grade_concrete": grade,
-      // "grade_value": gradeValue.toInt(),
-      // "quantity": int.tryParse(quantityController.text) ?? 0,
-      "grade_value": gradeValue, // ✅ double
-      "quantity": double.tryParse(quantityController.text) ?? 0.0,
-      "location_structure": locationController.text.trim(),
-      "concrete_source": source,
-      "age_days": ageDays,
-      "weight1": double.tryParse(weight1.text) ?? 0,
-      "weight2": double.tryParse(weight2.text) ?? 0,
-      "weight3": double.tryParse(weight3.text) ?? 0,
-      "density1": density1,
-      "density2": density2,
-      "density3": density3,
-      "load1": double.tryParse(load1.text) ?? 0,
-      "load2": double.tryParse(load2.text) ?? 0,
-      "load3": double.tryParse(load3.text) ?? 0,
-      "strength1": strength1,
-      "strength2": strength2,
-      "strength3": strength3,
-      "avg_strength": avgStrength,
-      "strength_percent": strengthPercent
-    };
-    try {
-      var response = await cubeRepo.createRecord(body);
-
-      if (response != null) {
-        successSnackBar("Success", "Cube Record Created Successfully");
-
-        Navigator.pop(context);
-      } else {
-        errorSnackBar("Error", "Failed to create record");
-      }
-    } catch (e) {
-      print("Error while submitting cube record: $e");
-
-      errorSnackBar("Error", "Something went wrong");
+    if (picked != null) {
+      setState(() {
+        if (casting) {
+          castingDate = picked;
+        } else {
+          testingDate = picked;
+        }
+        calculateAge();
+      });
     }
   }
 
   Widget textField(String label, TextEditingController controller,
-      {TextInputType type = TextInputType.text}) {
+      {TextInputType type = TextInputType.text, bool isCalc = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "$label:",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey[800],
-          ),
-        ),
+        Text("$label:",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[800])),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -186,10 +176,8 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
           child: TextField(
             controller: controller,
             keyboardType: type,
-            onChanged: (v) => calculateValues(),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
+            onChanged: isCalc ? (v) => calculateValues() : null,
+            decoration: const InputDecoration(border: InputBorder.none),
           ),
         ),
         const SizedBox(height: 16),
@@ -265,8 +253,8 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
             items: items.map((e) {
               return DropdownMenuItem(
                 value: e,
-                // child: Text(sourceMap[e] ?? e),  // ✅ show label
-                child: Text(sourceMap[e] ?? gradeMap[e] ?? e),
+                //  child: Text(sourceMap[e] ?? gradeMap[e] ?? e),
+                child: Text(gradeMap[e] ?? e),
               );
             }).toList(),
             onChanged: onChanged,
@@ -277,24 +265,100 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
     );
   }
 
-  Future pickDate(bool casting) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2035),
-      initialDate: DateTime.now(),
+  /// ----------- CUBE CARD UI -----------
+  Widget cubeCard(int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          "Cube ${index + 1}".boldRobotoTextStyle(fontSize: 18),
+          const SizedBox(height: 10),
+          textField("Cube ID", cubeIds[index]),
+          Row(
+            children: [
+              Expanded(
+                  child: textField("Length", lengths[index],
+                      type: TextInputType.number, isCalc: true)),
+              const SizedBox(width: 10),
+              Expanded(
+                  child: textField("Breadth", breadths[index],
+                      type: TextInputType.number, isCalc: true)),
+              const SizedBox(width: 10),
+              Expanded(
+                  child: textField("Height", heights[index],
+                      type: TextInputType.number, isCalc: true)),
+            ],
+          ),
+          textField("Weight (kg)", weights[index],
+              type: TextInputType.number, isCalc: true),
+          textField("Load (kN)", loads[index],
+              type: TextInputType.number, isCalc: true),
+          "Density : ${densities[index].toStringAsFixed(2)} Kg/m³"
+              .regularRobotoTextStyle(fontSize: 14),
+          "Strength : ${strengths[index].toStringAsFixed(2)} N/mm²"
+              .regularRobotoTextStyle(fontSize: 14),
+        ],
+      ),
     );
+  }
 
-    if (picked != null) {
-      setState(() {
-        if (casting) {
-          castingDate = picked;
-        } else {
-          testingDate = picked;
-        }
+  /// ----------- SUBMIT -----------
+  Future<void> submitCubeRecord() async {
+    if (castingDate == null || testingDate == null) {
+      errorSnackBar("Validation", "Please select casting and testing date");
+      return;
+    }
 
-        calculateAge();
-      });
+    final cubeLines = List.generate(3, (i) {
+      if (cubeIds[i].text.trim().isEmpty) return null;
+
+      return {
+        "cube_no": cubeIds[i].text.trim(),
+        "length": double.tryParse(lengths[i].text) ?? 0,
+        "breadth": double.tryParse(breadths[i].text) ?? 0,
+        "height": double.tryParse(heights[i].text) ?? 0,
+        "weight": double.tryParse(weights[i].text) ?? 0,
+        "load": double.tryParse(loads[i].text) ?? 0,
+      };
+    }).whereType<Map<String, dynamic>>().toList();
+
+    if (cubeLines.isEmpty) {
+      errorSnackBar("Validation", "Please enter at least one cube");
+      return;
+    }
+
+    Map<String, dynamic> body = {
+      "sr_no": srNoController.text.trim(),
+      "floor_id": widget.floorId,
+      "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
+      "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
+      "grade_concrete": grade,
+      "grade_value": gradeValue,
+      "quantity": double.tryParse(quantityController.text) ?? 0,
+      "location_structure": locationController.text.trim(),
+      "source_concrete": sourceController.text.trim(),
+      "age_days": ageDays,
+      "cube_lines": cubeLines,
+      "avg_strength": avgStrength,
+      "strength_percent": strengthPercent
+    };
+
+    final response = await cubeRepo.createRecord(body);
+
+    if (!mounted) return;
+
+    if (response != null) {
+      successSnackBar("Success", "Cube record created successfully");
+      Navigator.pop(context, true);
+    } else {
+      errorSnackBar("Error", "Failed to create cube record");
     }
   }
 
@@ -314,79 +378,69 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            textField("Sr. No", srNoController, type: TextInputType.text),
-            textField("Cube ID", cubeIdController),
+
+            textField("Sr. No", srNoController),
+
             buildDateField(
                 "Date of Casting", castingDate, () => pickDate(true)),
-            // dropdownField("Grade of Concrete", grade, ["M20", "M25", "M30"],
-            //     (v) {
-            //   setState(() {
-            //     grade = v!;
-            //     gradeValue = double.parse(v.replaceAll("M", ""));
-            //   });
-            // }),
 
             dropdownField(
               "Grade of Concrete",
               grade,
-              gradeMap.keys.toList(), // ✅ keys
+              gradeMap.keys.toList(),
               (v) {
                 setState(() {
-                  grade = v!; // ✅ will be m20/m25/m30
-                  gradeValue = double.parse(gradeMap[v]!.replaceAll("M", ""));
+                  grade = v!;
+
+                  String gradeText = gradeMap[v]!;
+
+                  // Extract only number from string (M55 → 55, M40 PT → 40)
+                  RegExp regExp = RegExp(r'\d+');
+                  Match? match = regExp.firstMatch(gradeText);
+
+                  if (match != null) {
+                    gradeValue = double.parse(match.group(0)!);
+                  }
                 });
               },
             ),
+
             "Grade Value : $gradeValue N/mm²"
                 .regularRobotoTextStyle(fontSize: 14),
+
             const SizedBox(height: 16),
+
             textField("Quantity (m³)", quantityController,
                 type: TextInputType.number),
+
             textField("Location / Structure", locationController),
-            // dropdownField(
-            //     "Concrete Source",
-            //     source,
-            //     ["In-house", "RMC Plant A"],
-            //     (v) => setState(() => source = v!)),
-            // Map<String, String> sourceMap = {"in_house": "In-house","rmc": "RMC Plant A",};
-            dropdownField(
-              "Concrete Source",
-              source,
-              sourceMap.keys.toList(), // keys list
-              (v) => setState(() => source = v!),
-            ),
+
+            textField("Concrete Source", sourceController),
+
             buildDateField(
                 "Date of Testing", testingDate, () => pickDate(false)),
+
             "Age (Days): $ageDays".boldRobotoTextStyle(fontSize: 16),
-            const SizedBox(height: 25),
-            "Weight of Cube (kg)".boldRobotoTextStyle(fontSize: 18),
-            textField("Cube 1 Weight", weight1, type: TextInputType.number),
-            textField("Cube 2 Weight", weight2, type: TextInputType.number),
-            textField("Cube 3 Weight", weight3, type: TextInputType.number),
-            "Cube 1 Density : ${density1.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 2 Density : ${density2.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 3 Density : ${density3.toStringAsFixed(2)} Kg/m³"
-                .regularRobotoTextStyle(fontSize: 14),
+
             const SizedBox(height: 20),
-            "Load (kN)".boldRobotoTextStyle(fontSize: 18),
-            textField("Cube 1 Load", load1, type: TextInputType.number),
-            textField("Cube 2 Load", load2, type: TextInputType.number),
-            textField("Cube 3 Load", load3, type: TextInputType.number),
-            "Cube 1 Strength : ${strength1.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 2 Strength : ${strength2.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            "Cube 3 Strength : ${strength3.toStringAsFixed(2)} N/mm²"
-                .regularRobotoTextStyle(fontSize: 14),
-            const SizedBox(height: 20),
+
+            /// -------- CUBE CARDS --------
+            cubeCard(0),
+            cubeCard(1),
+            cubeCard(2),
+
+            const SizedBox(height: 10),
+
             "Average Strength : ${avgStrength.toStringAsFixed(2)} N/mm²"
                 .boldRobotoTextStyle(fontSize: 16),
+
             const SizedBox(height: 8),
+
             "Compressive Strength % : ${strengthPercent.toStringAsFixed(2)} %"
                 .boldRobotoTextStyle(fontSize: 16),
+
             const SizedBox(height: 30),
+
             GestureDetector(
               onTap: submitCubeRecord,
               child: Container(
@@ -407,6 +461,7 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
                 ),
               ),
             ),
+
             const SizedBox(height: 100),
           ],
         ),

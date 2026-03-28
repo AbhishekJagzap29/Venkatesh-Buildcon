@@ -7,10 +7,8 @@ class CubeTestingController {
   /// CREATE CUBE RECORD
   Future<CubeTestingModel?> createCube(CubeTestingModel model) async {
     print("CONTROLLER → CREATE CUBE CALLED");
-
     try {
       final response = await repo.createRecord(model.toJson());
-
       if (response != null) {
         print("CUBE CREATED SUCCESSFULLY");
         return response;

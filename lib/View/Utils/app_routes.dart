@@ -274,19 +274,19 @@ class Routes {
     ),
 
     //14/03/2026
-   
-   GetPage(
-  name: cubeRecordsScreen,
-  page: () => CubeRecordsScreen(
-    floorId: Get.arguments['floorId'],
-  ),
-),
 
-GetPage(
-  name: cubeTestingFormScreen,
-  page: () => CubeTestingFormScreen(
-    floorId: Get.arguments['floorId'],
-  ),
-),
+    GetPage(
+      name: cubeRecordsScreen,
+      page: () => CubeRecordsScreen(
+        floorId: Get.arguments['floorId'],
+      ),
+    ),
+
+    GetPage(
+      name: cubeTestingFormScreen,
+      page: () => CubeTestingFormScreen(
+        floorId: Get.arguments['floorId'],
+      ),
+    ),
   ];
 }
