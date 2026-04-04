@@ -3,21 +3,30 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/CubeTestingResponseModel/cube_testing_form_model.dart';
 import 'package:venkatesh_buildcon_app/Api/Services/base_service.dart';
+import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 
 class CubeTestingRepository {
+  int _loggedInUserId() {
+    return int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ??
+        0;
+  }
+
   /// CREATE RECORD
   Future<CubeTestingModel?> createRecord(Map<String, dynamic> body) async {
+    final requestBody = Map<String, dynamic>.from(body);
+    requestBody["user_id"] ??= _loggedInUserId();
+
     print("CREATE CUBE API CALLED");
     print("API URL: ${ApiRouts.createCubeTesting}");
-    print("REQUEST BODY: $body");
+    print("REQUEST BODY: $requestBody");
 
     final response = await http.post(
       Uri.parse(ApiRouts.createCubeTesting),
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode(body),
+      body: jsonEncode(requestBody),
     );
 
     print("Status Code: ${response.statusCode}");
@@ -125,6 +134,7 @@ class CubeTestingRepository {
   Future<bool> updateCubeRecord(int id, Map<String, dynamic> body) async {
     final url = Uri.parse("${ApiRouts.updateCubeTesting}/$id");
     final requestBody = Map<String, dynamic>.from(body);
+    requestBody["user_id"] ??= _loggedInUserId();
 
     print("UPDATE API CALLED");
     print("URL: $url");

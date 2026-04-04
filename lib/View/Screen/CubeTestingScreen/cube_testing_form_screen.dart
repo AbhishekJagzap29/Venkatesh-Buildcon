@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/CubeTestingResponseModel/cube_testing_form_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
+import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_testing_form_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
@@ -398,7 +399,11 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
       };
     }).whereType<Map<String, dynamic>>().toList();
 
+    final userId =
+        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
+
     Map<String, dynamic> body = {
+      "user_id": userId,
       "sr_no": srNoController.text.trim(),
       "floor_id": widget.floorId,
       "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),

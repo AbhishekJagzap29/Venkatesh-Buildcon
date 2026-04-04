@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
+import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
@@ -298,7 +299,11 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
       return;
     }
 
+    final userId =
+        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
+
     final body = {
+      "user_id": userId,
       "sr_no": srNoController.text.trim(),
       "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
       "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
