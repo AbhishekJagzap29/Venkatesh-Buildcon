@@ -50,10 +50,7 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
   List<TextEditingController> loads =
       List.generate(3, (_) => TextEditingController());
 
-  // Map<String, String> sourceMap = {
-  //   "inhouse": "In-house",
-  //   "rmc": "RMC Plant",
-  // };
+ 
 
   Map<String, String> gradeMap = {
     "m15": "M15",
@@ -326,7 +323,9 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
                 child: Text(gradeMap[e] ?? e),
               );
             }).toList(),
-            onChanged: onChanged,
+            // onChanged: onChanged,
+            //30/03/2026
+            onChanged: widget.isEditable ? onChanged : null,
           ),
         ),
         const SizedBox(height: 16),
@@ -460,7 +459,7 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
                     },
                   ),
 
-                  "Grade Value : $gradeValue N/mm²"
+                  "Grade Value : $gradeValue"
                       .regularRobotoTextStyle(fontSize: 14),
 
                   const SizedBox(height: 16),
@@ -490,7 +489,7 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
 
                   const SizedBox(height: 8),
 
-                  "Compressive Strength % : ${strengthPercent.toStringAsFixed(2)} %"
+                  "Compressive Strength : ${strengthPercent.toStringAsFixed(2)} %"
                       .boldRobotoTextStyle(fontSize: 16),
                   const SizedBox(height: 30),
 
