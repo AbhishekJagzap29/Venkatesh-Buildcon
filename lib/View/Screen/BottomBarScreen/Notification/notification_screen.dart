@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
+import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_routing_through_notification_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/constructor_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/no_internet.dart';
@@ -9,6 +10,7 @@ import 'package:venkatesh_buildcon_app/View/Controller/network_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Notification/notification_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
@@ -126,27 +128,79 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                           null &&
                                                       notification.redirectId!
                                                           .isNotEmpty) {
-                                                    if (notification.detailLine
-                                                            ?.toLowerCase() ==
-                                                        "wi") {
-                                                      final seqNo =
-                                                          notification.seq_no ??
-                                                              "";
-                                                      if (seqNo.isEmpty) {
-                                                        errorSnackBar(
-                                                          "Error",
-                                                          "Invalid sequence number in notification.",
+                                                    final detailLine =
+                                                        notification.detailLine
+                                                                ?.toLowerCase() ??
+                                                            "";
+                                                    final seqNo =
+                                                        notification.seq_no ??
+                                                            "";
+
+                                                    // ===========================
+                                                    // ✅ CUBE FLOW (FIXED)
+                                                    // ===========================
+                                                    if (detailLine == "cube") {
+                                                      final recordId =
+                                                          int.tryParse(
+                                                              notification
+                                                                  .redirectId!);
+
+                                                      if (recordId == null ||
+                                                          recordId <= 0) {
+                                                        errorSnackBar("Invalid",
+                                                            "Invalid Cube Testing ID.");
+                                                        return;
+                                                      }
+
+                                                      try {
+                                                        final repo =
+                                                            CubeTestingRepository();
+                                                        final record = await repo
+                                                            .getSingleRecord(
+                                                                recordId);
+
+                                                        if (record == null ||
+                                                            record is! Map<
+                                                                String,
+                                                                dynamic>) {
+                                                          errorSnackBar("Oops",
+                                                              "Record not found.");
+                                                          return;
+                                                        }
+
+                                                        Get.toNamed(
+                                                          Routes
+                                                              .cubeDetailsScreen,
+                                                          arguments: {
+                                                            "data": record,
+                                                            "isEditable": false,
+                                                            "screen":
+                                                                "notification",
+                                                          },
                                                         );
+                                                      } catch (e) {
+                                                        errorSnackBar("Failed",
+                                                            "Failed to load record.");
+                                                      }
+
+                                                      return; // 🚨 VERY IMPORTANT
+                                                    }
+
+                                                    // ===========================
+                                                    // ✅ WI FLOW
+                                                    // ===========================
+                                                    if (detailLine == "wi") {
+                                                      if (seqNo.isEmpty) {
+                                                        errorSnackBar("Invalid",
+                                                            "Invalid sequence number.");
                                                         return;
                                                       }
 
                                                       final parts =
                                                           seqNo.split('/');
                                                       if (parts.length < 6) {
-                                                        errorSnackBar(
-                                                          "Error",
-                                                          "Invalid sequence format in notification.",
-                                                        );
+                                                        errorSnackBar("Invalid",
+                                                            "Invalid sequence format.");
                                                         return;
                                                       }
 
@@ -178,62 +232,253 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                           "model": data
                                                         },
                                                       );
+
+                                                      return;
+                                                    }
+
+                                                    // ===========================
+                                                    // ✅ NC FLOW
+                                                    // ===========================
+                                                    final ncIdString =
+                                                        notification.ncId;
+
+                                                    if (ncIdString == null ||
+                                                        ncIdString.isEmpty) {
+                                                      errorSnackBar("Invalid",
+                                                          "Invalid NC ID.");
+                                                      return;
+                                                    }
+
+                                                    final ncId = int.tryParse(
+                                                        ncIdString);
+                                                    if (ncId == null ||
+                                                        ncId <= 0) {
+                                                      errorSnackBar("Invalid",
+                                                          "Invalid NC ID.");
+                                                      return;
+                                                    }
+
+                                                    await notificationController
+                                                        .getNcRoutingForNotification(
+                                                            ncId);
+
+                                                    if (notificationController
+                                                            .ncRoutingResponse
+                                                            .status ==
+                                                        Status.COMPLETE) {
+                                                      final ncRoutingData =
+                                                          notificationController
+                                                                  .ncRoutingResponse
+                                                                  .data
+                                                              as NcRoutingThroughNotificationModel;
+
+                                                      Get.toNamed(
+                                                        Routes
+                                                            .generateNcCompleteDetailsScreen,
+                                                        arguments: {
+                                                          "screen":
+                                                              "notification",
+                                                          "id": ncId,
+                                                          "ncRoutingData":
+                                                              ncRoutingData,
+                                                        },
+                                                      );
                                                     } else {
-                                                      final ncIdString =
-                                                          notification.ncId;
-                                                      if (ncIdString == null ||
-                                                          ncIdString.isEmpty) {
-                                                        errorSnackBar("Error",
-                                                            "Invalid NC ID.");
-                                                        return;
-                                                      }
-
-                                                      final ncId = int.tryParse(
-                                                          ncIdString);
-                                                      if (ncId == null ||
-                                                          ncId <= 0) {
-                                                        errorSnackBar("Error",
-                                                            "Invalid NC ID.");
-                                                        return;
-                                                      }
-
-                                                      await notificationController
-                                                          .getNcRoutingForNotification(
-                                                              ncId);
-
-                                                      if (notificationController
-                                                              .ncRoutingResponse
-                                                              .status ==
-                                                          Status.COMPLETE) {
-                                                        final ncRoutingData =
-                                                            notificationController
-                                                                    .ncRoutingResponse
-                                                                    .data
-                                                                as NcRoutingThroughNotificationModel;
-
-                                                        Get.toNamed(
-                                                          Routes
-                                                              .generateNcCompleteDetailsScreen,
-                                                          arguments: {
-                                                            "screen":
-                                                                "notification",
-                                                            "id": ncId,
-                                                            "ncRoutingData":
-                                                                ncRoutingData,
-                                                          },
-                                                        );
-                                                      } else {
-                                                        errorSnackBar(
-                                                            "Error",
-                                                            notificationController
-                                                                .ncRoutingResponse
-                                                                .message
-                                                                .toString());
-                                                      }
+                                                      errorSnackBar(
+                                                        "Error",
+                                                        notificationController
+                                                            .ncRoutingResponse
+                                                            .message
+                                                            .toString(),
+                                                      );
                                                     }
                                                   }
-                                                  ////=======================>
                                                 },
+
+                                                // onTap: () async {
+                                                //   if (notification.redirectId !=
+                                                //           null &&
+                                                //       notification.redirectId!
+                                                //           .isNotEmpty) {
+                                                //     if (notification.detailLine
+                                                //             ?.toLowerCase() ==
+                                                //         "wi") {
+                                                //       final seqNo =
+                                                //           notification.seq_no ??
+                                                //               "";
+
+                                                //       if (seqNo
+                                                //           .contains("cube")) {
+                                                //         final recordIdString =
+                                                //             notification
+                                                //                 .redirectId;
+
+                                                //         if (recordIdString ==
+                                                //                 null ||
+                                                //             recordIdString
+                                                //                 .isEmpty) {
+                                                //           errorSnackBar("Error",
+                                                //               "Invalid Cube Testing ID.");
+                                                //           return;
+                                                //         }
+
+                                                //         final recordId =
+                                                //             int.tryParse(
+                                                //                 recordIdString);
+
+                                                //         if (recordId == null ||
+                                                //             recordId <= 0) {
+                                                //           errorSnackBar("Error",
+                                                //               "Invalid Cube Testing ID.");
+                                                //           return;
+                                                //         }
+
+                                                //         try {
+                                                //           final repo =
+                                                //               CubeTestingRepository();
+
+                                                //           // 🔥 Fetch full record using ID
+                                                //           final record = await repo
+                                                //               .getSingleRecord(
+                                                //                   recordId);
+
+                                                //           if (record == null ||
+                                                //               record is! Map<
+                                                //                   String,
+                                                //                   dynamic>) {
+                                                //             errorSnackBar(
+                                                //                 "Record",
+                                                //                 "Record not found.");
+                                                //             return;
+                                                //           }
+
+                                                //           // ✅ Now pass full record
+                                                //           Get.toNamed(
+                                                //             Routes
+                                                //                 .cubeDetailsScreen,
+                                                //             arguments: {
+                                                //               "data": record,
+                                                //               "isEditable":
+                                                //                   false,
+                                                //               "screen":
+                                                //                   "notification",
+                                                //             },
+                                                //           );
+                                                //         } catch (e) {
+                                                //           errorSnackBar(
+                                                //               "Failed",
+                                                //               "Failed to load record.");
+                                                //         }
+
+                                                //         return;
+                                                //       }
+
+                                                //       if (seqNo.isEmpty) {
+                                                //         errorSnackBar(
+                                                //           "Error",
+                                                //           "Invalid sequence number in notification.",
+                                                //         );
+                                                //         return;
+                                                //       }
+
+                                                //       final parts =
+                                                //           seqNo.split('/');
+                                                //       if (parts.length < 6) {
+                                                //         errorSnackBar(
+                                                //           "Error",
+                                                //           "Invalid sequence format in notification.",
+                                                //         );
+                                                //         return;
+                                                //       }
+
+                                                //       final towerName =
+                                                //           parts[2];
+                                                //       final floorOrFlatName =
+                                                //           parts[3];
+                                                //       final activityName =
+                                                //           parts[4];
+                                                //       final activityId =
+                                                //           parts[5];
+
+                                                //       ConstDataModel data =
+                                                //           ConstDataModel(
+                                                //         towerName: towerName,
+                                                //         flatFloorName:
+                                                //             floorOrFlatName,
+                                                //         data: notification,
+                                                //         screen: 'notification',
+                                                //         activityName:
+                                                //             activityName,
+                                                //         activityId: activityId,
+                                                //       );
+
+                                                //       await Get.toNamed(
+                                                //         Routes
+                                                //             .activityDetailsScreen,
+                                                //         arguments: {
+                                                //           "model": data
+                                                //         },
+                                                //       );
+                                                //     } else {
+                                                //       // -----------------------------
+                                                //       // NC FLOW (UNCHANGED)
+                                                //       // -----------------------------
+                                                //       final ncIdString =
+                                                //           notification.ncId;
+
+                                                //       if (ncIdString == null ||
+                                                //           ncIdString.isEmpty) {
+                                                //         errorSnackBar("Error",
+                                                //             "Invalid NC ID.");
+                                                //         return;
+                                                //       }
+
+                                                //       final ncId = int.tryParse(
+                                                //           ncIdString);
+                                                //       if (ncId == null ||
+                                                //           ncId <= 0) {
+                                                //         errorSnackBar("Error",
+                                                //             "Invalid NC ID.");
+                                                //         return;
+                                                //       }
+
+                                                //       await notificationController
+                                                //           .getNcRoutingForNotification(
+                                                //               ncId);
+
+                                                //       if (notificationController
+                                                //               .ncRoutingResponse
+                                                //               .status ==
+                                                //           Status.COMPLETE) {
+                                                //         final ncRoutingData =
+                                                //             notificationController
+                                                //                     .ncRoutingResponse
+                                                //                     .data
+                                                //                 as NcRoutingThroughNotificationModel;
+
+                                                //         Get.toNamed(
+                                                //           Routes
+                                                //               .generateNcCompleteDetailsScreen,
+                                                //           arguments: {
+                                                //             "screen":
+                                                //                 "notification",
+                                                //             "id": ncId,
+                                                //             "ncRoutingData":
+                                                //                 ncRoutingData,
+                                                //           },
+                                                //         );
+                                                //       } else {
+                                                //         errorSnackBar(
+                                                //           "Error",
+                                                //           notificationController
+                                                //               .ncRoutingResponse
+                                                //               .message
+                                                //               .toString(),
+                                                //         );
+                                                //       }
+                                                //     }
+                                                //   }
+                                                // },
                                                 child: Container(
                                                   padding:
                                                       EdgeInsets.all(w * 0.02),
@@ -293,13 +538,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                                   .grey
                                                                   .shade700,
                                                             ),
-                                                            "Sequence Number : ${notification.seq_no}"
-                                                                .regularRobotoTextStyle(
-                                                              fontSize: 14,
-                                                              fontColor: Colors
-                                                                  .grey
-                                                                  .shade700,
-                                                            ),
+                                                            if (!(notification
+                                                                        .seq_no ??
+                                                                    "")
+                                                                .toLowerCase()
+                                                                .contains(
+                                                                    "cube"))
+                                                              "Sequence Number : ${notification.seq_no}"
+                                                                  .regularRobotoTextStyle(
+                                                                fontSize: 14,
+                                                                fontColor: Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                              ),
                                                           ],
                                                         ),
                                                       ),

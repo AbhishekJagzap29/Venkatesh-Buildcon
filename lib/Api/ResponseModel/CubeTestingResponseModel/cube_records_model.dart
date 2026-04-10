@@ -17,7 +17,7 @@ class CubeRecordsModel {
     return CubeRecordsModel(
       id: json['id'] ?? 0,
       srNo: json['sr_no']?.toString() ?? "",
-      towerName: json['tower_id']?.toString() ?? "",
+      towerName: json['tower_name']?.toString() ?? "",
       dateCasting: json['date_casting']?.toString() ?? "",
       dateTesting: json['date_testing']?.toString() ?? "",
     );

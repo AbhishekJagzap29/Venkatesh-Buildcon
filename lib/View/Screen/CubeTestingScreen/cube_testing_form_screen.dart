@@ -11,11 +11,11 @@ import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
 import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
 
 class CubeTestingFormScreen extends StatefulWidget {
-  final int floorId;
+  final int? floorId;
 
   const CubeTestingFormScreen({
     super.key,
-    required this.floorId,
+     this.floorId,
   });
 
   @override
@@ -28,6 +28,8 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final Map<String, String> fieldErrors = {};
+
+  bool isLoading = false; 
 
   /// -------- MULTI CUBE CONTROLLERS --------
   List<TextEditingController> cubeIds =
@@ -383,53 +385,61 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
   /// ----------- SUBMIT -----------
   Future<void> submitCubeRecord() async {
-    if (!_validateForm()) {
-      errorSnackBar("Validation", "Please fill all required fields");
-      return;
-    }
-
-    final cubeLines = List.generate(3, (i) {
-      return {
-        "cube_no": cubeIds[i].text.trim(),
-        "length": double.tryParse(lengths[i].text) ?? 0,
-        "breadth": double.tryParse(breadths[i].text) ?? 0,
-        "height": double.tryParse(heights[i].text) ?? 0,
-        "weight": double.tryParse(weights[i].text) ?? 0,
-        "load": double.tryParse(loads[i].text) ?? 0,
-      };
-    }).whereType<Map<String, dynamic>>().toList();
-
-    final userId =
-        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
-
-    Map<String, dynamic> body = {
-      "user_id": userId,
-      "sr_no": srNoController.text.trim(),
-      "floor_id": widget.floorId,
-      "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
-      "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
-      "grade_concrete": grade,
-      "grade_value": gradeValue,
-      "quantity": double.tryParse(quantityController.text) ?? 0,
-      "location_structure": locationController.text.trim(),
-      "source_concrete": sourceController.text.trim(),
-      "age_days": ageDays,
-      "cube_lines": cubeLines,
-      "avg_strength": avgStrength,
-      "strength_percent": strengthPercent
-    };
-
-    final response = await cubeRepo.createRecord(body);
-
-    if (!mounted) return;
-
-    if (response != null) {
-      successSnackBar("Success", "Cube record created successfully");
-      Navigator.pop(context, true);
-    } else {
-      errorSnackBar("Error", "Failed to create cube record");
-    }
+  if (!_validateForm()) {
+    errorSnackBar("Validation", "Please fill all required fields");
+    return;
   }
+
+  setState(() {
+    isLoading = true; // START LOADING
+  });
+
+  final cubeLines = List.generate(3, (i) {
+    return {
+      "cube_no": cubeIds[i].text.trim(),
+      "length": double.tryParse(lengths[i].text) ?? 0,
+      "breadth": double.tryParse(breadths[i].text) ?? 0,
+      "height": double.tryParse(heights[i].text) ?? 0,
+      "weight": double.tryParse(weights[i].text) ?? 0,
+      "load": double.tryParse(loads[i].text) ?? 0,
+    };
+  }).toList();
+
+  final userId =
+      int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
+
+  Map<String, dynamic> body = {
+    "user_id": userId,
+    "sr_no": srNoController.text.trim(),
+    "floor_id": widget.floorId,
+    "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
+    "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
+    "grade_concrete": grade,
+    "grade_value": gradeValue,
+    "quantity": double.tryParse(quantityController.text) ?? 0,
+    "location_structure": locationController.text.trim(),
+    "source_concrete": sourceController.text.trim(),
+    "age_days": ageDays,
+    "cube_lines": cubeLines,
+    "avg_strength": avgStrength,
+    "strength_percent": strengthPercent
+  };
+
+  final response = await cubeRepo.createRecord(body);
+
+  if (!mounted) return;
+
+  setState(() {
+    isLoading = false; // STOP LOADING
+  });
+
+  if (response != null) {
+    successSnackBar("Success", "Cube record created successfully");
+    Navigator.pop(context, true);
+  } else {
+    errorSnackBar("Error", "Failed to create cube record");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -504,7 +514,7 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
             const SizedBox(height: 10),
 
-            "Average Strength : ${avgStrength.toStringAsFixed(2)} N/mm²"
+            "Average Compressive Strength : ${avgStrength.toStringAsFixed(2)} N/mm²"
                 .boldRobotoTextStyle(fontSize: 16),
 
             const SizedBox(height: 8),
@@ -514,26 +524,30 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
             const SizedBox(height: 30),
 
-            GestureDetector(
-              onTap: submitCubeRecord,
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Center(
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                                          GestureDetector(
+                                onTap: isLoading ? null : submitCubeRecord,
+                                child: Container(
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: isLoading ? Colors.grey : Colors.black,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Center(
+                                    child: isLoading
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : const Text(
+                                            "Submit",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ),
 
             const SizedBox(height: 100),
           ],

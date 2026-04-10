@@ -484,7 +484,7 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
 
                   const SizedBox(height: 10),
 
-                  "Average Strength : ${avgStrength.toStringAsFixed(2)}%"
+                  "Average Compressive Strength : ${avgStrength.toStringAsFixed(2)} N/mm²"
                       .boldRobotoTextStyle(fontSize: 16),
 
                   const SizedBox(height: 8),

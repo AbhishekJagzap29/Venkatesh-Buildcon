@@ -154,7 +154,7 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                         itemBuilder: (context, index) {
                           final record = records[index];
                           final srNo = _textFrom(record["sr_no"]);
-                          final towerName = _textFrom(record["tower_id"]);
+                          final towerName = _textFrom(record["tower_name"]);
                           final location =
                               _textFrom(record["location_structure"]);
                           final cubeId = _cubeIds(
@@ -203,15 +203,20 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
                                       .boldRobotoTextStyle(fontSize: 16),
                                   const SizedBox(height: 6),
                                   _buildInfoRow("Tower Name", towerName),
-                                  _buildInfoRow("Casting Date", _textFrom(record["date_casting"])),
-                                  _buildInfoRow("Testing Date", _textFrom(record["date_testing"])),
+                                  _buildInfoRow("Casting Date",
+                                      _textFrom(record["date_casting"])),
+                                  _buildInfoRow("Testing Date",
+                                      _textFrom(record["date_testing"])),
+                                  _buildInfoRow("Age (Days)", age),
                                   _buildInfoRow("Location", location),
                                   _buildInfoRow("Cube ID", cubeId),
-                                  _buildInfoRow("Grade of Concrete", gradeConcrete),
+                                  _buildInfoRow(
+                                      "Grade of Concrete", gradeConcrete),
                                   _buildInfoRow("Quantity (m³)", quantity),
-                                  _buildInfoRow("Age (Days)", age),
-                                  _buildInfoRow("Average Compressive Strength", "$avgStrength %"),
-                                  _buildInfoRow("Compressive Strength", "$compressiveStrength %"),
+                                  _buildInfoRow("Average Compressive Strength",
+                                      "$avgStrength N/mm²"),
+                                  _buildInfoRow("Compressive Strength",
+                                      "$compressiveStrength %"),
                                 ],
                               ),
                             ),

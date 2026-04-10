@@ -104,16 +104,20 @@ class CubeTestingRepository {
 
   Future<bool> deleteCubeRecord(int id) async {
     final url = Uri.parse("${ApiRouts.deleteCubeTesting}$id");
+    final requestBody = {
+      "user_id": _loggedInUserId(),
+    };
 
     print("DELETE API CALLED");
     print("URL: $url");
+    print("BODY: $requestBody");
 
     final response = await http.post(
       url,
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode({}),
+      body: jsonEncode(requestBody),
     );
 
     print("Status Code: ${response.statusCode}");

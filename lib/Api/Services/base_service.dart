@@ -3,14 +3,15 @@ class ApiRouts {
 
   /// TEST
 
-  static String databaseName = 'vb_db';
-  static String base = 'http://157.245.102.113:8069/';
-  static String basic = 'http://157.245.102.113:8069/';
+  // static String databaseName = 'vb_db';
+  // static String base = 'http://157.245.102.113:8069/';
+  // static String basic = 'http://157.245.102.113:8069/';
 
   /// LIVE
 
-  // static String databaseName = 'VB';
-  // static String base = 'http://159.65.147.103:8069/';
+  static String databaseName = 'VB';
+  static String base = 'http://159.65.147.103:8069/';
+  static String basic = 'http://159.65.147.103:8069/';
   static String baseUrl = '${base}session/auth';
 
   /// APIS

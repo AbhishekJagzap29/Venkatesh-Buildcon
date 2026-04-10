@@ -18,6 +18,7 @@ import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/HomeScreen/ho
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Notification/notification_filter_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Profile/update_password_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Report/report_details_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_records_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_testing_form_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/FlatFloorActivityScreen/flat_activity_screen.dart';
@@ -82,6 +83,8 @@ class Routes {
   //11/03/2026 CUBE TESTING
   static String cubeRecordsScreen = "/cubeRecordsScreen";
   static String cubeTestingFormScreen = "/cubeTestingFormScreen";
+  static String cubeDetailsScreen = "/cubeDetailsScreen";
+
 //
 
   static List<GetPage> routes = [
@@ -288,5 +291,24 @@ class Routes {
         floorId: Get.arguments['floorId'],
       ),
     ),
+
+   GetPage(
+  name: cubeDetailsScreen,
+  page: () {
+    final args = Get.arguments as Map<String, dynamic>;
+
+    return CubeDetailsScreen(
+      data: args["data"],
+      isEditable: args["isEditable"] ?? false,
+    );
+  },
+  transition: Transition.fadeIn,
+),
+// GetPage(
+//       name: cubeDetailsScreen,
+//       page: () => cubeDetailsScreen(),
+//       transition: Transition.fadeIn,
+//     ),
+
   ];
 }
