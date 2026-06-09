@@ -62,30 +62,26 @@ class Routes {
   static String saveActivityScreen = "/saveActivityScreen";
   static String showOfflineDataScreen = "/showOfflineDataScreen";
   static String materialInspectionScreen = "/materialInspectionScreen";
-  static String createMaterialInspectionScreen =
-      "/createMaterialInspectionScreen";
-  static String updateMaterialInspectionScreen =
-      "/updateMaterialInspectionScreen";
+  static String createMaterialInspectionScreen ="/createMaterialInspectionScreen";
+  static String updateMaterialInspectionScreen ="/updateMaterialInspectionScreen";
   static String notificationFilterScreen = "/notificationFilterScreen";
   static String updatePasswordScreen = "/updatePasswordScreen";
   static String reportDetailScreen = "/reportDetailScreen";
   static String checklistDataScreen = "/checklistDataScreen";
   static String activityTypeScreen = "/activityTypeScreen";
   static String checklistAsPerTypeScreen = "/checklistAsPerTypeScreen";
-  static String activityDetailsForNotificationScreen =
-      "/activityDetailsForNotificationScreen";
+  static String activityDetailsForNotificationScreen ="/activityDetailsForNotificationScreen";
   static String generateNcScreen = "/generateNcScreen";
 
   static String generateNcDetailsScreen = "/generateNcDetailsScreen";
-  static String generateNcCompleteDetailsScreen =
-      "/generateNcCompleteDetailsScreen";
+  static String generateNcCompleteDetailsScreen ="/generateNcCompleteDetailsScreen";
 
   //11/03/2026 CUBE TESTING
   static String cubeRecordsScreen = "/cubeRecordsScreen";
   static String cubeTestingFormScreen = "/cubeTestingFormScreen";
   static String cubeDetailsScreen = "/cubeDetailsScreen";
 
-//
+
 
   static List<GetPage> routes = [
     GetPage(

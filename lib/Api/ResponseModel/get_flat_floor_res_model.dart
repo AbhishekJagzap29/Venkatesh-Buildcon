@@ -54,6 +54,8 @@ class TowerData {
   int? floorMakerCount;
   int? floorCheckerCount;
   int? floorApproverCount;
+  int? cubeTestingCount;
+  String? cubeColor;
 
   TowerData({
     this.towerName,
@@ -73,6 +75,8 @@ class TowerData {
     this.floorMakerCount,
     this.floorCheckerCount,
     this.floorApproverCount,
+    this.cubeTestingCount,
+    this.cubeColor,
   });
 
   factory TowerData.fromJson(Map<String, dynamic> json) => TowerData(
@@ -99,6 +103,9 @@ class TowerData {
         floorMakerCount: json["floor_maker_count"],
         floorCheckerCount: json["floor_checker_count"],
         floorApproverCount: json["floor_approver_count"],
+        cubeTestingCount: json["tower_cube_total_count"],
+        cubeColor: json["cube_color"],
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -123,6 +130,8 @@ class TowerData {
         "floor_maker_count": floorMakerCount,
         "floor_checker_count": floorCheckerCount,
         "floor_approver_count": floorApproverCount,
+        "towe_cube_total_count": cubeTestingCount,
+        "cube_color": cubeColor,
       };
 }
 
@@ -134,6 +143,7 @@ class ListFloor {
   String? makerCount;
   String? checkerCount;
   String? approverCount;
+    String? cubeColor;
 
   ListFloor({
     this.name,
@@ -143,6 +153,7 @@ class ListFloor {
     this.approverCount,
     this.checkerCount,
     this.makerCount,
+    this.cubeColor,
   });
 
   factory ListFloor.fromJson(Map<String, dynamic> json) => ListFloor(
@@ -153,6 +164,8 @@ class ListFloor {
         makerCount: json["maker_count"].toString(),
         checkerCount: json["checker_count"].toString(),
         approverCount: json["approver_count"].toString(),
+                cubeColor: json["cube_color"],
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -163,6 +176,8 @@ class ListFloor {
         "maker_count": makerCount,
         "checker_count": checkerCount,
         "approver_count": approverCount,
+        "cube_color": cubeColor,
+
       };
 }
 

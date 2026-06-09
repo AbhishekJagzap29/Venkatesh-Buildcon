@@ -865,17 +865,76 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                   thickness: 2,
                                   height: h * 0.02,
                                 ),
+                                // Row(
+                                //   children: [
+                                //     'Total Checklist             :  '
+                                //         .boldRobotoTextStyle(fontSize: 12),
+                                //     (controller.flatFloorRes?.towerData
+                                //                 ?.towerTotalCount ??
+                                //             '0')
+                                //         .toString()
+                                //         .regularRobotoTextStyle(fontSize: 10),
+                                //   ],
+                                // ),
                                 Row(
-                                  children: [
-                                    'Total Checklist             :  '
-                                        .boldRobotoTextStyle(fontSize: 12),
-                                    (controller.flatFloorRes?.towerData
-                                                ?.towerTotalCount ??
-                                            '0')
+                                  // children: [
+                                  //   'Total Checklist             :  '
+                                  //       .boldRobotoTextStyle(fontSize: 12),
+                                   children: [
+    (isCubeTesting 
+        ? 'Total Records             :  '
+        : 'Total Checklist             :  ')
+      .boldRobotoTextStyle(fontSize: 12),
+                                    (isCubeTesting
+                                            ? (controller
+                                                    .flatFloorRes
+                                                    ?.towerData
+                                                    ?.cubeTestingCount ??
+                                                '0')
+                                            : (controller
+                                                    .flatFloorRes
+                                                    ?.towerData
+                                                    ?.towerTotalCount ??
+                                                '0'))
                                         .toString()
                                         .regularRobotoTextStyle(fontSize: 10),
                                   ],
                                 ),
+                                if (!isCubeTesting) ...[
+                                  Row(
+                                    children: [
+                                      'Maker Submitted        :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      (controller.flatFloorRes?.towerData
+                                                  ?.towerMakerCount ??
+                                              '0')
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      'Checker Submitted    :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      (controller.flatFloorRes?.towerData
+                                                  ?.towerCheckerCount ??
+                                              '0')
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      'Approver Submitted  :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      (controller.flatFloorRes?.towerData
+                                                  ?.towerApproverCount ??
+                                              '0')
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                ]
                                 // ... other count rows (maker, checker, approver) ...
                               ],
                             ),
@@ -964,24 +1023,28 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                         ],
 
                         // ── Grid ───────────────────────────────────────────────────────
-                        if (isCubeTesting && controller.searchListFloorData.isEmpty) ...[
+                        if (isCubeTesting &&
+                            controller.searchListFloorData.isEmpty) ...[
                           SizedBox(
                             height: h * 0.4,
-                            child: const Center(child: Text('No floor data available!')),
+                            child: const Center(
+                                child: Text('No floor data available!')),
                           ),
                         ] else if (!isCubeTesting &&
                             controller.select == 0 &&
                             controller.searchListFlatData.isEmpty) ...[
                           SizedBox(
                             height: h * 0.4,
-                            child: const Center(child: Text('No flat data available!')),
+                            child: const Center(
+                                child: Text('No flat data available!')),
                           ),
                         ] else if (!isCubeTesting &&
                             controller.select == 1 &&
                             controller.searchListFloorData.isEmpty) ...[
                           SizedBox(
                             height: h * 0.4,
-                            child: const Center(child: Text('No floor data available!')),
+                            child: const Center(
+                                child: Text('No floor data available!')),
                           ),
                         ] else ...[
                           GridView.builder(
@@ -1007,13 +1070,15 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                     ? controller.searchListFlatData.length
                                     : controller.searchListFloorData.length),
                             itemBuilder: (context, index) {
+                              
                               ListFloor responseData = isCubeTesting
                                   ? controller.searchListFloorData[index]
                                   : (controller.select == 0
                                       ? controller.searchListFlatData[index]
                                       : controller.searchListFloorData[index]);
 
-                              double per = double.parse(responseData.progress ?? "0.00");
+                              double per =
+                                  double.parse(responseData.progress ?? "0.00");
 
                               final count = per < 20
                                   ? 0
@@ -1031,8 +1096,8 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                 onTap: () {
                                   final data = TowerIdDataModal(
                                     id: responseData.floorId.toString(),
-                                    towerName:
-                                        controller.flatFloorRes!.towerData!.towerName,
+                                    towerName: controller
+                                        .flatFloorRes!.towerData!.towerName,
                                   );
 
                                   if (isCubeTesting) {
@@ -1057,27 +1122,35 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                       arguments: {
                                         "model": data,
                                         "count": count,
-                                        "progress": responseData.progress ?? "0.00",
-                                        "tower_data": controller.flatFloorRes?.towerData,
-                                        "flat_floor_data": controller.select == 0
-                                            ? controller.flatFloorRes?.towerData
-                                                ?.listFlatData![index]
-                                            : controller.flatFloorRes?.towerData
-                                                ?.listFloorData![index],
+                                        "progress":
+                                            responseData.progress ?? "0.00",
+                                        "tower_data":
+                                            controller.flatFloorRes?.towerData,
+                                        "flat_floor_data":
+                                            controller.select == 0
+                                                ? controller
+                                                    .flatFloorRes
+                                                    ?.towerData
+                                                    ?.listFlatData![index]
+                                                : controller
+                                                    .flatFloorRes
+                                                    ?.towerData
+                                                    ?.listFloorData![index],
                                       },
                                     );
                                   }
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: const Color(0xffE6E6E6)),
+                                    border: Border.all(
+                                        color: const Color(0xffE6E6E6)),
                                     color: containerColor,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Center(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         (h * 0.015).addHSpace(),
                                         const Spacer(),
@@ -1091,12 +1164,20 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                           ).copyWith(bottom: h * 0.015),
                                           child: StepProgressIndicator(
                                             totalSteps: 5,
-                                            roundedEdges: const Radius.circular(10),
+                                            roundedEdges:
+                                                const Radius.circular(10),
                                             currentStep: count,
                                             unselectedSize: h * 0.007,
                                             size: h * 0.007,
-                                            selectedColor: greenColor,
-                                            unselectedColor: lightGreyColor,
+selectedColor: isCubeTesting
+    ? getCubeColor(responseData.cubeColor)
+    : greenColor,
+
+unselectedColor: isCubeTesting
+    ? getCubeColor(responseData.cubeColor)
+    : lightGreyColor,
+                                          //  selectedColor: greenColor,
+                                           // unselectedColor: redColor,
                                           ),
                                         ),
                                       ],
@@ -1127,14 +1208,15 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                 ? showCircular()
                                 : TextButton(
                                     onPressed: () {
-                                      if (isCubeTesting || controller.select == 1) {
+                                      if (isCubeTesting ||
+                                          controller.select == 1) {
                                         controller.setFloorLength(false);
                                       } else {
                                         controller.setFlatLength(false);
                                       }
                                     },
-                                    child: "Load more"
-                                        .semiBoldBarlowTextStyle(fontColor: appColor),
+                                    child: "Load more".semiBoldBarlowTextStyle(
+                                        fontColor: appColor),
                                   ),
                           ),
                         ],
@@ -1156,4 +1238,16 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
       ),
     );
   }
+ Color getCubeColor(String? color) {
+  switch (color?.toLowerCase()) {
+    case "yellow":
+      return orangeColor;
+    case "red":
+      return Colors.red;
+    case "green":
+      return Colors.green;
+    default:
+      return Colors.grey;
+  }
+}
 }

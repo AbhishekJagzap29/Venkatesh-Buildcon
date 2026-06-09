@@ -524,30 +524,30 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
             const SizedBox(height: 30),
 
-                                          GestureDetector(
-                                onTap: isLoading ? null : submitCubeRecord,
-                                child: Container(
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    color: isLoading ? Colors.grey : Colors.black,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: isLoading
-                                        ? const CircularProgressIndicator(
-                                            color: Colors.white,
-                                          )
-                                        : const Text(
-                                            "Submit",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                              ),
+            GestureDetector(
+  onTap: isLoading ? null : submitCubeRecord,
+  child: Container(
+    height: 55,
+    decoration: BoxDecoration(
+      color: isLoading ? Colors.grey : Colors.black,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Center(
+      child: isLoading
+          ? const CircularProgressIndicator(
+              color: Colors.white,
+            )
+          : const Text(
+              "Submit",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+    ),
+  ),
+),
 
             const SizedBox(height: 100),
           ],

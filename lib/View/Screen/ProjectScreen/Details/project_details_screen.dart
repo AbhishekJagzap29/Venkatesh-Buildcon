@@ -612,6 +612,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
 
+    final isCubeTesting = cName?.toString().toLowerCase() == "cube testing";
+
     return Container(
       color: backGroundColor,
       child: Scaffold(
@@ -823,6 +825,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                     itemCount: controller.towerDataRes
                                         ?.projectData?.towerData?.length,
                                     itemBuilder: (context, index) {
+                                      final towerData = controller.towerDataRes
+                                          ?.projectData?.towerData?[index];
+
                                       return GestureDetector(
                                         onTap: () {
                                           log('controller.towerDataRes?.projectData?.towerData?[index].towerId.toString()==========>>>>>> ${controller.towerDataRes?.projectData?.towerData?[index].towerId.toString()}');
@@ -891,24 +896,50 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                                             .copyWith(
                                                                 bottom:
                                                                     h * 0.015),
+                                                    // child:
+                                                    //     StepProgressIndicator(
+                                                    //   totalSteps: 5,
+                                                    //   roundedEdges:
+                                                    //       const Radius.circular(
+                                                    //           10),
+                                                    //   currentStep: controller
+                                                    //           .towerDataRes
+                                                    //           ?.projectData!
+                                                    //           .towerData![index]
+                                                    //           .progress
+                                                    //           ?.toInt() ??
+                                                    //       0,
+                                                    //   unselectedSize: h * 0.007,
+                                                    //   size: h * 0.007,
+                                                    //   selectedColor: greenColor,
+                                                    //   unselectedColor:
+                                                    //       lightGreyColor,
+                                                    // ),
+
                                                     child:
                                                         StepProgressIndicator(
                                                       totalSteps: 5,
                                                       roundedEdges:
                                                           const Radius.circular(
                                                               10),
-                                                      currentStep: controller
-                                                              .towerDataRes
-                                                              ?.projectData!
-                                                              .towerData![index]
-                                                              .progress
+                                                      currentStep: towerData
+                                                              ?.progress
                                                               ?.toInt() ??
                                                           0,
                                                       unselectedSize: h * 0.007,
                                                       size: h * 0.007,
-                                                      selectedColor: greenColor,
+                                                      selectedColor:
+                                                          isCubeTesting
+                                                              ? getCubeColor(
+                                                                  towerData
+                                                                      ?.color)
+                                                              : greenColor,
                                                       unselectedColor:
-                                                          lightGreyColor,
+                                                          isCubeTesting
+                                                              ? getCubeColor(
+                                                                  towerData
+                                                                      ?.color)
+                                                              : lightGreyColor,
                                                     ),
                                                   ),
                                                 ],
@@ -1150,5 +1181,20 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         ),
       ),
     );
+  }
+}
+
+Color getCubeColor(String? color) {
+  switch (color?.toLowerCase()) {
+    case 'yellow':
+      return orangeColor;
+    case 'red':
+      return Colors.red;
+    case 'green':
+      return Colors.green;
+    case 'blue':
+      return Colors.blue;
+    default:
+      return Colors.grey;
   }
 }
