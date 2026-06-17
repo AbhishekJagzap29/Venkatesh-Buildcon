@@ -77,7 +77,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         hintText: AppString.emailHint,
                       ),
-                     
+                      // Padding(
+                      //   padding: EdgeInsets.only(top: h * 0.015),
+                      //   child: AppString.numberText
+                      //       .semiBoldBarlowTextStyle(
+                      //           fontSize: 15, fontColor: greyTextColor)
+                      //       .paddingSymmetric(horizontal: w * 0.015),
+                      // ),
+                      // LoginTextField(
+                      //   isMobile: true,
+                      //   inputType: TextInputType.number,
+                      //   controller: controller.mobileNOController,
+                      //   icon: const Icon(Icons.call),
+                      //   hintText: AppString.numberTextHint,
+                      // ),
                       Padding(
                         padding: EdgeInsets.only(top: Responsive.isDesktop(context) ? h * 0.04 : h * 0.015),
                         child: AppString.userText
