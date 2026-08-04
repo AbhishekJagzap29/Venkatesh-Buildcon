@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/CubeTestingResponseModel/cube_testing_form_model.dart';
@@ -12,10 +13,14 @@ import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
 
 class CubeTestingFormScreen extends StatefulWidget {
   final int? floorId;
+  final int? projectInfoId;
+  final int? projectTowerId;
 
   const CubeTestingFormScreen({
     super.key,
-     this.floorId,
+    this.floorId,
+    this.projectInfoId,
+    this.projectTowerId,
   });
 
   @override
@@ -23,6 +28,26 @@ class CubeTestingFormScreen extends StatefulWidget {
 }
 
 class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
+  int? get resolvedProjectInfoId {
+    if (widget.projectInfoId != null) return widget.projectInfoId;
+    if (Get.arguments is Map) {
+      final args = Get.arguments as Map;
+      final raw = args["projectInfoId"] ?? args["projectId"] ?? args["pId"];
+      if (raw != null) return int.tryParse(raw.toString());
+    }
+    return null;
+  }
+
+  int? get resolvedProjectTowerId {
+    if (widget.projectTowerId != null) return widget.projectTowerId;
+    if (Get.arguments is Map) {
+      final args = Get.arguments as Map;
+      final raw = args["projectTowerId"] ?? args["towerId"];
+      if (raw != null) return int.tryParse(raw.toString());
+    }
+    return null;
+  }
+
   final cubeController = CubeTestingController();
   final TextEditingController srNoController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
@@ -411,6 +436,8 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
   Map<String, dynamic> body = {
     "user_id": userId,
     "sr_no": srNoController.text.trim(),
+    "project_info_id": resolvedProjectInfoId,
+    "project_tower_id": resolvedProjectTowerId,
     "floor_id": widget.floorId,
     "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
     "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),

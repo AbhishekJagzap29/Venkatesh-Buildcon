@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_details_screen.dart';
@@ -9,10 +10,14 @@ import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
 
 class CubeRecordsScreen extends StatefulWidget {
   final int floorId;
+  final int? projectInfoId;
+  final int? projectTowerId;
 
   const CubeRecordsScreen({
     super.key,
     required this.floorId,
+    this.projectInfoId,
+    this.projectTowerId,
   });
 
   @override
@@ -231,11 +236,28 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
               heroTag: "addCubeRecord",
               backgroundColor: Colors.black,
               onPressed: () async {
+                int? projectInfoId = widget.projectInfoId;
+                int? projectTowerId = widget.projectTowerId;
+
+                if (Get.arguments is Map) {
+                  final args = Get.arguments as Map;
+                  final rawProj = args["projectInfoId"] ?? args["projectId"] ?? args["pId"];
+                  if (rawProj != null) {
+                    projectInfoId ??= int.tryParse(rawProj.toString());
+                  }
+                  final rawTower = args["projectTowerId"] ?? args["towerId"];
+                  if (rawTower != null) {
+                    projectTowerId ??= int.tryParse(rawTower.toString());
+                  }
+                }
+
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => CubeTestingFormScreen(
                       floorId: widget.floorId,
+                      projectInfoId: projectInfoId,
+                      projectTowerId: projectTowerId,
                     ),
                   ),
                 );

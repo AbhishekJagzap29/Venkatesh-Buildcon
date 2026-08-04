@@ -280,16 +280,30 @@ class Routes {
 
     GetPage(
       name: cubeRecordsScreen,
-      page: () => CubeRecordsScreen(
-        floorId: Get.arguments['floorId'],
-      ),
+      page: () {
+        final args = Get.arguments is Map ? Get.arguments as Map : {};
+        final rawProj = args['projectInfoId'] ?? args['projectId'] ?? args['pId'];
+        final rawTower = args['projectTowerId'] ?? args['towerId'];
+        return CubeRecordsScreen(
+          floorId: args['floorId'],
+          projectInfoId: rawProj != null ? int.tryParse(rawProj.toString()) : null,
+          projectTowerId: rawTower != null ? int.tryParse(rawTower.toString()) : null,
+        );
+      },
     ),
 
     GetPage(
       name: cubeTestingFormScreen,
-      page: () => CubeTestingFormScreen(
-        floorId: Get.arguments['floorId'],
-      ),
+      page: () {
+        final args = Get.arguments is Map ? Get.arguments as Map : {};
+        final rawProj = args['projectInfoId'] ?? args['projectId'] ?? args['pId'];
+        final rawTower = args['projectTowerId'] ?? args['towerId'];
+        return CubeTestingFormScreen(
+          floorId: args['floorId'],
+          projectInfoId: rawProj != null ? int.tryParse(rawProj.toString()) : null,
+          projectTowerId: rawTower != null ? int.tryParse(rawTower.toString()) : null,
+        );
+      },
     ),
 
    GetPage(

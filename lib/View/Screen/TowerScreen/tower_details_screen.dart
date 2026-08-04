@@ -1101,17 +1101,27 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                   );
 
                                   if (isCubeTesting) {
+                                    final dynamic rawProjId = Get.arguments != null && Get.arguments is Map
+                                        ? (Get.arguments['projectId'] ?? Get.arguments['pId'] ?? Get.arguments['projectInfoId'])
+                                        : null;
+                                    final int? projId = rawProjId != null ? int.tryParse(rawProjId.toString()) : null;
+                                    final int? towerId = controller.flatFloorRes?.towerData?.towerId;
+
                                     Get.to(
                                       () => CubeRecordsScreen(
                                         floorId: responseData.floorId!,
+                                        projectInfoId: projId,
+                                        projectTowerId: towerId,
                                       ),
                                       arguments: {
                                         "floorId": responseData.floorId,
-                                        "towerId": controller
-                                            .flatFloorRes?.towerData?.towerId,
+                                        "towerId": towerId,
                                         "towerName": controller
                                             .flatFloorRes?.towerData?.towerName,
                                         "floorName": responseData.name,
+                                        "projectId": projId,
+                                        "projectInfoId": projId,
+                                        "projectTowerId": towerId,
                                       },
                                     );
                                   } else {

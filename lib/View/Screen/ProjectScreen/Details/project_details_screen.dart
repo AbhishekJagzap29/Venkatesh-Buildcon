@@ -848,15 +848,13 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                             //     Routes.towerDetailsScreen,
                                             //     arguments: {
                                             //       'towerId':
-                                            //           "${controller.towerDataRes?.projectData?.towerData?[index].towerId.toString()}"
-                                            //               .toString(),
-                                            //     });
-                                            //13/03/26
                                             Get.toNamed(
                                               Routes.towerDetailsScreen,
                                               arguments: {
                                                 'towerId':
                                                     "${controller.towerDataRes?.projectData?.towerData?[index].towerId.toString()}",
+                                                'projectId': controller.projectId,
+                                                'pId': controller.projectId,
                                                 'cName': cName
                                               },
                                             );
