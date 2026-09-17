@@ -1,15 +1,17 @@
 import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/project_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/project_details_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Controller/network_controller.dart';
 
+
 class ProjectCheckListController extends GetxController {
   String projectId = "${Get.arguments['id'] ?? 0}";
   String projectName = "${Get.arguments['name'] ?? 0}";
   int count = Get.arguments['count'] ?? 0;
+  int buId = Get.arguments['buId'] ?? 0;
+
   NetworkController networkController = Get.put(NetworkController());
   ProjectDetailsResponseModel? projectDetailsRes;
   bool loading = false;

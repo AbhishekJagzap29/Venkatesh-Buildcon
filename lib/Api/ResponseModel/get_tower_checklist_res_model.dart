@@ -81,26 +81,28 @@ class TowerData {
   String? name;
   int? towerId;
   double? progress;
-  String? color;
-  TowerData({
+  String? type;
+
+
+TowerData({
     this.name,
     this.towerId,
     this.progress,
-    this.color
+    this.type,
   });
 
   factory TowerData.fromJson(Map<String, dynamic> json) => TowerData(
         name: json["name"].toString(),
         towerId: json["tower_id"],
         progress: json["progress"],
-        color: json["color"],
-
+        type: json["type"]?.toString(),
       );
+
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "tower_id": towerId,
         "progress": progress,
-        "color":color,
+        "type": type,
       };
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checklist_by_activity_res_model.dart';
 
+
 GetCheckPointDetailsByActivityTypeId getCheckPointDetailsByActivityTypeIdFromJson(String str) =>
     GetCheckPointDetailsByActivityTypeId.fromJson(json.decode(str));
 

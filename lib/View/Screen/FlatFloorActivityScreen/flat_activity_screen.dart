@@ -42,7 +42,6 @@ class _FlatActivityScreenState extends State<FlatActivityScreen> {
   }
 
   getFlatData() async {
-    // await flatFloorActivityController.fetchFlatActivityData(flatId: constData.id ?? "0");
     String flatId = constData.id ?? "";
     await flatFloorActivityController
         .getFlatController(body: {"flat_id": flatId});
@@ -58,8 +57,9 @@ class _FlatActivityScreenState extends State<FlatActivityScreen> {
       child: Scaffold(
         backgroundColor: backGroundColor,
         appBar: AppBarWidget(
-          title: AppString.flatActivity.boldRobotoTextStyle(fontSize: 20),
-        ),
+            backGroundColor: const Color(0xFF3498DB),
+            title: AppString.flatActivity
+                .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white)),
         floatingActionButton: const CommonBackToHomeButton(),
         body: SafeArea(
           child: GetBuilder<FlatFloorActivityController>(
@@ -144,7 +144,7 @@ class _FlatActivityScreenState extends State<FlatActivityScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              'Total Checklist             :  '
+                                              'Total Checklists           :  '
                                                   .boldRobotoTextStyle(
                                                       fontSize: 12),
                                               (flatFloorData?.totalCount ?? '0')
@@ -537,7 +537,9 @@ class _FlatActivityScreenState extends State<FlatActivityScreen> {
                       ),
                     ),
                     controller.getActivityChecklistApiResponse.status ==
-                            Status.LOADING
+                                Status.LOADING ||
+                            controller.getReplicateActivityApiResponse.status ==
+                                Status.LOADING
                         ? Container(
                             color: Colors.black12,
                             child: Center(

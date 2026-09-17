@@ -143,7 +143,9 @@ class _CubeRecordsScreenState extends State<CubeRecordsScreen> {
       backgroundColor: backGroundColor,
       floatingActionButton: const CommonBackToHomeButton(),
       appBar: AppBarWidget(
-        title: "Cube Testing Records".boldRobotoTextStyle(fontSize: 20),
+                              backGroundColor: const Color(0xFF3498DB),
+
+        title: "Cube Testing Records".boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       body: Stack(
         children: [

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 
+
 final preferences = SharedPreference();
 
 class SharedPreference {
@@ -19,13 +20,17 @@ class SharedPreference {
   static const userType = "userType";
   static const userId = "userId";
   static const activityData = "activityData";
-  // static const workActivityData = "workActivityData";
-  // static const materialActivityData = "materialActivityData";
   static const savedActivityData = "savedActivityData";
   static const del_activity_users = "del_activity_users";
   static const projectId = "projectId";
   static const userPassword = "userPassword";
   static const userName = "userName";
+  static const hqiFlatsOffline = "hqiFlatsOffline";
+  static const hqiFlatsOfflineData = "hqiFlatsData";
+  static const issueCategoriesWithTypes = "issueCategoriesWithTypes";
+  static const observationCategory ="observationCategory";
+  static const String impactTypes = 'impactTypes';
+
 
   logOut() async {
     // await AuthRepo().logOut();
@@ -43,9 +48,7 @@ class SharedPreference {
   }
 
   String? getString(String key, {String defValue = ""}) {
-    return _preferences == null
-        ? defValue
-        : _preferences!.getString(key) ?? defValue;
+    return _preferences == null ? defValue : _preferences!.getString(key) ?? defValue;
   }
 
   Future<bool?> putInt(String key, int value) async {
@@ -53,9 +56,7 @@ class SharedPreference {
   }
 
   int? getInt(String key, {int defValue = 0}) {
-    return _preferences == null
-        ? defValue
-        : _preferences!.getInt(key) ?? defValue;
+    return _preferences == null ? defValue : _preferences!.getInt(key) ?? defValue;
   }
 
   Future<bool?> putDouble(String key, double value) async {
@@ -63,9 +64,7 @@ class SharedPreference {
   }
 
   double getDouble(String key, {double defValue = 0.0}) {
-    return _preferences == null
-        ? defValue
-        : _preferences!.getDouble(key) ?? defValue;
+    return _preferences == null ? defValue : _preferences!.getDouble(key) ?? defValue;
   }
 
   Future<bool?> putBool(String key, bool value) async {
@@ -73,9 +72,7 @@ class SharedPreference {
   }
 
   bool? getBool(String key, {bool defValue = false}) {
-    return _preferences == null
-        ? defValue
-        : _preferences!.getBool(key) ?? defValue;
+    return _preferences == null ? defValue : _preferences!.getBool(key) ?? defValue;
   }
 
   Future<bool?> removePreference(String key) async {

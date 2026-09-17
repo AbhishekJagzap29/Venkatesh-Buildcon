@@ -1,8 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_tower_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/project_screen_res_model.dart';
@@ -34,8 +35,34 @@ class _AddReportScreenState extends State<AddReportScreen> {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       reportController.clearData();
+      reportController.startTime = TimeOfDay.now();
+      for (int i = 0; i < 1; i++) {
+        reportController.trainingController.add(TextEditingController());
+        reportController.focusNodes.add(FocusNode());
+        reportController.trainingValues.add(null);
+        reportController.update();
+      }
+      // . reportController.trainingController.add(TextEditingController());
+      //  FocusNode newFocusNode = FocusNode();
+      //  reportController.focusNodes.add(newFocusNode);
+      //  WidgetsBinding.instance
+      //      .addPostFrameCallback((_) {
+      //    FocusScope.of(context)
+      //        .requestFocus(newFocusNode);
+      //  });
+      //  reportController.trainingValues.add(null);
+      //  reportController.update();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    reportController.trainingController.clear();
+    reportController.trainingValues.clear();
+    reportController.focusNodes.clear();
   }
 
   @override
@@ -48,8 +75,15 @@ class _AddReportScreenState extends State<AddReportScreen> {
           color: backGroundColor,
           child: Scaffold(
             backgroundColor: const Color(0xffFDFDFD),
-            appBar: AppBarWidget(
-                title: AppString.addReport.boldRobotoTextStyle(fontSize: 20)),
+            // appBar: AppBarWidget(
+            //     title: AppString.addReport.boldRobotoTextStyle(fontSize: 20)),
+                            appBar: AppBarWidget(
+                  backGroundColor: const Color(0xFF3498DB),
+                  title: AppString.addReport.boldRobotoTextStyle(
+                    fontSize: 20,
+                    fontColor: Colors.white,
+                  ),
+                ),
             body: netController.isResult == true
                 ? NoInternetWidget(
                     h: h,
@@ -89,10 +123,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                         hint: Text(
                                             controller.selectProject?.name
                                                     .toString() ??
-                                                "Select Project",
+                                                AppString.selectProject,
                                             style: controller
                                                         .selectProject?.name !=
-                                                    "Select Project"
+                                                    AppString.selectProject
                                                 ? textFieldTextStyle
                                                 : textFieldHintTextStyle),
                                         underline: const SizedBox(),
@@ -130,9 +164,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                   w,
                                   h,
                                   controller: controller.trainingDateController,
-                                  hintText: "Select Training Date :",
+                                  hintText: AppString.selectTrainingDate,
                                   isReadOnly: true,
-                                  validationText: "Please Select Training Date",
+                                  validationText:
+                                      AppString.pleaseSelectTrainingDate,
                                   suffixIcon: Icon(
                                     Icons.calendar_today,
                                     color: blackColor,
@@ -178,9 +213,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
 
                                 inputTextField(w, h,
                                     controller: controller.topicController,
-                                    hintText: "Topic of Training :",
+                                    hintText: AppString.topicOfTraining,
                                     validationText:
-                                        "Please Enter Topic of Training"),
+                                        AppString.pleaseEnterTopicOfTraining),
                                 (h * 0.02).addHSpace(),
 
                                 ///Building Name
@@ -215,10 +250,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                             hint: Text(
                                                 controller.selectTower?.name
                                                         .toString() ??
-                                                    "Select Tower",
+                                                    AppString.selectTower,
                                                 style: controller.selectTower
                                                             ?.name !=
-                                                        "Select Tower"
+                                                        AppString.selectTower
                                                     ? textFieldTextStyle
                                                     : textFieldHintTextStyle),
                                             underline: const SizedBox(),
@@ -254,92 +289,209 @@ class _AddReportScreenState extends State<AddReportScreen> {
 
                                 inputTextField(w, h,
                                     controller: controller.locationController,
-                                    hintText: "Location :",
-                                    validationText: "Please Enter Location"),
+                                    hintText: AppString.location,
+                                    validationText:
+                                        AppString.pleaseEnterLocation),
                                 (h * 0.02).addHSpace(),
 
                                 ///trainer Name
 
                                 inputTextField(w, h,
                                     controller: controller.tNameController,
-                                    hintText: "Trainer Name :",
+                                    hintText: AppString.trainerName,
                                     validationText:
-                                        "Please Enter Trainer Name"),
+                                        AppString.pleaseEnterTrainerName),
                                 (h * 0.02).addHSpace(),
 
                                 ///Training Given to Name List
 
                                 "${AppString.trainingGiven} :"
                                     .semiBoldBarlowTextStyle(fontSize: 14),
-                                ListView.builder(
-                                  itemCount:
-                                      controller.trainingController.length,
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            top: h * 0.02,
-                                          ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: containerColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(13),
-                                                border: Border.all(
-                                                    color: Colors.grey.shade200,
-                                                    width: 2)),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12, horizontal: 17),
-                                            child: "${index + 1}"
-                                                .semiBoldBarlowTextStyle(
-                                                    fontSize: 14),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                            child: inputTextField(w, h,
-                                                controller: controller
-                                                    .trainingController[index],
-                                                focusNode: controller
-                                                    .focusNodes[index],
-                                                onChanged: (p0) {
-                                          controller
-                                              .getNonEmptyTextFieldsCount();
-                                        },
-                                                suffixIcon: GestureDetector(
-                                                  onTap: () {
-                                                    if (controller
-                                                            .trainingController
-                                                            .length >
-                                                        1) {
-                                                      controller
-                                                          .trainingController
-                                                          .removeAt(index);
-                                                      controller.focusNodes
-                                                          .removeAt(index);
-                                                      controller.update();
-                                                      controller
-                                                          .getNonEmptyTextFieldsCount();
-                                                    }
-                                                  },
-                                                  child: Icon(
-                                                    Icons.remove,
-                                                    color: blackColor,
-                                                  ),
+                                (h * 0.01).addHSpace(),
+
+                                controller.trainingValues.isEmpty ||
+                                        controller.trainingController.isEmpty
+                                    ? const Text("")
+                                    : ListView.builder(
+                                        itemCount:
+                                            controller.trainingValues.length,
+                                        // itemCount:
+                                        //     1,
+                                        shrinkWrap: true,
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: h * 0.02),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          color: containerColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(13),
+                                                          border: Border.all(
+                                                              color: Colors.grey
+                                                                  .shade200,
+                                                              width: 2)),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 17),
+                                                      child: "${index + 1}"
+                                                          .semiBoldBarlowTextStyle(
+                                                              fontSize: 14),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Expanded(
+                                                      child:
+                                                          DropdownButtonFormField(
+                                                        value: controller
+                                                                .trainingValues[
+                                                            index],
+                                                        items: controller
+                                                            .trainingGivenList
+                                                            .map((e) {
+                                                          return DropdownMenuItem(
+                                                              value: e,
+                                                              child: Center(
+                                                                  child: Text(
+                                                                      "$e")));
+
+                                                          // child:
+                                                          //     Text("$e"));
+                                                        }).toList(),
+                                                        onChanged: (value) {
+                                                          controller
+                                                                  .trainingValues[
+                                                              index] = value;
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          filled: true,
+                                                          fillColor:
+                                                              containerColor
+                                                                  .withOpacity(
+                                                                      0.7),
+                                                          hintText: AppString
+                                                              .organization,
+                                                          hintStyle:
+                                                              textFieldTextStyle,
+                                                          contentPadding:
+                                                              EdgeInsets.symmetric(
+                                                                      horizontal: w *
+                                                                          0.045)
+                                                                  .copyWith(
+                                                                      top: h *
+                                                                          0.03),
+                                                          enabledBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            borderSide: BorderSide(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade200,
+                                                                width: 2),
+                                                          ),
+                                                          errorBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            borderSide:
+                                                                BorderSide(
+                                                              color: Colors
+                                                                  .red.shade600,
+                                                            ),
+                                                          ),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                          ),
+                                                          focusedBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            borderSide: BorderSide(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade200,
+                                                                width: 2),
+                                                          ),
+                                                        ),
+                                                        hint: Center(
+                                                          child: Text(
+                                                            AppString
+                                                                .organization,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style:
+                                                                textFieldTextStyle,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                isList: true,
-                                                validationText:
-                                                    "Please Enter Training Given Name"))
-                                      ],
-                                    );
-                                  },
-                                ),
+                                                inputTextField(w, h,
+                                                    controller: controller
+                                                            .trainingController[
+                                                        index],
+                                                    focusNode: controller
+                                                        .focusNodes[index],
+                                                    onChanged: (p0) {
+                                                  controller
+                                                      .getNonEmptyTextFieldsCount();
+                                                },
+                                                    suffixIcon: GestureDetector(
+                                                      onTap: () {
+                                                        if (controller
+                                                                .trainingController
+                                                                .length >
+                                                            1) {
+                                                          controller
+                                                              .trainingController
+                                                              .removeAt(index);
+                                                          controller.focusNodes
+                                                              .removeAt(index);
+                                                          controller
+                                                              .trainingValues
+                                                              .removeAt(index);
+                                                          controller.update();
+                                                          controller
+                                                              .getNonEmptyTextFieldsCount();
+                                                        }
+                                                      },
+                                                      child: Icon(
+                                                        Icons.remove,
+                                                        color: blackColor,
+                                                      ),
+                                                    ),
+                                                    isList: true,
+                                                    validationText: AppString
+                                                        .pleaseEnterTrainingGivenName),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
 
                                 ///Add Name Controller
 
@@ -356,6 +508,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                         FocusScope.of(context)
                                             .requestFocus(newFocusNode);
                                       });
+                                      controller.trainingValues.add(null);
                                       controller.update();
                                     },
                                     child: Container(
@@ -379,9 +532,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                   h,
                                   controller:
                                       controller.trainingStartController,
-                                  hintText: "Select Training Start Time :",
+                                  hintText: AppString.selectTrainingStartTime,
                                   isReadOnly: true,
-                                  validationText: "Please Enter Training Date",
+                                  validationText:
+                                      AppString.pleaseEnterTrainingDate,
                                   suffixIcon: Icon(
                                     Icons.watch_later_outlined,
                                     color: blackColor,
@@ -410,6 +564,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                       },
                                     );
 
+                                    print('startTime======>${startTime}');
+                                    log('startTime======>${startTime}');
+
                                     if (startTime != null) {
                                       controller.startTime = startTime;
                                       controller.trainingStartController.text =
@@ -427,9 +584,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                   w,
                                   h,
                                   controller: controller.trainingEndController,
-                                  hintText: "Select Training End Time :",
+                                  hintText: AppString.selectTrainingEndTime,
                                   isReadOnly: true,
-                                  validationText: "Please Enter Training Date",
+                                  validationText:
+                                      AppString.pleaseEnterTrainingDate,
                                   suffixIcon: Icon(
                                     Icons.watch_later_outlined,
                                     color: blackColor,
@@ -458,6 +616,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                       },
                                     );
 
+                                    print('endTime======>${endTime}');
+                                    log('endTime======>${endTime}');
+
                                     if (endTime != null) {
                                       if (controller.isTimeValid(
                                           endTime, controller.startTime)) {
@@ -480,10 +641,10 @@ class _AddReportScreenState extends State<AddReportScreen> {
 
                                 inputTextField(w, h,
                                     controller: controller.tDurationController,
-                                    hintText: "Total Duration :",
+                                    hintText: AppString.totalDuration,
                                     isReadOnly: true,
                                     validationText:
-                                        "Please Enter Total Duration"),
+                                        AppString.pleaseEnterTotalDuration),
                                 (h * 0.02).addHSpace(),
 
                                 ///Main Hours
@@ -491,9 +652,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                 inputTextField(w, h,
                                     controller: controller.tManHourController,
                                     isReadOnly: true,
-                                    hintText: "Total Manhours :",
+                                    hintText: AppString.totalManhours,
                                     validationText:
-                                        "Please Enter Total Manhours"),
+                                        AppString.pleaseEnterTotalManhours),
                                 (h * 0.02).addHSpace(),
 
                                 ///Description
@@ -501,8 +662,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                                 inputTextField(w, h,
                                     controller:
                                         controller.descriptionController,
-                                    hintText: "Description :",
-                                    validationText: "Please Enter Description",
+                                    hintText: AppString.descriptions,
+                                    validationText:
+                                        AppString.pleaseEnterDescription,
                                     maxLine: 5),
                                 (h * 0.02).addHSpace(),
 

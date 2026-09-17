@@ -1,7 +1,6 @@
 class CubeTestingModel {
   int? id;
   int? floorId;
-
   String srNo;
   String cubeId;
   String dateCasting;
@@ -64,7 +63,7 @@ class CubeTestingModel {
   /// JSON → MODEL
   factory CubeTestingModel.fromJson(Map<String, dynamic> json) {
     return CubeTestingModel(
-      id: json['id'] ?? json['record_id'],
+      id: json['id'],
       floorId: json['floor_id'],
       srNo: json['sr_no'] ?? "",
       cubeId: json['cube_id'] ?? "",
@@ -72,14 +71,10 @@ class CubeTestingModel {
       dateTesting: json['date_testing'] ?? "",
       gradeConcrete: json['grade_concrete'] ?? "",
       gradeValue: (json['grade_value'] ?? 0).toDouble(),
-      quantity: (json['quantity'] is num)
-          ? (json['quantity'] as num).toInt()
-          : (int.tryParse("${json['quantity']}") ?? 0),
+      quantity: json['quantity'] ?? 0,
       locationStructure: json['location_structure'] ?? "",
-      concreteSource: json['concrete_source'] ?? json['source_concrete'] ?? "",
-      ageDays: (json['age_days'] is num)
-          ? (json['age_days'] as num).toInt()
-          : (int.tryParse("${json['age_days']}") ?? 0),
+      concreteSource: json['concrete_source'] ?? "",
+      ageDays: json['age_days'] ?? 0,
       weight1: (json['weight1'] ?? 0).toDouble(),
       weight2: (json['weight2'] ?? 0).toDouble(),
       weight3: (json['weight3'] ?? 0).toDouble(),

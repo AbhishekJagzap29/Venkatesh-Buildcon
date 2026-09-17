@@ -645,6 +645,7 @@
 //   }
 // }
 
+
 //UPDATED THIS FILE FOR SOLVE WHITE SCREEN ISSUE 30/12
 // generate_nc_details_screen.dart
 import 'dart:convert';
@@ -778,7 +779,8 @@ class _GenerateNcDetailsScreenState extends State<GenerateNcDetailsScreen> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: AppString.generatencDetails.boldRobotoTextStyle(fontSize: 20),
+         backGroundColor: const Color(0xFF3498DB),
+        title: AppString.generatencDetails.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       floatingActionButton: const CommonBackToHomeButton(),
       body: SafeArea(

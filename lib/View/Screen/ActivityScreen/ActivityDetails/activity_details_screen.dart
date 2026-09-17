@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/constructor_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checklist_by_activity_res_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/notification_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
@@ -45,7 +44,9 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
       child: Scaffold(
         floatingActionButton: const CommonBackToHomeButton(),
         appBar: AppBarWidget(
-          title: AppString.activityDetails.boldRobotoTextStyle(fontSize: 20),
+                      backGroundColor: const Color(0xFF3498DB),
+
+          title: AppString.activityDetails.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
           onPressed: () {
             Get.back();
           },

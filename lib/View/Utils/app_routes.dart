@@ -1,18 +1,17 @@
+
 import 'package:get/get.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/fetch_observation_form_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/ActivityScreen/ActivityDetails/activity_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/ActivityScreen/EditActivity/edit_activity_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/ActivityScreen/EditActivity/history_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/Admin/admin_dashboard_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/Admin/admin_project_details_screen.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/ApproverActivityList/checklist_as_per_type_screen.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/ApproverActivityList/checklist_type_screen.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/ApproverActivityList/checklist_data_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/AuthScreen/forgot_password_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/AuthScreen/login_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/AuthScreen/register_screen.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/GenerateNc/generate_nc_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/GenerateNc/generated_nc_complete_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/filter_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/nc_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/nc_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/HomeScreen/home_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Notification/notification_filter_screen.dart';
@@ -24,6 +23,13 @@ import 'package:venkatesh_buildcon_app/View/Screen/CubeTestingScreen/cube_testin
 import 'package:venkatesh_buildcon_app/View/Screen/FlatFloorActivityScreen/flat_activity_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/FlatFloorActivityScreen/floor_activity_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/FlatFloorActivityScreen/pdf_view_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/add_observation_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/attachment_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/flat_sub_location_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/hqi_flat_list_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/hqi_tower_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/observation_history_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/HomeInscpection/site_visit_list_view_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/IntroScreen/intro_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/IntroScreen/splash_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/MaterialInspectionScreen/create_mi_screen.dart';
@@ -32,11 +38,11 @@ import 'package:venkatesh_buildcon_app/View/Screen/MaterialInspectionScreen/upda
 import 'package:venkatesh_buildcon_app/View/Screen/ProjectScreen/Checklist/project_checklist_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/ProjectScreen/Details/project_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/SavedActivityScren/show_offline_data_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/SavedActivityScren/show_save_activity_screen_new.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/SavedActivityScren/show_save_hqi_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/SavedActivityScren/show_saved_activity_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/TowerScreen/tower_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/bottom_bar.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/GenerateNc/generate_nc.dart';
-
 class Routes {
   static String splashScreen = "/";
   static String bottomBar = "/bottomBar";
@@ -60,32 +66,32 @@ class Routes {
   static String ncDetailsScreen = "/ncDetailsScreen";
   static String filterScreen = "/filterScreen";
   static String saveActivityScreen = "/saveActivityScreen";
+  static String saveActivityScreenNew = "/saveActivityScreenNew";
+  static String showSaveHQIScreen = "/ShowSaveHQIScreen";
   static String showOfflineDataScreen = "/showOfflineDataScreen";
+
   static String materialInspectionScreen = "/materialInspectionScreen";
-  static String createMaterialInspectionScreen =
-      "/createMaterialInspectionScreen";
-  static String updateMaterialInspectionScreen =
-      "/updateMaterialInspectionScreen";
+  static String createMaterialInspectionScreen = "/createMaterialInspectionScreen";
+  static String updateMaterialInspectionScreen = "/updateMaterialInspectionScreen";
   static String notificationFilterScreen = "/notificationFilterScreen";
   static String updatePasswordScreen = "/updatePasswordScreen";
   static String reportDetailScreen = "/reportDetailScreen";
-  static String checklistDataScreen = "/checklistDataScreen";
-  static String activityTypeScreen = "/activityTypeScreen";
-  static String checklistAsPerTypeScreen = "/checklistAsPerTypeScreen";
-  static String activityDetailsForNotificationScreen =
-      "/activityDetailsForNotificationScreen";
-  static String generateNcScreen = "/generateNcScreen";
-
-  static String generateNcDetailsScreen = "/generateNcDetailsScreen";
-  static String generateNcCompleteDetailsScreen =
-      "/generateNcCompleteDetailsScreen";
+  static String hqiFlatScreen = "/hqiFlatScreen";
+  static String hqiTowerDetailsScreen = "/hqiTowerDetailsScreen";
+  static String flatSubLocationScreen = "/flatSubLocationScreen";
+  static String addObservationScreen = "/addObservationScreen";
+  static String attachmentScreen = "/attachmentScreen";
+  static String siteVisitListViewScreen = '/siteVisitListViewScreen';
+  static String observationHistoryScreen = '/observationHistoryScreen';
+  static const generateNcScreen = '/generateNcScreen';
+  static const generateNcDetailsScreen = '/generateNcDetailsScreen';
+  static const String generateNcCompleteDetailsScreen = '/generateNcCompleteDetailsScreen';
 
   //11/03/2026 CUBE TESTING
   static String cubeRecordsScreen = "/cubeRecordsScreen";
   static String cubeTestingFormScreen = "/cubeTestingFormScreen";
   static String cubeDetailsScreen = "/cubeDetailsScreen";
 
-//
 
   static List<GetPage> routes = [
     GetPage(
@@ -125,7 +131,12 @@ class Routes {
     ),
     GetPage(
       name: towerDetailsScreen,
-      page: () => const TowerDetailsScreen(),
+      page: () => TowerDetailsScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: hqiTowerDetailsScreen,
+      page: () => HQITowerDetailsScreen(),
       transition: Transition.fadeIn,
     ),
     GetPage(
@@ -139,9 +150,50 @@ class Routes {
       transition: Transition.fadeIn,
     ),
     GetPage(
-        name: activityDetailsScreen,
-        page: () => const ActivityDetailsScreen(),
-        transition: Transition.fadeIn),
+      name: hqiFlatScreen,
+      page: () => const HQLFlatScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: flatSubLocationScreen,
+      page: () => const FlatSubLocationScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: addObservationScreen,
+      page: () => const AddObservationScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: Routes.attachmentScreen,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>;
+        return AttachmentDialogPopup(
+          observationId: args['observation_id'] ?? 0,
+          locationId: args['location_id'] ?? 0,
+          state: args['state'] ?? '',
+          sequence: args['sequence'] ?? 0,
+          visitDetails: args['visitDetails'] ?? VisitDetails(),
+          observationData: args['observationData'] ?? FetchObservationData(),
+          flatId: args['flatId'] ?? 0,
+          projectId: args['projectId'] ?? 0,
+          observationCategory: args['observationCategory'] ?? '',
+
+
+        );
+      },
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: Routes.siteVisitListViewScreen,
+      page: () => const SiteVisitListViewScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: activityDetailsScreen,
+      page: () => const ActivityDetailsScreen(),
+      transition: Transition.fadeIn,
+    ),
     GetPage(
       name: editActivityScreen,
       page: () => const EditActivityScreen(),
@@ -193,6 +245,16 @@ class Routes {
       transition: Transition.fadeIn,
     ),
     GetPage(
+      name: saveActivityScreenNew,
+      page: () => const SaveActivityScreenNew(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: showSaveHQIScreen,
+      page: () => const ShowSaveHQIScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
       name: showOfflineDataScreen,
       page: () => const ShowOfflineDataScreen(),
       transition: Transition.fadeIn,
@@ -228,45 +290,8 @@ class Routes {
       transition: Transition.fadeIn,
     ),
     GetPage(
-      name: checklistDataScreen,
-      page: () => ChecklistDataScreen(),
-      transition: Transition.fadeIn,
-    ),
-    GetPage(
-      name: activityTypeScreen,
-      page: () => ActivityTypeScreen(
-        patn_id: Get.arguments,
-        name: '',
-        activity_id: Get.arguments,
-      ),
-      transition: Transition.fadeIn,
-    ),
-    GetPage(
-        name: checklistAsPerTypeScreen,
-        page: () => ChecklistAsPerTypeScreen(
-              id: Get.arguments,
-              name: '',
-            ),
-        transition: Transition.fadeIn),
-    GetPage(
-        name: generateNcScreen,
-        page: () => GenerateNcScreen(
-            status: Get.arguments,
-            project_id: Get.arguments,
-            tower_id: Get.arguments,
-            projectresId: Get.arguments,
-            id: Get.arguments,
-            patn_id: Get.arguments,
-            activity_id: Get.arguments,
-            floor_id: Get.arguments,
-            flat_id: Get.arguments,
-            flag_category: Get.arguments,
-            description: Get.arguments),
-        transition: Transition.fadeIn),
-
-    GetPage(
-      name: generateNcDetailsScreen,
-      page: () => GenerateNcDetailsScreen(),
+      name: observationHistoryScreen,
+      page: () => const ObservationHistoryScreen(),
       transition: Transition.fadeIn,
     ),
 
@@ -274,36 +299,25 @@ class Routes {
       name: generateNcCompleteDetailsScreen,
       page: () => GenerateNcCompleteDetailsScreen(),
       transition: Transition.fadeIn,
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => NcController(), fenix: true);
+      }),
     ),
 
     //14/03/2026
 
     GetPage(
       name: cubeRecordsScreen,
-      page: () {
-        final args = Get.arguments is Map ? Get.arguments as Map : {};
-        final rawProj = args['projectInfoId'] ?? args['projectId'] ?? args['pId'];
-        final rawTower = args['projectTowerId'] ?? args['towerId'];
-        return CubeRecordsScreen(
-          floorId: args['floorId'],
-          projectInfoId: rawProj != null ? int.tryParse(rawProj.toString()) : null,
-          projectTowerId: rawTower != null ? int.tryParse(rawTower.toString()) : null,
-        );
-      },
+      page: () => CubeRecordsScreen(
+        floorId: Get.arguments['floorId'],
+      ),
     ),
 
     GetPage(
       name: cubeTestingFormScreen,
-      page: () {
-        final args = Get.arguments is Map ? Get.arguments as Map : {};
-        final rawProj = args['projectInfoId'] ?? args['projectId'] ?? args['pId'];
-        final rawTower = args['projectTowerId'] ?? args['towerId'];
-        return CubeTestingFormScreen(
-          floorId: args['floorId'],
-          projectInfoId: rawProj != null ? int.tryParse(rawProj.toString()) : null,
-          projectTowerId: rawTower != null ? int.tryParse(rawTower.toString()) : null,
-        );
-      },
+      page: () => CubeTestingFormScreen(
+        floorId: Get.arguments['floorId'],
+      ),
     ),
 
    GetPage(
@@ -318,11 +332,5 @@ class Routes {
   },
   transition: Transition.fadeIn,
 ),
-// GetPage(
-//       name: cubeDetailsScreen,
-//       page: () => cubeDetailsScreen(),
-//       transition: Transition.fadeIn,
-//     ),
-
   ];
 }

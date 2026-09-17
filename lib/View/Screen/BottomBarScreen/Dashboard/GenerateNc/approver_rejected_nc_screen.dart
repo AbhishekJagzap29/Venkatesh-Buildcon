@@ -1,10 +1,11 @@
-//UPDATED CODE 28/11 12.00AM
+
 import 'package:flutter/material.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/fetch_allnc_data_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
+
 import 'generated_nc_complete_details_screen.dart';
 
 class ApproverRejectedNcScreen extends StatelessWidget {
@@ -24,7 +25,9 @@ class ApproverRejectedNcScreen extends StatelessWidget {
       //   title: const Text("Approver Rejected NCs"),
       // ),
       appBar: AppBarWidget(
-        title: AppString.generatencDetails.boldRobotoTextStyle(fontSize: 20),
+                            backGroundColor: const Color(0xFF3498DB),
+
+        title: AppString.generatencDetails.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       body: rejectedList.isEmpty
           ? const Center(child: Text("No approver rejected NCs found"))

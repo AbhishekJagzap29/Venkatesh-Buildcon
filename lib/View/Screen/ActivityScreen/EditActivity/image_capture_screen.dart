@@ -118,6 +118,8 @@ class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
         child: Scaffold(
           backgroundColor: backGroundColor,
           appBar: AppBarWidget(
+                                           backGroundColor: const Color(0xFF3498DB),
+
             leadingIcon: IconButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -125,13 +127,14 @@ class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
               icon: Padding(
                 padding: EdgeInsets.only(left: w * 0.03),
                 child: const Icon(Icons.arrow_back_ios,
-                    size: 22, color: Colors.black),
+                    size: 22, color: Colors.white),
               ),
             ),
             centerTitle: true,
             title: Padding(
+              
               padding: EdgeInsets.only(top: h * 0.012),
-              child: widget.title.boldRobotoTextStyle(fontSize: 20),
+              child: widget.title.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
             ),
           ),
           body: Stack(

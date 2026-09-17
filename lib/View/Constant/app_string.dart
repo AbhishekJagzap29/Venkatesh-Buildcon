@@ -1,3 +1,4 @@
+
 import 'package:venkatesh_buildcon_app/View/Constant/app_assets.dart';
 
 class AppString {
@@ -41,6 +42,8 @@ class AppString {
   static const searchProject = "Search Project";
   static const searchTower = "Search Tower";
   static const searchActivity = "Search Activity";
+  static const searchLocation = "Search Locations";
+
   static const projectNameTitle = "Project Name - 1";
   static const projectName = "Project Name";
   static const locationName = "Location";
@@ -58,14 +61,16 @@ class AppString {
   static const pending = "Pending";
   static const completed = "Completed";
   static const trainingGiven = "Training Given to";
-  static const checklistdata = "Checklist Data";
-  static const checklisttype = "Checklist Type";
-  static const checklistdataaspertype = "checklist Data";
 
   static const flat = "FLAT";
+  static const flats = "FLATS";
   static const floor = "FLOOR";
+  static const common = "COMMON";
+  static const development = "DEVELOPMENT";
   static const towerName = "Tower A";
   static const activities = "Activities";
+  static const locations = "Locations";
+
   static const lastUpdateTime = "Last Updated : ";
   static const createdAt = "Created At : ";
   static const dummyActivityName = "Activity Name Here";
@@ -80,7 +85,7 @@ class AppString {
   static const submitted = "You have already submitted this checklist";
   static const rejected = "You have rejected this checklist";
   static const reject = "Send Back";
-  static const saveAsDraft = "Save as draft";
+  static const saveAsDraft = "Save as Draft";
   static const save = "Save";
   static const clear = "Clear";
   static const apply = "Apply";
@@ -112,10 +117,11 @@ class AppString {
   static const workInspection = "Work Inspection";
   static const materialInspectionReport = "Material Inspection Report";
   static const flatActivity = "Flat Activity";
+  static const sitevisit = "Site Visit 1";
   static const viewPdf = "View Pdf";
   static const floorActivity = "Floor Activity";
+  static const commonActivity = "Common Activity";
   static const activityDetails = "Activity Details";
-  static const activityDetailsForNotification = "Activity Details 1";
   static const downloadPdf = "View Pdf";
   static const replicateAct = "Replicate Activity";
   static const deleteActivity = "Delete Activity";
@@ -131,9 +137,7 @@ class AppString {
   static const overAllRemark = "Overall Remark";
   static const overAllImage = "Overall Image";
   static const noImage = "No Images";
-  
-  // static const totalNc = "Total NC";
-  static const totalNc = "NC ";
+  static const totalNc = "Total NC";
   static const yellowCard = "Yellow Card";
   static const orangeCard = "Orange Card";
   static const redCard = "Red Card";
@@ -146,22 +150,49 @@ class AppString {
   static const generatenc = "Generate Nc";
   static const generatencDetails = "NC Details";
   static const generatenccompleteDetails = "Complete Details";
-  static const flagCategory = "Flag Category";
-  // ===== NC DETAIL SCREEN STRINGS =====
-static const checkerApproverRemarks = "Checker/Approver Remarks";
-static const checkerApproverImages = "Checker/Approver Images";
 
-static const makerRemarks = "Maker Remarks";
-static const makerImages = "Maker Images";
+  static const logout = "Logout";
+  static const name = "Name";
+  static const username = "Username";
+  static const userType = "User Type";
+  static const enterPassword = "Enter Password";
+  static const selectTrainingDate = "Select Training Date :";
+  static const pleaseSelectTrainingDate = "Please Select Training Date";
+  static const topicOfTraining = "Topic of Training :";
+  static const pleaseEnterTopicOfTraining = "Please Enter Topic of Training";
+  static const location = "Location";
+  static const pleaseEnterLocation = "Please Enter Location";
+  static const trainerName = "Trainer Name :";
+  static const pleaseEnterTrainerName = "Please Enter Trainer Name";
+  static const organization = "Organization";
+  static const pleaseEnterTrainingGivenName =
+      "Please Enter Training Given Name";
+  static const selectTrainingStartTime = "Select Training Start Time :";
+  static const pleaseEnterTrainingDate = "Please Enter Training Date";
+  static const selectTrainingEndTime = "Select Training End Time :";
+  static const totalDuration = "Total Duration :";
+  static const pleaseEnterTotalDuration = "Please Enter Total Duration";
+  static const totalManhours = "Total Manhours :";
+  static const pleaseEnterTotalManhours = "Please Enter Total Manhours";
+  static const descriptions = "Description :";
+  static const pleaseEnterDescription = "Please Enter Description";
+  static const editReport = "Edit Report";
+  static const noTrainingDataFound = "No Training Data Found";
+  static const pleaseEnterTrainingGivenTag = "Please Enter Training Given Tag";
+  static const observation = "Observations";
+  static const addobservation = "Add Observation";
+  static const attachment = "Attachment";
+  static const sitevisits = "Site Visits";
+  static const sitevisit2 = "Site Visit 2";
+  static const history = "Observation History";
 
-static const approverRemarks = "Approver Remarks";
-static const approverImages = "Approver Images";
 
-
+  
   static const overAllRemarkbym = "Overall Remarks By Maker";
   static const overAllRemarkbyc = "Overall Remarks By Checker";
   static const overAllRemarkbya = "Overall Remarks By Approver";
   static const imagedes = "Image Description";
+
 }
 
 List<String> onBoardTitle = [

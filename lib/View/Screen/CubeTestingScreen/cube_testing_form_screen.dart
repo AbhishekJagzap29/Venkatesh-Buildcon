@@ -54,7 +54,7 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
   final TextEditingController locationController = TextEditingController();
   final Map<String, String> fieldErrors = {};
 
-  bool isLoading = false; 
+  bool isLoading = false;
 
   /// -------- MULTI CUBE CONTROLLERS --------
   List<TextEditingController> cubeIds =
@@ -410,63 +410,64 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
   /// ----------- SUBMIT -----------
   Future<void> submitCubeRecord() async {
-  if (!_validateForm()) {
-    errorSnackBar("Validation", "Please fill all required fields");
-    return;
-  }
+    if (!_validateForm()) {
+      errorSnackBar("Validation", "Please fill all required fields");
+      return;
+    }
 
-  setState(() {
-    isLoading = true; // START LOADING
-  });
+    setState(() {
+      isLoading = true; // START LOADING
+    });
 
-  final cubeLines = List.generate(3, (i) {
-    return {
-      "cube_no": cubeIds[i].text.trim(),
-      "length": double.tryParse(lengths[i].text) ?? 0,
-      "breadth": double.tryParse(breadths[i].text) ?? 0,
-      "height": double.tryParse(heights[i].text) ?? 0,
-      "weight": double.tryParse(weights[i].text) ?? 0,
-      "load": double.tryParse(loads[i].text) ?? 0,
+    final cubeLines = List.generate(3, (i) {
+      return {
+        "cube_no": cubeIds[i].text.trim(),
+        "length": double.tryParse(lengths[i].text) ?? 0,
+        "breadth": double.tryParse(breadths[i].text) ?? 0,
+        "height": double.tryParse(heights[i].text) ?? 0,
+        "weight": double.tryParse(weights[i].text) ?? 0,
+        "load": double.tryParse(loads[i].text) ?? 0,
+      };
+    }).toList();
+
+    final userId =
+        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ??
+            0;
+
+    Map<String, dynamic> body = {
+      "user_id": userId,
+      "sr_no": srNoController.text.trim(),
+      "project_info_id": resolvedProjectInfoId,
+      "project_tower_id": resolvedProjectTowerId,
+      "floor_id": widget.floorId,
+      "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
+      "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
+      "grade_concrete": grade,
+      "grade_value": gradeValue,
+      "quantity": double.tryParse(quantityController.text) ?? 0,
+      "location_structure": locationController.text.trim(),
+      "source_concrete": sourceController.text.trim(),
+      "age_days": ageDays,
+      "cube_lines": cubeLines,
+      "avg_strength": avgStrength,
+      "strength_percent": strengthPercent
     };
-  }).toList();
 
-  final userId =
-      int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
+    final response = await cubeRepo.createRecord(body);
 
-  Map<String, dynamic> body = {
-    "user_id": userId,
-    "sr_no": srNoController.text.trim(),
-    "project_info_id": resolvedProjectInfoId,
-    "project_tower_id": resolvedProjectTowerId,
-    "floor_id": widget.floorId,
-    "date_casting": DateFormat("yyyy-MM-dd").format(castingDate!),
-    "date_testing": DateFormat("yyyy-MM-dd").format(testingDate!),
-    "grade_concrete": grade,
-    "grade_value": gradeValue,
-    "quantity": double.tryParse(quantityController.text) ?? 0,
-    "location_structure": locationController.text.trim(),
-    "source_concrete": sourceController.text.trim(),
-    "age_days": ageDays,
-    "cube_lines": cubeLines,
-    "avg_strength": avgStrength,
-    "strength_percent": strengthPercent
-  };
+    if (!mounted) return;
 
-  final response = await cubeRepo.createRecord(body);
+    setState(() {
+      isLoading = false; // STOP LOADING
+    });
 
-  if (!mounted) return;
-
-  setState(() {
-    isLoading = false; // STOP LOADING
-  });
-
-  if (response != null) {
-    successSnackBar("Success", "Cube record created successfully");
-    Navigator.pop(context, true);
-  } else {
-    errorSnackBar("Error", "Failed to create cube record");
+    if (response != null) {
+      successSnackBar("Success", "Cube record created successfully");
+      Navigator.pop(context, true);
+    } else {
+      errorSnackBar("Error", "Failed to create cube record");
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -476,7 +477,9 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
       backgroundColor: backGroundColor,
       floatingActionButton: const CommonBackToHomeButton(),
       appBar: AppBarWidget(
-        title: "Cube Testing Form".boldRobotoTextStyle(fontSize: 20),
+        backGroundColor: const Color(0xFF3498DB),
+        title: "Cube Testing Form"
+            .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: w * 0.06),
@@ -487,9 +490,47 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
 
             textField("Sr. No", srNoController, fieldKey: "sr_no"),
 
+            // buildDateField("Date of Casting", castingDate, () => pickDate(true),
+            //     fieldKey: "date_casting"),
             buildDateField(
-                "Date of Casting", castingDate, () => pickDate(true),
-                fieldKey: "date_casting"),
+  "Date of Casting",
+  castingDate,
+  () async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(3000),
+      initialDate: castingDate ?? DateTime.now(),
+      currentDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: blackColor.withOpacity(0.9),
+              onPrimary: Colors.white,
+              onSurface: blackColor.withOpacity(0.9),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        castingDate = selectedDate;
+      });
+    }
+  },
+  fieldKey: "date_casting",
+),
+
+
 
             dropdownField(
               "Grade of Concrete",
@@ -526,10 +567,47 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
             textField("Concrete Source", sourceController,
                 fieldKey: "source_concrete"),
 
-            buildDateField(
-                "Date of Testing", testingDate, () => pickDate(false),
-                fieldKey: "date_testing"),
+            // buildDateField(
+            //     "Date of Testing", testingDate, () => pickDate(false),
+            //     fieldKey: "date_testing"),
 
+buildDateField(
+  "Date of Testing",
+  testingDate,
+  () async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(3000),
+      initialDate: testingDate ?? DateTime.now(),
+      currentDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: blackColor.withOpacity(0.9),
+              onPrimary: Colors.white,
+              onSurface: blackColor.withOpacity(0.9),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        testingDate = selectedDate;
+      });
+    }
+  },
+  fieldKey: "date_testing",
+),
             "Age (Days): $ageDays".boldRobotoTextStyle(fontSize: 16),
 
             const SizedBox(height: 20),
@@ -552,29 +630,29 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
             const SizedBox(height: 30),
 
             GestureDetector(
-  onTap: isLoading ? null : submitCubeRecord,
-  child: Container(
-    height: 55,
-    decoration: BoxDecoration(
-      color: isLoading ? Colors.grey : Colors.black,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Center(
-      child: isLoading
-          ? const CircularProgressIndicator(
-              color: Colors.white,
-            )
-          : const Text(
-              "Submit",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.white,
+              onTap: isLoading ? null : submitCubeRecord,
+              child: Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  color: isLoading ? Colors.grey : Colors.black,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          "Submit",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
               ),
             ),
-    ),
-  ),
-),
 
             const SizedBox(height: 100),
           ],

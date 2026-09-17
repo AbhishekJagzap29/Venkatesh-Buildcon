@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+
+
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_report_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_tower_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/success_data_res_model.dart';
@@ -65,5 +67,19 @@ class ReportRepo {
         GetReportResponseModel.fromJson(response);
     log('getReportResponseModel --- response>> $response');
     return getReportResponseModel;
+  }
+
+  Future<dynamic> updateReportRepo(Map<String, dynamic> body) async {
+    var response = await APIService().getResponse(
+        url: ApiRouts.updateReport,
+        apiType: APIType.aPost,
+        body: body,
+        header: header1);
+
+    SuccessDataResponseModel successDataResponseModel =
+    SuccessDataResponseModel.fromJson(response);
+    log('updateReportRepo --- response>> $response');
+
+    return successDataResponseModel;
   }
 }

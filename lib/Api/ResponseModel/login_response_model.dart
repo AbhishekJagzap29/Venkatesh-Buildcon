@@ -40,7 +40,9 @@ class LoginResponseModel {
   bool? odoobotInitialized;
   Session? session;
   String? profileImage;
-  String? userType;
+//  String? userType;
+List<String>? userType;
+
   bool? del_activity_users;
 
   LoginResponseModel({
@@ -114,7 +116,16 @@ class LoginResponseModel {
         odoobotInitialized: json["odoobot_initialized"],
         session: json["session"] == null ? null : Session.fromJson(json["session"]),
         profileImage: json["profile_image"].toString(),
-        userType: json["user_type"].toString(),
+      //  userType: json["user_type"].toString(),
+    userType: () {
+  final userTypeJson = json["user_type"];
+  if (userTypeJson == null) return <String>[];
+  if (userTypeJson is String) return [userTypeJson]; 
+  if (userTypeJson is List) return List<String>.from(userTypeJson.map((x) => x.toString())); 
+  return <String>[];
+}(),
+
+
         del_activity_users: json["del_activity_users"] ?? false,
       );
 
@@ -151,7 +162,9 @@ class LoginResponseModel {
         "odoobot_initialized": odoobotInitialized,
         "session": session?.toJson(),
         "profile_image": profileImage,
-        "user_type": userType,
+      //  "user_type": userType,
+        "user_type": userType == null ? [] : List<dynamic>.from(userType!.map((x) => x)),
+
         "del_activity_users": del_activity_users,
       };
 }

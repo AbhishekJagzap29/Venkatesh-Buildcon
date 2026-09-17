@@ -5,6 +5,7 @@ import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/responsive.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
 
+
 class AppTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
@@ -52,13 +53,13 @@ class AppTextField extends StatelessWidget {
             offset: const Offset(-1, -1),
             blurRadius: 2,
             color: Colors.grey.shade200,
-           // inset: true,
+            inset: true,
           ),
           BoxShadow(
             offset: const Offset(1, 1),
             blurRadius: 2,
             color: Colors.grey.shade200,
-            //inset: true,
+            inset: true,
           ),
         ],
       ),
@@ -132,13 +133,13 @@ class InnerShadowContainer extends StatelessWidget {
             offset: const Offset(-1, -1),
             blurRadius: 2,
             color: Colors.grey.shade200,
-           // inset: true,
+            inset: true,
           ),
           BoxShadow(
             offset: const Offset(1, 1),
             blurRadius: 2,
             color: Colors.grey.shade200,
-          //  inset: true,
+            inset: true,
           ),
         ],
       ),

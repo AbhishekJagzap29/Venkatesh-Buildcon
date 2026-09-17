@@ -28,7 +28,6 @@ class ReportController extends GetxController {
       TextEditingController(text: TimeOfDay.now().format(Get.context!));
   TextEditingController trainingEndController =
       TextEditingController(text: TimeOfDay.now().format(Get.context!));
-  List<TextEditingController> trainingController = [];
   List<FocusNode> focusNodes = [];
   TextEditingController topicController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -41,10 +40,16 @@ class ReportController extends GetxController {
   List<TowerDatum>? towerData = [];
   List<r.TowerDatum>? towerDataList;
   r.TowerDatum? selectedTowerData;
+  r.TowerDatum? selectedTowerDetail;
   TimeOfDay startTime = TimeOfDay.now();
   TimeOfDay endTime = TimeOfDay.now();
   Duration? difference;
   ProjectDetails? selectProject;
+  List<TextEditingController> trainingController = [];
+  List<dynamic> trainingValues = [];
+  List trainingGivenList = ['Contractor', 'Dreamwarez'];
+  DateFormat _dateFormat = DateFormat("h:mm a");
+
   changeProject(ProjectDetails value) {
     selectProject = value;
     getTowerData();
@@ -53,6 +58,7 @@ class ReportController extends GetxController {
   }
 
   TowerDatum? selectTower;
+
   changeTower(TowerDatum value) {
     selectTower = value;
     update();
@@ -61,11 +67,12 @@ class ReportController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    for (int i = 0; i < 1; i++) {
-      trainingController.add(TextEditingController());
-      focusNodes.add(FocusNode());
-    }
-    getReportData();
+    //  for (int i = 0; i < 1; i++) {
+    //    trainingController.add(TextEditingController());
+    //    focusNodes.add(FocusNode());
+    //    trainingValues.add(null);
+    //  }
+    //  getReportData();
     super.onInit();
   }
 
@@ -77,6 +84,7 @@ class ReportController extends GetxController {
     DateTime endDateTime =
         DateTime(now.year, now.month, now.day, endTime.hour, endTime.minute);
     difference = endDateTime.difference(startDateTime);
+    log('difference====calculateTimeOfDayDifference==>$difference');
     tDurationController.text =
         "${difference!.inHours} Hour : ${difference!.inMinutes % 60} Minutes";
     getNonEmptyTextFieldsCount();
@@ -90,13 +98,15 @@ class ReportController extends GetxController {
         .length;
 
     if (difference != null) {
-      int hour = difference!.inHours * length;
-      int minutes = (difference!.inMinutes % 60) * length;
-      if (minutes >= 60) {
-        hour += 1;
-        minutes = minutes - 60;
-      }
+      int minutes =
+          (((difference!.inHours * 60) + difference!.inMinutes % 60) * length) %
+              60;
+
+      int hour = (((difference!.inHours * 60) + difference!.inMinutes % 60) *
+              length) ~/
+          60;
       tManHourController.text = "$hour.$minutes";
+      print('Added tManHourController values======>${tManHourController.text}');
     }
     update();
   }
@@ -145,7 +155,6 @@ class ReportController extends GetxController {
         return value;
       }
     });
-
     update();
   }
 
@@ -156,7 +165,6 @@ class ReportController extends GetxController {
   }
 
   ///Get Report Data
-
   ApiResponse _getReportResponse =
       ApiResponse.initial(message: 'Initialization');
 
@@ -167,8 +175,9 @@ class ReportController extends GetxController {
     try {
       ///Request Body
       Map<String, dynamic> reqBody = {
-        "user_id":
-            int.parse(preferences.getString(SharedPreference.userId).toString())
+        "user_id": int.parse(
+            preferences.getString(SharedPreference.userId).toString()),
+        ////// "projectId" : projectId
       };
       r.GetReportResponseModel getReportResponseModel =
           await ReportRepo().getReportRepo(body: reqBody);
@@ -188,12 +197,10 @@ class ReportController extends GetxController {
       _getReportResponse = ApiResponse.error(message: e.toString());
       log("Get Report ERROR=>$e");
     }
-
     update();
   }
 
   ///Get Tower Data
-
   ApiResponse _getTowerResponse =
       ApiResponse.initial(message: 'Initialization');
 
@@ -244,10 +251,11 @@ class ReportController extends GetxController {
     difference = null;
     trainingController.clear();
     focusNodes.clear();
-    for (int i = 0; i < 1; i++) {
-      trainingController.add(TextEditingController());
-      focusNodes.add(FocusNode());
-    }
+    trainingValues.clear();
+    // for (int i = 0; i < 1; i++) {
+    //   trainingController.add(TextEditingController());
+    //   focusNodes.add(FocusNode());
+    // }
     update();
   }
 
@@ -263,7 +271,11 @@ class ReportController extends GetxController {
         errorSnackBar("Required Field", 'Please select project');
       } else if (selectTower == null) {
         errorSnackBar("Required Field", 'Please select tower');
-      } else {
+      }
+      // else if (overallImages.isEmpty) {
+      //   errorSnackBar("Required Field", 'Please upload image');
+      //}
+      else {
         _addReportResponse = ApiResponse.loading(message: 'Loading');
 
         ///training Date
@@ -293,6 +305,20 @@ class ReportController extends GetxController {
           update();
         }
 
+        List<Map<String, dynamic>> data = [];
+        for (int i = 0; i < trainingValues.length; i++) {
+          if (trainingValues[i] == "" ||
+              trainingValues[i] == null && trainingController[i].text == "") {
+          } else {
+            data.add({
+              "tag": trainingValues[i].toString() == "Contractor"
+                  ? "contractor"
+                  : "vjd",
+              "name": trainingController[i].text
+            });
+          }
+        }
+
         ///Request Body
         Map<String, dynamic> reqBody = {
           "user_id": int.parse(
@@ -303,25 +329,30 @@ class ReportController extends GetxController {
           "training_topic": topicController.text.trim(),
           "location": locationController.text.trim(),
           "trainer_name": tNameController.text.trim(),
-          "training_given_to": trainingController
-              .map((controller) => controller.text.trim())
-              .toList(),
+          // "training_given_to": trainingController
+          //     .map((controller) => controller.text.trim())
+          //     .toList(),
+          "training_given_to": data,
           "start_time": trainingStartController.text.trim(),
           "end_time": trainingEndController.text.trim(),
           "total_duration": tDurationController.text.trim(),
           "total_manhours":
               "${tManHourController.text.toString().split(".").first} Hour : ${tManHourController.text.toString().split(".").last} Minutes",
           "description": descriptionController.text.trim(),
+
           "overall_images":
               overallImageListData.isEmpty ? [] : overallImageListData
         };
 
         log("reqBody===================${reqBody}");
+
         SuccessDataResponseModel successDataResponseModel =
             await ReportRepo().addCheckerReportRepo(body: reqBody);
         if (successDataResponseModel.status == "SUCCESS") {
           clearData();
           Get.back();
+          successSnackBar("New Training Report Added",
+              successDataResponseModel.message ?? "");
           getReportData();
         } else {
           errorSnackBar(
@@ -334,6 +365,95 @@ class ReportController extends GetxController {
       log("Add Report ERROR=>$e");
     }
 
+    update();
+  }
+
+  ///Update Report Detail
+  ApiResponse _updateReportResponse =
+      ApiResponse.initial(message: 'Initialization');
+
+  ApiResponse get updateReportResponse => _updateReportResponse;
+
+  Future<void> updateReportDetail(
+      List<String>? overallImages,
+      DateTime trainingDateData,
+      int trainingId,
+      int projectId,
+      int towerId) async {
+    try {
+      _updateReportResponse = ApiResponse.loading(message: 'Loading');
+      List overallImageListData = [];
+      if (overallImages != null) {
+        for (var element in overallImages) {
+          overallImageListData.add(element);
+          update();
+        }
+      }
+      List<Map<String, dynamic>> data = [];
+      for (int i = 0; i < trainingValues.length; i++) {
+        if (trainingValues[i] == "" ||
+            trainingValues[i] == null && trainingController[i].text == "" ||
+            trainingController[i].text.isEmpty) {
+        } else {
+          data.add({
+            "tag": trainingValues[i].toString() == "Contractor"
+                ? "contractor"
+                : "vjd",
+            "name": trainingController[i].text
+          });
+        }
+      }
+
+      ///Request Body
+      Map<String, dynamic> reqBody = {
+        "training_report_id": trainingId,
+        "user_id": int.parse(
+            preferences.getString(SharedPreference.userId).toString()),
+        "project_id": projectId,
+        "tower_id": towerId,
+        "training_date": DateFormat('yyyy-MM-dd').format(trainingDateData),
+        "training_topic": topicController.text.trim(),
+        "location": locationController.text.trim(),
+        "trainer_name": tNameController.text.trim(),
+        "training_given_to": data,
+        "start_time": _dateFormat
+            .format(
+                DateFormat('HH:mm').parse(trainingStartController.text.trim()))
+            .toString(),
+        "end_time": _dateFormat
+            .format(
+                DateFormat('HH:mm').parse(trainingEndController.text.trim()))
+            .toString(),
+        "total_duration": tDurationController.text.trim(),
+        "total_manhours":
+            "${tManHourController.text.toString().split(".").first} Hour : ${tManHourController.text.toString().split(".").last} Minutes",
+        "description": descriptionController.text.trim(),
+        // "overall_images":
+        //     overallImageListData.isEmpty ? [] : overallImageListData
+      };
+
+      log("reqBody===================${reqBody}");
+
+      SuccessDataResponseModel successDataResponseModel =
+          await ReportRepo().updateReportRepo(reqBody);
+      if (successDataResponseModel.status == "SUCCESS") {
+        data.clear();
+        overallImageListData.clear();
+        clearData();
+        Get.back();
+        Get.back();
+        successSnackBar(
+            "Training Report Updated", successDataResponseModel.message ?? "");
+        getReportData();
+      } else {
+        errorSnackBar(
+            "Something Went Wrong", successDataResponseModel.message ?? "");
+      }
+      _updateReportResponse = ApiResponse.complete(successDataResponseModel);
+    } catch (e) {
+      _updateReportResponse = ApiResponse.error(message: e.toString());
+      log("Update Report ERROR=>$e");
+    }
     update();
   }
 }

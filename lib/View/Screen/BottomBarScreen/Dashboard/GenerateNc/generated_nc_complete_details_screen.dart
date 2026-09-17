@@ -28,6 +28,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:dio/dio.dart';
 
+
 class GenerateNcCompleteDetailsScreen extends StatefulWidget {
   final String? projectId;
   final String? towerId;
@@ -542,8 +543,14 @@ class _GenerateNcCompleteDetailsScreenState
       children: [
         Scaffold(
           appBar: AppBarWidget(
-            title: widget.flagCategory?.boldRobotoTextStyle(fontSize: 20),
-          ),
+             backGroundColor: const Color(0xFF3498DB),
+          title: Text(
+  widget.flagCategory ?? '',
+  style: const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  ),
+)),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(

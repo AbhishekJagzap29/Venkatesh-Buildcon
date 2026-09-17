@@ -61,8 +61,8 @@ class _FlatActivityScreenState extends State<FloorActivityScreen> {
       child: Scaffold(
         backgroundColor: backGroundColor,
         appBar: AppBarWidget(
-          title: AppString.floorActivity.boldRobotoTextStyle(fontSize: 20),
-        ),
+                   backGroundColor: const Color(0xFF3498DB),
+            title: AppString.floorActivity.boldRobotoTextStyle(fontSize: 20,fontColor: Colors.white)),
         floatingActionButton: const CommonBackToHomeButton(),
         body: SafeArea(
           child: GetBuilder<FlatFloorActivityController>(
@@ -160,7 +160,7 @@ class _FlatActivityScreenState extends State<FloorActivityScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              'Total Checklist             :  '
+                                              'Total Checklists           :  '
                                                   .boldRobotoTextStyle(
                                                       fontSize: 12),
                                               (flatFloorData?.totalCount ?? '0')

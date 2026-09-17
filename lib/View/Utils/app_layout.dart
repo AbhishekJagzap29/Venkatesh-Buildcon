@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 
 successSnackBar(
   String title,
@@ -63,7 +62,7 @@ errorSnackBar(
       messageText: Text(
         error,
         style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400),
-      ), 
+      ),
       borderWidth: 2.5,
       borderColor: Colors.red.shade800,
       duration: const Duration(seconds: 2),

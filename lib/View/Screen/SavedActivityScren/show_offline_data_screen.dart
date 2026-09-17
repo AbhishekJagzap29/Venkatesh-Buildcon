@@ -1,11 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:get/get.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_assets.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/responsive.dart';
-import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
+import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
+import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
 
 class ShowOfflineDataScreen extends StatefulWidget {
   const ShowOfflineDataScreen({super.key});
@@ -25,8 +28,9 @@ class _ShowOfflineDataScreenState extends State<ShowOfflineDataScreen> {
       child: Scaffold(
         backgroundColor: backGroundColor,
         appBar: AppBarWidget(
-            title:
-                AppString.projectsChecklist.boldRobotoTextStyle(fontSize: 20)),
+            backGroundColor: const Color(0xFF3498DB),
+            title: AppString.projectsChecklist
+                .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white)),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: w * 0.06),
           child: Column(
@@ -36,74 +40,6 @@ class _ShowOfflineDataScreenState extends State<ShowOfflineDataScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(w * 0.035),
-                        margin: EdgeInsets.only(bottom: h * 0.025),
-                        decoration: BoxDecoration(
-                          color: containerColor,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: const Color(0xffE6E6E6),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                Center(
-                                  child: Container(
-                                    height: Responsive.isDesktop(context)
-                                        ? h * 0.37
-                                        : Responsive.isTablet(context)
-                                            ? h * 0.275
-                                            : h * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: networkImageShimmer(
-                                      h: h * 0.25,
-                                      w: w,
-                                      url:
-                                          "controller.projectDetailsRes?.projectData?.imageUrl}"
-                                              .toString(),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(7),
-                                    child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: CircleAvatar(
-                                        backgroundColor: greenColor,
-                                        radius: 8,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    top: h * 0.017, bottom: h * 0.012),
-                                child: StepProgressIndicator(
-                                  totalSteps: 5,
-                                  roundedEdges: const Radius.circular(10),
-                                  currentStep: 3, //controller.count,
-                                  unselectedSize: h * 0.007,
-                                  size: h * 0.007,
-                                  selectedColor: greenColor,
-                                  unselectedColor: lightGreyColor,
-                                )),
-                            "controller.projectDetailsRes?.projectData?.projectName}"
-                                .toString()
-                                .boldRobotoTextStyle(fontSize: 14),
-                            AppString.locationName.regularRobotoTextStyle(
-                                fontSize: 13, fontColor: greyTextColor)
-                          ],
-                        ),
-                      ),
                       // if (controller.projectDetailsRes?.projectData
                       //         ?.checklistData?.isEmpty ??
                       //     false)
@@ -141,6 +77,11 @@ class _ShowOfflineDataScreenState extends State<ShowOfflineDataScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
+                              log("ON_TAP CALLED");
+                              index == 0
+                                  ? Get.toNamed(Routes.saveActivityScreenNew)
+                                  : Get.toNamed(Routes.showSaveHQIScreen);
+
                               // preferences.putString(
                               //     SharedPreference.projectId, controller.projectId);
                               // Get.toNamed(Routes.projectDetailsScreen,
@@ -180,17 +121,28 @@ class _ShowOfflineDataScreenState extends State<ShowOfflineDataScreen> {
                                         fit: BoxFit.cover,
                                         h: h * 0.25,
                                         w: w,
-                                        url:
-                                            "controller.projectDetailsRes?.projectData?.checklistData?[index].image}"
+                                        url: index == 0
+                                            // ? "http://146.190.140.251:8069/web/image?model=project.details&field=image&id=99".toString()
+                                            // : "http://146.190.140.251:8069/web/image?model=project.details&field=image&id=122".toString(),
+
+                                            ? "http://157.245.102.113:8079/web/image?model=project.details&field=image&id=99"
+                                                .toString()
+                                            : "http://157.245.102.113:8079/web/image?model=project.details&field=image&id=157"
                                                 .toString(),
                                       )),
-                                  "controller.projectDetailsRes?.projectData?.checklistData![index].name}"
-                                      .toString()
-                                      .semiBoldBarlowTextStyle(
-                                        maxLine: 1,
-                                        fontSize: 14,
-                                        textOverflow: TextOverflow.ellipsis,
-                                      ),
+                                  index == 0
+                                      ? "Work Inspection"
+                                          .semiBoldBarlowTextStyle(
+                                          maxLine: 1,
+                                          fontSize: 14,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        )
+                                      : "Home Inspection"
+                                          .semiBoldBarlowTextStyle(
+                                          maxLine: 1,
+                                          fontSize: 14,
+                                          textOverflow: TextOverflow.ellipsis,
+                                        ),
                                 ],
                               ),
                             ),

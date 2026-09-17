@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/approver_close_nc_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/fetch_allnc_data_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_activity_checklist_res_model.dart';
@@ -12,10 +13,33 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_tower_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_routing_through_notification_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_submit_button_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/checklist_as_per_type_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/checklist_data_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/checklist_type_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/complete_for_hqi_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/download_pdf_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/fetch_obs_resubmit_maker_checker_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/fetch_observation_form_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/get_flat_list_hqi_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/get_tower_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/impact_type_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/issue_category_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/issue_type_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/observation_completed_form_checker_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/observation_history_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/observation_resubmit_to_checker_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/offline_hqi_flate_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/site_visits_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/submit_flat_for_hqi_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/submit_multiple_observation_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/submit_observation_res_model.dart';
+
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_by_app_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/Material_Inspection_model/document_no_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/Material_Inspection_model/material_count_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/Material_Inspection_model/material_description_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/Material_Inspection_model/supplier_name_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/Material_Inspection_model/ucom_code_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/common_activity_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/common_activity_type_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/development_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checklist_by_activity_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checkpoint_details_by_activity_type_id.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_flat_data_res_model.dart';
@@ -31,6 +55,7 @@ import 'package:venkatesh_buildcon_app/Api/Services/api_service.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import '../Services/base_service.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_approver_reject_nc_model.dart';
+
 
 class ProjectRepo {
   Map<String, String> header = {
@@ -66,6 +91,7 @@ class ProjectRepo {
   /// GET PROJECT DETAILS ::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   Future<dynamic> projectDetailsRepo({Map<String, dynamic>? body}) async {
+    log('header1::::::::::::::::${header1}');
     var response = await APIService().getResponse(
       url: ApiRouts.projectDetails,
       apiType: APIType.aPost,
@@ -123,6 +149,69 @@ class ProjectRepo {
     return getFlatFloorDataResponseModel;
   }
 
+/////// GET COMMON CHECKLIST DETAILS :::::::::::::::::::::::::::::::::::::::
+//////////////for activity type ::::::::::::::::::::::::::::::::::
+
+  Future<dynamic> getCommonActivityDataRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getCommonActivityData,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getCommonActivityDataRepo --- response>> $response');
+
+    CommonActivityResponseModel commonActivityResponseModel =
+        CommonActivityResponseModel.fromJson(response);
+
+    log('commonActivityResponseModel --- response>> $response');
+
+    return commonActivityResponseModel;
+  }
+
+///////////// for activity type :::::::::::::::::::::::::::::
+
+  Future<dynamic> getCommonActivityTypeDataRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getCommonActivityTypeData,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getCommonActivityTypeDataRepo --- response>> $response');
+
+    CommonActivityTypeResponseModel commonActivityTypeResponseModel =
+        CommonActivityTypeResponseModel.fromJson(response);
+
+    log('commonActivityTypeResponseModel --- response>> $response');
+
+    return commonActivityTypeResponseModel;
+  }
+
+///////////////// development tab
+  Future<dynamic> getDevelopmentActivityDataRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getDevelopmentActivityData,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getDevelopmentActivityDataRepo --- response>> $response');
+
+    DevelopmentResponseModel developmentResponseModel =
+        DevelopmentResponseModel.fromJson(response);
+
+    log('developmentResponseModel --- response>> $response');
+
+    return developmentResponseModel;
+  }
+
   /// GET Material Inspection::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   Future<dynamic> getMaterialInspection({Map<String, dynamic>? body}) async {
@@ -141,6 +230,143 @@ class ProjectRepo {
     log('getMaterialInspectionResponse --- response>> $response');
 
     return materialInspectionResponseModel;
+  }
+
+//// get project for material inspection ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  ///project name
+// Future<dynamic> getMaterialProjectRepo({Map<String, dynamic>? body}) async {
+//     var response = await APIService().getResponse(
+//       url: ApiRouts.getMaterialProject,
+//       apiType: APIType.aPost,
+//       body: body ?? {},
+//       header: header1,
+//     );
+
+//     log('getBusinessUnitResponseRepo --- response>> $response');
+
+//     BusinessUnitResponseModel businessUnitResponseModel =
+//         BusinessUnitResponseModel.fromJson(response);
+
+//     log('getBusinessUnitResponseRepo --- response>> $response');
+
+//     return businessUnitResponseModel;
+//   }
+
+////////////documnet number
+  Future<dynamic> getDocumentNumberRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getDocumentNo,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getDocumentNumberRepo --- response>> $response');
+
+    DocumnetNumberResponseModel documnetNumberResponseModel =
+        DocumnetNumberResponseModel.fromJson(response);
+
+    log('getDocumentNumberRepo --- parsed response>> ${documnetNumberResponseModel.toJson()}');
+
+    return documnetNumberResponseModel;
+  }
+
+////supplier name
+  Future<dynamic> getLedgerDescriptionRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getMaterialSupplierName,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getLedgerDescriptionRepo --- response>> $response');
+
+    LedgerDescriptionResponseModel ledgerDescriptionResponseModel =
+        LedgerDescriptionResponseModel.fromJson(response);
+
+    log('getLedgerDescriptionRepo --- parsed response>> ${ledgerDescriptionResponseModel.toJson()}');
+
+    return ledgerDescriptionResponseModel;
+  }
+
+//// material description
+  Future<dynamic> getMaterialDescriptionRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getMaterialdescription,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getMaterialDescriptionRepo --- response>> $response');
+
+    MaterialDescriptionResponseModel materialDescriptionResponseModel =
+        MaterialDescriptionResponseModel.fromJson(response);
+
+    log('getMaterialDescriptionRepo --- parsed response>> ${materialDescriptionResponseModel.toJson()}');
+
+    return materialDescriptionResponseModel;
+  }
+
+////// material quantity
+  // Future<dynamic> getMaterialquantityRepo({Map<String, dynamic>? body}) async {
+  //   var response = await APIService().getResponse(
+  //     url: ApiRouts.getMaterialquantity,
+  //     apiType: APIType.aPost,
+  //     body: body,
+  //     header: header1,
+  //   );
+
+  //   log('getMaterialquantityRepo --- response>> $response');
+
+  //   MaterialQuantityResponseModel materialQuantityResponseModel =
+  //       MaterialQuantityResponseModel.fromJson(response);
+
+  //   log('getMaterialquantityRepo --- parsed response>> ${materialQuantityResponseModel.toJson()}');
+
+  //   return materialQuantityResponseModel;
+  // }
+
+//// material  uomCode
+
+  Future<dynamic> getUomCodeRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getUomCode,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getUomCodeRepo --- response>> $response');
+
+    UomCodeResponseModel uomCodeResponseModel =
+        UomCodeResponseModel.fromJson(response);
+
+    log('getUomCodeRepo --- parsed response>> ${uomCodeResponseModel.toJson()}');
+
+    return uomCodeResponseModel;
+  }
+
+///// material count
+
+  Future<dynamic> getmaterialcountRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getmaterialcount,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getmaterialcountRepo --- response>> $response');
+
+    MaterialCountResModel materialCountResModel =
+        MaterialCountResModel.fromJson(response);
+
+    log('getmaterialcountRepo --- parsed response>> $response');
+
+    return materialCountResModel;
   }
 
   /// GET FLOOR DETAILS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -201,37 +427,6 @@ class ProjectRepo {
     log('getActivityChecklistResponseModel --- response>> $response');
 
     return getActivityChecklistResponseModel;
-  }
-
-  ///// Activity details for notification
-
-  Future<dynamic> getActivitydetailsfornotificationRepo(
-      {Map<String, dynamic>? body}) async {
-    var response = await APIService().getResponse(
-      url: ApiRouts.projectChecklistByAc,
-      apiType: APIType.aPost,
-      body: body,
-      header: header1,
-    );
-
-    //   log('getActivityChecklistResponseModel --- response>> $response');
-
-    //   ChecklistByActivityResponseModel getActivityChecklistResponseModel =
-    //       ChecklistByActivityResponseModel.fromJson(response);
-
-    //   log('getActivityChecklistResponseModel --- response>> $response');
-
-    //   return getActivityChecklistResponseModel;
-    // }
-
-    log('getCheckPointDetailsByActivityTypeId --- response>> $response');
-
-    GetCheckPointDetailsByActivityTypeId getCheckPointDetailsByActivityTypeId =
-        GetCheckPointDetailsByActivityTypeId.fromJson(response);
-
-    log('getCheckPointDetailsByActivityTypeId --- response>> $response');
-
-    return getCheckPointDetailsByActivityTypeId;
   }
 
   /// GET Material Inspection Check List :::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -388,7 +583,7 @@ class ProjectRepo {
     return getCheckPointDetailsByActivityTypeId;
   }
 
-  /// DUPLICATE ACTIVITY REPO ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  /// DUPLICATE ACTIVITY REPO FOR FLAT/FLOOR::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   Future<dynamic> duplicateActivityRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
@@ -406,6 +601,27 @@ class ProjectRepo {
     log('duplicateActivityRepo --- response>> $response');
 
     return duplicateActivityRepo;
+  }
+
+  /// DUPLICATE ACTIVITY REPO FOR COMMON?DEVELOPMENT::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+  Future<dynamic> duplicateActivityForCommonRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.duplicateActivityForCommonAndDevelopment,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('duplicateActivityForCommonRepo --- response>> $response');
+
+    SuccessDataResponseModel duplicateActivityForCommonRepo =
+        SuccessDataResponseModel.fromJson(response);
+
+    log('duplicateActivityForCommonRepo --- response>> $response');
+
+    return duplicateActivityForCommonRepo;
   }
 
   /// DELETE ACTIVITY REPO ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -491,68 +707,491 @@ class ProjectRepo {
     return successDataResponseModel;
   }
 
-/////////////////////////////////////////////
+////////////////////////// Home Inpesction part/////////////////////////////////////////
 
-  ///basic activity checklist for approver
-  Future<dynamic> getapproveractivityRepo({Map<String, dynamic>? map}) async {
+  Future<dynamic> issueTypeRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: ApiRouts.approveractivity,
+      url: ApiRouts.issueType,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('issueTypeResponseModel --- response>> $response');
+
+    IssueTypeResponseModel issueTypeResponseModel =
+        IssueTypeResponseModel.fromJson(response);
+
+    log('issueTypeResponseModel --- response>> $response');
+
+    return issueTypeResponseModel;
+  }
+
+  Future<dynamic> issueCategoryRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.issueCategory,
       apiType: APIType.aPost,
       body: {},
       header: header1,
     );
 
-    log('checklistDataResponseModel --- response>> $response');
+    log('issueCategoryResponseModel --- response>> $response');
 
-    ChecklistDataResponseModel checklistDataResponseModel =
-        ChecklistDataResponseModel.fromJson(response);
+    IssueCategoryResponseModel issueCategoryResponseModel =
+        IssueCategoryResponseModel.fromJson(response);
 
-    log('checklistDataResponseModel --- response>> $response');
+    log('issueCategoryResponseModel --- response>> $response');
 
-    return checklistDataResponseModel;
+    return issueCategoryResponseModel;
   }
 
-  /// for activity type
-  Future<dynamic> getapproveractivitytypesRepo(Map<String, dynamic> map) async {
+
+
+  Future impactTypeRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: ApiRouts.approveractivitytypes,
+      url: ApiRouts.categoryRating,
       apiType: APIType.aPost,
-      body: map,
+      body: {},
       header: header1,
     );
 
-    log('activityTypeResponseModel --- response>> $response');
+    log('impactTypeResponseModel --- response>> $response');
 
-    ActivityTypeResponseModel activityTypeResponseModel =
-        ActivityTypeResponseModel.fromJson(response);
+    // API response contains JSON-RPC "result"
+    final result = response['result'];
 
-    log('activityTypeResponseModel --- response>> $response');
+    ImpactTypeResponseModel impactTypeResponseModel =
+        ImpactTypeResponseModel.fromJson(result);
 
-    return activityTypeResponseModel;
+    log(
+      'Impact Type Data >>> ${impactTypeResponseModel.data}',
+    );
+
+    return impactTypeResponseModel;
   }
 
-  ///checklist after acitvity type
-
-  Future<dynamic> getapproveractivitytypechecklistRepo(int patn_id,
-      {Map<String, dynamic>? map}) async {
+  Future<dynamic> SubmitFlatForHQIRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: ApiRouts.approveractivitytypechecklist,
+      url: ApiRouts.submitFlatForHQI,
       apiType: APIType.aPost,
-      body: {'patn_id': patn_id},
+      body: body,
       header: header1,
     );
 
-    log('activityAsPerTypeResponseModel --- response>> $response');
+    log('submitFlatForHQIResponseModel --- response>> $response');
 
-    ActivityAsPerTypeResponseModel activityAsPerTypeResponseModel =
-        ActivityAsPerTypeResponseModel.fromJson(response);
+    SubmitFlatForHQIResponseModel submitFlatForHQIResponseModel =
+        SubmitFlatForHQIResponseModel.fromJson(response);
 
-    log('activityAsPerTypeResponseModel --- response>> $response');
+    log('submitFlatForHQIResponseModel --- response>> $response');
 
-    return activityAsPerTypeResponseModel;
+    return submitFlatForHQIResponseModel;
   }
 
-////// generate nc by app
+  Future<dynamic> hqiFlatListRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.hqiFlatList,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('flatListForHQIResponseModel --- response>> $response');
+
+    FlatListForHQIResponseModel flatListForHQIResponseModel =
+        FlatListForHQIResponseModel.fromJson(response);
+
+    log('flatListForHQIResponseModel --- response>> $response');
+
+    return flatListForHQIResponseModel;
+  }
+
+  Future<dynamic> hqiSiteVisitRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.hqiSiteVisit,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('flatVisitsResponseModel --- response>> $response');
+
+    FlatVisitsResponseModel flatVisitsResponseModel =
+        FlatVisitsResponseModel.fromJson(response);
+
+    log('flatVisitsResponseModel --- response>> $response');
+
+    return flatVisitsResponseModel;
+  }
+
+  Future<dynamic> getHQITowersRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.hqiTowerdata,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('getHQITowersResponseModel --- response>> $response');
+
+    GetHQITowersResponseModel getHQITowersResponseModel =
+        GetHQITowersResponseModel.fromJson(response);
+
+    log('getHQITowersResponseModel --- response>> $response');
+
+    return getHQITowersResponseModel;
+  }
+
+  // Future<dynamic> submitObservationFormRepo(
+  //     {Map<String, dynamic>? body}) async {
+  //   log('body:::::::::::::::submitObservationFormRepo:${body}');
+  //   print('body::::::::::::::submitObservationFormRepo::${body}');
+  //   debugPrint('body::::::::::::::submitObservationFormRepo::${body}');
+  //   var response = await APIService().getResponse(
+  //     url: ApiRouts.submitObservationForm,
+  //     apiType: APIType.aPost,
+  //     body: body,
+  //     header: header1,
+  //   );
+
+  //   log('submitObservationFormResponseModel --- response>> $response');
+
+  //   SubmitObservationResponseModel submitObservationFormResponseModel =
+  //       SubmitObservationResponseModel.fromJson(response);
+
+  //   log('submitObservationFormResponseModel --- response>> $response');
+
+  //   return submitObservationFormResponseModel;
+  // }
+
+
+
+Future<dynamic> submitObservationFormRepo({
+  Map<String, dynamic>? body,
+}) async {
+  log('=================================================');
+  log('🔹 submitObservationFormRepo START');
+  log('🔹 URL: ${ApiRouts.submitObservationForm}');
+  log('🔹 BODY: ${jsonEncode(body)}');
+
+  try {
+    final response = await APIService().getResponse(
+      url: ApiRouts.submitObservationForm,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('=================================================');
+    log('🔹 RAW API RESPONSE RECEIVED');
+    log('🔹 Response type: ${response.runtimeType}');
+    log('🔹 Response: $response');
+
+    if (response == null) {
+      log('❌ API returned NULL response');
+
+      return SubmitObservationResponseModel(
+        status: "ERROR",
+        message: "Empty response from server",
+      );
+    }
+
+    // ---------------------------------------------------------
+    // Make sure response is a Map before parsing
+    // ---------------------------------------------------------
+    if (response is! Map) {
+      log(
+        '❌ Unexpected response type: ${response.runtimeType}',
+      );
+
+      return SubmitObservationResponseModel(
+        status: "ERROR",
+        message: "Invalid response from server",
+      );
+    }
+
+    final Map<String, dynamic> responseMap =
+        Map<String, dynamic>.from(response);
+
+    log('🔹 Response Map: $responseMap');
+
+    // ---------------------------------------------------------
+    // Parse response safely
+    // ---------------------------------------------------------
+    try {
+      final model =
+          SubmitObservationResponseModel.fromJson(responseMap);
+
+      log(
+        '✅ Response parsed successfully '
+        'status=${model.status}, '
+        'message=${model.message}',
+      );
+
+      return model;
+    } catch (parseError, parseStack) {
+      log('❌ RESPONSE PARSING ERROR: $parseError');
+      log('❌ RESPONSE PARSING STACK: $parseStack');
+      log('❌ RAW RESPONSE BEFORE PARSING: $responseMap');
+
+      // IMPORTANT:
+      // Do NOT blindly mark success here.
+      // We need to know what Odoo actually returned.
+      return SubmitObservationResponseModel(
+        status: "ERROR",
+        message: "Response parsing failed: $parseError",
+      );
+    }
+  } catch (e, stackTrace) {
+    log('=================================================');
+    log('❌ submitObservationFormRepo EXCEPTION');
+    log('❌ Error: $e');
+    log('❌ StackTrace: $stackTrace');
+
+    rethrow;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Future<dynamic> multiobservationsubmitRepo(
+      {Map<String, dynamic>? body}) async {
+    log('body:::::::::::::::multiobservationsubmitRepo:${body}');
+    print('body::::::::::::::multiobservationsubmitRepo::${body}');
+    debugPrint('body::::::::::::::multiobservationsubmitRepo::${body}');
+    var response = await APIService().getResponse(
+      url: ApiRouts.multiobservationsubmit,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('multipleObservationToMakerResponseModel --- response>> $response');
+
+    MultipleObservationToMakerResponseModel
+        multipleObservationToMakerResponseModel =
+        MultipleObservationToMakerResponseModel.fromJson(response);
+
+    log('multipleObservationToMakerResponseModel --- response>> $response');
+
+    return multipleObservationToMakerResponseModel;
+  }
+
+  Future<dynamic> fetchObservationFormRepo({Map<String, dynamic>? body}) async {
+    print('body:::::::::::::fetchObservationFormRepo:::${body}');
+    log('header1::::::::::::::::${header1}');
+    var response = await APIService().getResponse(
+      url: ApiRouts.fetchObservationForm,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    print('fetchObservationFormResponseModel --- response>> $response');
+
+    FetchObservationFromResponseModel fetchObservationFormResponseModel =
+        FetchObservationFromResponseModel.fromJson(response);
+
+    log('fetchObservationFormResponseModel --- response>> ${fetchObservationFormResponseModel.toJson()}');
+
+    return fetchObservationFormResponseModel;
+  }
+
+  Future<dynamic> flatCompletedFormCheckerSide(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.flatCompletedForHQI,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('observationCompleteeckerFromChResponseModel --- response>> $response');
+
+    ObservationCompleteeckerFromChResponseModel
+        observationCompleteeckerFromChResponseModel =
+        ObservationCompleteeckerFromChResponseModel.fromJson(response);
+
+    log('observationCompleteeckerFromChResponseModel --- response>> $response');
+
+    return observationCompleteeckerFromChResponseModel;
+  }
+
+  Future<dynamic> flatResubmittoCheckerRepo(
+      {Map<String, dynamic>? body}) async {
+    log('body::::::::::::flatResubmittoCheckerRepo::::${body}');
+    var response = await APIService().getResponse(
+      url: ApiRouts.flatResubmittoChecker,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    print('resubmitToCheckerResponseModel --- response>> $response');
+
+    ResubmitToCheckerResponseModel resubmitToCheckerResponseModel =
+        ResubmitToCheckerResponseModel.fromJson(response);
+
+    log('resubmitToCheckerResponseModel --- response.json>> ${resubmitToCheckerResponseModel.toJson()}');
+
+    return resubmitToCheckerResponseModel;
+  }
+
+  Future<dynamic> getAttachmentDetailRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getAttachmentDetail,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('fetchMakerObservationDetailsModel --- response>> $response');
+
+    FetchMakerObservationDetailsModel fetchMakerObservationDetailsModel =
+        FetchMakerObservationDetailsModel.fromJson(response);
+
+    log('fetchMakerObservationDetailsModel --- response>> $response');
+
+    return fetchMakerObservationDetailsModel;
+  }
+
+  Future<dynamic> downloadPdfForHQIRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.downloadPdfForHQI,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+    log('downloadPdfResponseModel --- response>> $response');
+
+    DownloadPdfResponseModel downloadPdfResponseModel =
+        DownloadPdfResponseModel.fromJson(response);
+    log('downloadPdfResponseModel --- response>> $response');
+    return downloadPdfResponseModel;
+  }
+
+  Future<dynamic> observationHistoryRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.observationHistory,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+    log('observationHistoryModel --- response>> $response');
+
+    ObservationHistoryModel observationHistoryModel =
+        ObservationHistoryModel.fromJson(response);
+    log('observationHistoryModel --- response>> $response');
+    return observationHistoryModel;
+  }
+
+  Future<dynamic> completeForHQIRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.completeForHQI,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+    log('completeForHQIResponseModel --- response>> $response');
+
+    CompleteForHQIResponseModel completeForHQIResponseModel =
+        CompleteForHQIResponseModel.fromJson(response);
+    log('completeForHQIResponseModel --- response>> $response');
+    return completeForHQIResponseModel;
+  }
+
+  Future<dynamic> replicatelocationforhqiRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.replicatelocationforhqi,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('replicatelocationforhqiRepo --- response>> $response');
+
+    SuccessDataResponseModel replicatelocationforhqiRepo =
+        SuccessDataResponseModel.fromJson(response);
+
+    log('replicatelocationforhqiRepo --- response>> $response');
+
+    return replicatelocationforhqiRepo;
+  }
+
+  // Future<dynamic> getFlatLocationObservationOfflineRepo({Map<String, dynamic>? body}) async {
+  //   var response = await APIService().getResponse(
+  //     url: ApiRouts.siteVisitSaveOfflineLocObs,
+  //     apiType: APIType.aPost,
+  //     body: body,
+  //     header: header1,
+  //   );
+  //
+  //   log('getHQIFlatsOfflineResponseModel --- response>> $response');
+  //
+  //   FlatLocationObservationOfflineResponseModel getHQIFlatsOfflineResponseModel =
+  //       FlatLocationObservationOfflineResponseModel.fromJson(response);
+  //
+  //   log('getHQIFlatsOfflineResponseModel --- response>> $response');
+  //
+  //   return getHQIFlatsOfflineResponseModel;
+  // }
+
+  Future<dynamic> downloadPdfForHqiFlatRepo(
+      {Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.downloadPdfForHqiFlat,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+    log('downloadPdfResponseModel --- response>> $response');
+
+    DownloadPdfResponseModel downloadPdfResponseModel =
+        DownloadPdfResponseModel.fromJson(response);
+    log('downloadPdfResponseModel --- response>> $response');
+    return downloadPdfResponseModel;
+  }
+
+  /// GET OFFLINE HOME INSPECTION FLAT :::::::::::::::::::::::::::::::::::::::::::::::::::
+
+  Future<dynamic> getHQIFlatsOfflineRepo({Map<String, dynamic>? body}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.getHQIFlatOffline,
+      apiType: APIType.aPost,
+      body: body,
+      header: header1,
+    );
+
+    log('OfflineHqiFlateResponseModel --- response>> $response');
+
+    OfflineHqiFlateResponseModel offlineHqiFlateResponseModel =
+        OfflineHqiFlateResponseModel.fromJson(response);
+
+    log('OfflineHqiFlateResponseModel --- response>> $offlineHqiFlateResponseModel');
+
+    return offlineHqiFlateResponseModel;
+  }
+
+  ////// generate nc by app
   /// get project
 
   Future<dynamic> ncgetprojectRepo(Map<String, dynamic>? map) async {
@@ -571,6 +1210,44 @@ class ProjectRepo {
     log('generateNcByAppResponseModel --- response>> $generateNcByAppResponseModel');
 
     return generateNcByAppResponseModel;
+  }
+
+  ///nc close state
+
+  Future<dynamic> closencstateRepo(int nc_id,
+      {Map<String, dynamic>? map}) async {
+    if (map == null || map.isEmpty) {
+      log('Missing map parameter in API call.');
+      return null;
+    }
+
+    var response = await APIService().getResponse(
+      url: ApiRouts.ncclosestate,
+      apiType: APIType.aPost,
+      body: map,
+      header: header1,
+    );
+
+    log('generateNcCloseStateResponseModel --- response>> $response');
+
+    if (response is List && response.isNotEmpty) {
+      var status = response[0]['status'];
+      var message = response[0]['message'];
+
+      if (status == 'error') {
+        log('Error: $message');
+        return null;
+      }
+
+      GenerateNcCloseStateResponseModel generateNcCloseStateResponseModel =
+          GenerateNcCloseStateResponseModel.fromJson(response[0]);
+
+      log('generateNcCloseStateResponseModel --- response>> $generateNcCloseStateResponseModel');
+      return generateNcCloseStateResponseModel;
+    } else {
+      log('Unexpected response format: $response');
+      return null;
+    }
   }
 
   ///get tower
@@ -613,7 +1290,7 @@ class ProjectRepo {
     return generateNcByAppFloorResponseModel;
   }
 
-///// get flat
+  ///// get flat
   Future<dynamic> ncgetflatRepo(int tower_id,
       {Map<String, dynamic>? map}) async {
     var response = await APIService().getResponse(
@@ -633,7 +1310,7 @@ class ProjectRepo {
     return generateNcByAppFlatResponseModel;
   }
 
-////get activity
+  ////get activity
 
   Future<dynamic> ncgetactivityRepo(
       int flat_id, int floor_id, int tower_id, int project_id,
@@ -660,28 +1337,6 @@ class ProjectRepo {
     return generateNcByAppActivityResponseModel;
   }
 
-//////get activity type
-
-  Future<dynamic> ncgetactivitytypeRepo(int activity_id,
-      {Map<String, dynamic>? map}) async {
-    var response = await APIService().getResponse(
-      url: ApiRouts.ncGetActivityType,
-      apiType: APIType.aPost,
-      body: {'activity_id': activity_id},
-      header: header1,
-    );
-
-    log('generateNcByAppActivityTypeResponseModel --- response>> $response');
-
-    GenerateNcByAppActivityTypeResponseModel
-        generateNcByAppActivityTypeResponseModel =
-        GenerateNcByAppActivityTypeResponseModel.fromJson(response);
-
-    log('generateNcByAppActivityTypeResponseModel --- response>> $response');
-
-    return generateNcByAppActivityTypeResponseModel;
-  }
-
 //////get activity type checklist
   Future<dynamic> ncgetactivitytypechecklistRepo(int patn_id,
       {Map<String, dynamic>? map}) async {
@@ -703,7 +1358,29 @@ class ProjectRepo {
     return generateNcByAppActivityTypeChecklistResponseModel;
   }
 
-///// project responsible user name
+  //////get activity type
+
+  Future<dynamic> ncgetactivitytypeRepo(int activity_id,
+      {Map<String, dynamic>? map}) async {
+    var response = await APIService().getResponse(
+      url: ApiRouts.ncGetActivityType,
+      apiType: APIType.aPost,
+      body: {'activity_id': activity_id},
+      header: header1,
+    );
+
+    log('generateNcByAppActivityTypeResponseModel --- response>> $response');
+
+    GenerateNcByAppActivityTypeResponseModel
+        generateNcByAppActivityTypeResponseModel =
+        GenerateNcByAppActivityTypeResponseModel.fromJson(response);
+
+    log('generateNcByAppActivityTypeResponseModel --- response>> $response');
+
+    return generateNcByAppActivityTypeResponseModel;
+  }
+
+  ///// project responsible user name
   Future<dynamic> ncgetprojectresponsibleRepo(
       Map<String, dynamic>? body) async {
     var response = await APIService().getResponse(
@@ -723,87 +1400,7 @@ class ProjectRepo {
 
     return generateNcProjectResponsibleTypeResponseModel;
   }
-
-/////submit nc
-  // Future<dynamic> ncsubmitbuttonRepo({Map<String, dynamic>? body}) async {
-  //   var response = await APIService().getResponse(
-  //     url: ApiRouts.ncsubmitbutton,
-  //     apiType: APIType.aPost,
-  //     body: body ?? {},
-  //     header: header1,
-  //   );
-
-  //   log('submitNcDataResponseModel --- raw response>> $response');
-
-  //   if (response is List<dynamic> && response.isNotEmpty) {
-  //     var firstElement = response[0];
-  //     if (firstElement is Map<String, dynamic>) {
-  //       return SubmitNcDataResponseModel.fromJson(firstElement);
-  //     } else {
-  //       throw Exception("Invalid response format.");
-  //     }
-  //   } else {
-  //     throw Exception("Empty or invalid response.");
-  //   }
-  // }
-  Future<dynamic> ncsubmitbuttonRepo({Map<String, dynamic>? body}) async {
-    try {
-      var response = await APIService().getResponse(
-        url: ApiRouts.ncsubmitbutton,
-        apiType: APIType.aPost,
-        body: body ?? {},
-        header: header1,
-      );
-
-      log('submitNcDataResponseModel --- raw response>> $response');
-
-      if (response == null) {
-        throw Exception("Empty response from server.");
-      }
-
-      // ✅ Handle Map-based JSON
-      if (response is Map<String, dynamic>) {
-        return response;
-      }
-
-      // ✅ Handle List-based JSON (optional edge case)
-      if (response is List &&
-          response.isNotEmpty &&
-          response.first is Map<String, dynamic>) {
-        return response.first;
-      }
-
-      // ✅ Handle String-based responses (plain text)
-      if (response is String) {
-        try {
-          return jsonDecode(response);
-        } catch (e) {
-          // If plain text message
-          return {"status": "success", "message": response};
-        }
-      }
-
-      throw Exception("Invalid response format.");
-
-      // } catch (e) {
-      //   log("Error in ncsubmitbuttonRepo: $e");
-      //   throw Exception("Form submission failed: $e");
-      // }
-    } catch (e) {
-      log("Error in ncsubmitbuttonRepo: $e");
-
-      // ✅ Ignore harmless "connection closed" errors if the server still processes successfully
-      if (e.toString().contains("Connection closed while receiving data")) {
-        log("⚠️ Connection closed early, but likely success — ignoring...");
-        return {"status": "success", "message": "NC submitted successfully"};
-      }
-
-      // ✅ For any other real errors, throw normally
-      throw Exception("Form submission failed: $e");
-    }
-  }
-
-/////fetch all nc data
+  // /////fetch all nc data
 
   // Future ncfetchalldataRepo({Map<String, dynamic>? body}) async {
   //   var response = await APIService().getResponse(
@@ -875,116 +1472,174 @@ class ProjectRepo {
       throw Exception('Invalid response format');
     }
   }
-//===================
 
-  ///nc close state
+  /////submit nc
+  // Future<dynamic> ncsubmitbuttonRepo({Map<String, dynamic>? body}) async {
+  //   var response = await APIService().getResponse(
+  //     url: ApiRouts.ncsubmitbutton,
+  //     apiType: APIType.aPost,
+  //     body: body ?? {},
+  //     header: header1,
+  //   );
 
-  Future<dynamic> closencstateRepo(int nc_id,
-      {Map<String, dynamic>? map}) async {
-    if (map == null || map.isEmpty) {
-      log('Missing map parameter in API call.');
-      return null;
-    }
+  //   log('submitNcDataResponseModel --- raw response>> $response');
 
-    var response = await APIService().getResponse(
-      url: ApiRouts.ncclosestate,
-      apiType: APIType.aPost,
-      body: map,
-      header: header1,
-    );
-    //  print("API raw data: $response");
+  //   if (response is List<dynamic> && response.isNotEmpty) {
+  //     var firstElement = response[0];
+  //     if (firstElement is Map<String, dynamic>) {
+  //       return SubmitNcDataResponseModel.fromJson(firstElement);
+  //     } else {
+  //       throw Exception("Invalid response format.");
+  //     }
+  //   } else {
+  //     throw Exception("Empty or invalid response.");
+  //   }
+  // }
+  //   Future<dynamic> ncsubmitbuttonRepo({Map<String, dynamic>? body}) async {
+  //   try {
+  //     var response = await APIService().getResponse(
+  //       url: ApiRouts.ncsubmitbutton,
+  //       apiType: APIType.aPost,
+  //       body: body ?? {},
+  //       header: header1,
+  //     );
 
-    log('generateNcCloseStateResponseModel --- response>> $response');
+  //     log('submitNcDataResponseModel --- raw response>> $response');
 
-    if (response is List && response.isNotEmpty) {
-      var status = response[0]['status'];
-      var message = response[0]['message'];
+  //     if (response == null) {
+  //       throw Exception("Empty response from server.");
+  //     }
 
-      if (status == 'error') {
-        log('Error: $message');
-        return null;
+  //     // ✅ Handle Map-based JSON
+  //     if (response is Map<String, dynamic>) {
+  //       return response;
+  //     }
+
+  //     // ✅ Handle List-based JSON (optional edge case)
+  //     if (response is List &&
+  //         response.isNotEmpty &&
+  //         response.first is Map<String, dynamic>) {
+  //       return response.first;
+  //     }
+
+  //     // ✅ Handle String-based responses (plain text)
+  //     if (response is String) {
+  //       try {
+  //         return jsonDecode(response);
+  //       } catch (e) {
+  //         // If plain text message
+  //         return {"status": "success", "message": response};
+  //       }
+  //     }
+
+  //     throw Exception("Invalid response format.");
+
+  //     // } catch (e) {
+  //     //   log("Error in ncsubmitbuttonRepo: $e");
+  //     //   throw Exception("Form submission failed: $e");
+  //     // }
+  //   } catch (e) {
+  //     log("Error in ncsubmitbuttonRepo: $e");
+
+  //     // ✅ Ignore harmless "connection closed" errors if the server still processes successfully
+  //     if (e.toString().contains("Connection closed while receiving data")) {
+  //       log("⚠️ Connection closed early, but likely success — ignoring...");
+  //       return {"status": "success", "message": "NC submitted successfully"};
+  //     }
+
+  //     // ✅ For any other real errors, throw normally
+  //     throw Exception("Form submission failed: $e");
+  //   }
+  // }
+
+  Future<dynamic> ncsubmitbuttonRepo({Map<String, dynamic>? body}) async {
+    try {
+      var response = await APIService().getResponse(
+        url: ApiRouts.ncsubmitbutton,
+        apiType: APIType.aPost,
+        body: body ?? {},
+        header: header1,
+      );
+
+      log('submitNcDataResponseModel --- raw response>> $response');
+
+      if (response == null) {
+        throw Exception("Empty response from server.");
       }
 
-      GenerateNcCloseStateResponseModel generateNcCloseStateResponseModel =
-          GenerateNcCloseStateResponseModel.fromJson(response[0]);
+      // ✅ Handle Map-based JSON
+      if (response is Map<String, dynamic>) {
+        return response;
+      }
 
-      log('generateNcCloseStateResponseModel --- response>> $generateNcCloseStateResponseModel');
-      return generateNcCloseStateResponseModel;
-    } else {
-      log('Unexpected response format: $response');
-      return null;
+      // ✅ Handle List-based JSON (optional edge case)
+      if (response is List &&
+          response.isNotEmpty &&
+          response.first is Map<String, dynamic>) {
+        return response.first;
+      }
+
+      // ✅ Handle String-based responses (plain text)
+      if (response is String) {
+        try {
+          return jsonDecode(response);
+        } catch (e) {
+          // If plain text message
+          return {"status": "success", "message": response};
+        }
+      }
+
+      throw Exception("Invalid response format.");
+
+      // } catch (e) {
+      //   log("Error in ncsubmitbuttonRepo: $e");
+      //   throw Exception("Form submission failed: $e");
+      // }
+    } catch (e) {
+      log("Error in ncsubmitbuttonRepo: $e");
+
+      // ✅ Ignore harmless "connection closed" errors if the server still processes successfully
+      if (e.toString().contains("Connection closed while receiving data")) {
+        log("⚠️ Connection closed early, but likely success — ignoring...");
+        return {"status": "success", "message": "NC submitted successfully"};
+      }
+
+      // ✅ For any other real errors, throw normally
+      throw Exception("Form submission failed: $e");
     }
   }
 
-/////////////////Approver Reject NC////
-  Future<dynamic> approverRejectNcRepo({Map<String, dynamic>? map}) async {
-    if (map == null || map.isEmpty) {
-      log('Missing map parameter in Approver Reject API call.');
-      return null;
+  Future<dynamic> approverRejectNcRepo(
+      {required Map<String, dynamic> map}) async {
+    try {
+      var response = await APIService().getResponse(
+        url: ApiRouts.approverRejectNc,
+        apiType: APIType.aPost,
+        body: map,
+        header: header1,
+      );
+      return SuccessDataResponseModel.fromJson(response);
+    } catch (e) {
+      throw Exception('Error rejecting NC: $e');
     }
-
-    var response = await APIService().getResponse(
-      url: ApiRouts.approverRejectNc,
-      apiType: APIType.aPost,
-      body: map,
-      header: header1,
-    );
-
-    log('approverRejectNcRepo --- raw response >> $response');
-
-    if (response is Map<String, dynamic>) {
-      if (response['status'] == 'error') {
-        log('Error: ${response['message']}');
-        return null;
-      }
-
-      // Convert to model
-      ApproverRejectNcResponseModel model =
-          ApproverRejectNcResponseModel.fromJson(response);
-
-      log("approverRejectNcRepo --- parsed model >> $model");
-      return model;
-    }
-
-    // Unexpected format
-    log("Unexpected response format: $response");
-    return null;
   }
 
-  ///////////////Approver close NC////
-  //// APPROVER CLOSE NC ////
-  Future<dynamic> approverCloseNcRepo({Map<String, dynamic>? map}) async {
-    if (map == null || map.isEmpty) {
-      log('Missing map parameter in Approver Close API call.');
-      return null;
+  Future<dynamic> approverCloseNcRepo(
+      {required Map<String, dynamic> map}) async {
+    try {
+      var response = await APIService().getResponse(
+        url: ApiRouts.approverCloseNc,
+        apiType: APIType.aPost,
+        body: map,
+        header: header1,
+      );
+      return SuccessDataResponseModel.fromJson(response);
+    } catch (e) {
+      throw Exception('Error closing NC: $e');
     }
-
-    var response = await APIService().getResponse(
-      url: ApiRouts.approverCloseNc, // <<< CREATE THIS ROUTE
-      apiType: APIType.aPost,
-      body: map,
-      header: header1,
-    );
-
-    log("approverCloseNcRepo --- raw response >> $response");
-
-    if (response is Map<String, dynamic>) {
-      if (response['status'] == 'error') {
-        log("Error: ${response['message']}");
-        return null;
-      }
-
-      ApproverCloseNcResponseModel model =
-          ApproverCloseNcResponseModel.fromJson(response);
-
-      return model;
-    }
-
-    log("Unexpected response format: $response");
-    return null;
   }
 
-  ////////// Nc routing through notification /////////////////
+  //06/12
   Future<dynamic> getNotificationRoutingForNc(
       {Map<String, dynamic>? map}) async {
     var response = await APIService().getResponse(

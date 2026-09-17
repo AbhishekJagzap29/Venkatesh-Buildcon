@@ -12,7 +12,7 @@ String assignedProjectResponseModelToJson(AssignedProjectResponseModel data) => 
 class AssignedProjectResponseModel {
   String? status;
   String? message;
-  List<ProjectDetails>? projectData;
+  final List<ProjectDetails>? projectData;
 
   AssignedProjectResponseModel({
     this.status,
@@ -40,12 +40,14 @@ class ProjectDetails {
   String? image;
   String? progress;
   int? projectId;
+  int? buId;
 
   ProjectDetails({
     this.name,
     this.image,
     this.projectId,
     this.progress,
+    required this.buId,
   });
 
   factory ProjectDetails.fromJson(Map<String, dynamic> json) => ProjectDetails(
@@ -53,12 +55,17 @@ class ProjectDetails {
         image: json["image"].toString(),
         projectId: json["project_id"],
         progress: json["progress"].toString(),
+        
+  buId: (json["bu_id"] != null && json["bu_id"].toString().isNotEmpty)
+            ? int.tryParse(json["bu_id"].toString())
+            : null, 
+      
       );
-
   Map<String, dynamic> toJson() => {
         "name": name,
         "image": image,
         "project_id": projectId,
         "progress": progress,
+        "bu_id" : buId,
       };
 }

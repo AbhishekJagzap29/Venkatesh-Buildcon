@@ -16,7 +16,6 @@ import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
-
 class AuthController extends GetxController {
   final loginEmailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -83,28 +82,20 @@ class AuthController extends GetxController {
           log('response==========>>>>>> ${response}');
 
           if (response.uid != null) {
-            // preferences.putString(SharedPreference.isLogin, "true");
-            // preferences.putBool(SharedPreference.isAdmin, response.isAdmin ?? false);
+
             preferences.putString(
                 SharedPreference.userLoginData, jsonEncode(response));
             preferences.putString(
                 SharedPreference.userId, response.uid.toString());
-            preferences.putString(
-                SharedPreference.userType, response.userType ?? "");
-            // preferences.putString(SharedPreference.userPassword,
-            //     passwordController.text.toString().trim());
+            // preferences.putString(
+            //     SharedPreference.userType, response.userType ?? "");
+           preferences.putString(
+  SharedPreference.userType,
+  (response.userType ?? []).join(','), 
+);
             preferences.putString(
                 SharedPreference.userName, response.username ?? '');
-            // preferences.putBool(SharedPreference.del_activity_users,
-            //     response.del_activity_users ?? false);
-            // Get.offAllNamed(Routes.bottomBar);
-            // Future.delayed(
-            //   const Duration(milliseconds: 500),
-            // ).then(
-            //   (value) =>
-            //       successSnackBar("Success", 'Welcome, Login successfully'),
-            // );
-
+           
             if (response.uid != null) {
               sendOneSignalData(response.uid);
             }
@@ -163,8 +154,12 @@ class AuthController extends GetxController {
                 SharedPreference.userLoginData, jsonEncode(response));
             preferences.putString(
                 SharedPreference.userId, response.uid.toString());
-            preferences.putString(
-                SharedPreference.userType, response.userType ?? "");
+            // preferences.putString(
+            //    SharedPreference.userType, response.userType ?? "");
+preferences.putString(
+  SharedPreference.userType,
+  (response.userType ?? []).join(','), // converts List<String> to "maker,hqi_maker"
+);
             preferences.putString(SharedPreference.userPassword,
                 passwordController.text.toString().trim());
             preferences.putString(

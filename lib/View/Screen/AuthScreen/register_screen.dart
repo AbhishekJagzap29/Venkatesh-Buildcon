@@ -34,8 +34,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               backgroundColor: backGroundColor,
               body: SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: w * 0.065).copyWith(top: h * 0.026, bottom: h * 0.01),
+                  padding: EdgeInsets.symmetric(horizontal: w * 0.065)
+                      .copyWith(top: h * 0.026, bottom: h * 0.01),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -48,32 +48,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AppString.registerHeadingText
                           .boldRobotoTextStyle(fontSize: 22)
                           .paddingOnly(top: h * 0.05),
-                      AppString.welcomeText.regularBarlowTextStyle(fontSize: 15),
+                      AppString.welcomeText
+                          .regularBarlowTextStyle(fontSize: 15),
                       Padding(
                         padding: EdgeInsets.only(top: h * 0.045),
                         child: AppString.nameText
-                            .semiBoldBarlowTextStyle(fontSize: 15, fontColor: greyTextColor)
+                            .semiBoldBarlowTextStyle(
+                                fontSize: 15, fontColor: greyTextColor)
                             .paddingSymmetric(horizontal: w * 0.015),
                       ),
                       AppTextField(
                         controller: controller.nameController,
                         icon: Icon(
                           Icons.person,
-                          size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
+                          size: Responsive.isTablet(context)
+                              ? h * 0.031
+                              : h * 0.025,
                         ),
                         hintText: AppString.enterNameText,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: Responsive.isDesktop(context) ? h * 0.04 : h * 0.015),
+                        padding: EdgeInsets.only(
+                            top: Responsive.isDesktop(context)
+                                ? h * 0.04
+                                : h * 0.015),
                         child: AppString.emailText
-                            .semiBoldBarlowTextStyle(fontSize: 15, fontColor: greyTextColor)
+                            .semiBoldBarlowTextStyle(
+                                fontSize: 15, fontColor: greyTextColor)
                             .paddingSymmetric(horizontal: w * 0.015),
                       ),
                       AppTextField(
                         controller: controller.emailController,
                         icon: Icon(
                           Icons.email_outlined,
-                          size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
+                          size: Responsive.isTablet(context)
+                              ? h * 0.031
+                              : h * 0.025,
                         ),
                         hintText: AppString.emailHint,
                       ),
@@ -92,9 +102,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       //   hintText: AppString.numberTextHint,
                       // ),
                       Padding(
-                        padding: EdgeInsets.only(top: Responsive.isDesktop(context) ? h * 0.04 : h * 0.015),
+                        padding: EdgeInsets.only(
+                            top: Responsive.isDesktop(context)
+                                ? h * 0.04
+                                : h * 0.015),
                         child: AppString.userText
-                            .semiBoldBarlowTextStyle(fontSize: 15, fontColor: greyTextColor)
+                            .semiBoldBarlowTextStyle(
+                                fontSize: 15, fontColor: greyTextColor)
                             .paddingSymmetric(horizontal: w * 0.015),
                       ),
                       InnerShadowContainer(
@@ -116,12 +130,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               icon: Icon(
                                 Icons.keyboard_arrow_down,
                                 color: blackColor,
-                                size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
+                                size: Responsive.isTablet(context)
+                                    ? h * 0.031
+                                    : h * 0.025,
                               ),
-                              items: ["Maker", "Checker", "Approver"].map((String items) {
+                              items: ["Maker", "Checker", "Approver"]
+                                  .map((String items) {
                                 return DropdownMenuItem(
                                   value: items,
-                                  child: items.regularBarlowTextStyle(fontSize: 16),
+                                  child: items.regularBarlowTextStyle(
+                                      fontSize: 16),
                                 );
                               }).toList(),
                               onChanged: (newValue) {
@@ -132,9 +150,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: Responsive.isDesktop(context) ? h * 0.04 : h * 0.015),
+                        padding: EdgeInsets.only(
+                            top: Responsive.isDesktop(context)
+                                ? h * 0.04
+                                : h * 0.015),
                         child: AppString.passwordText
-                            .semiBoldBarlowTextStyle(fontSize: 15, fontColor: greyTextColor)
+                            .semiBoldBarlowTextStyle(
+                                fontSize: 15, fontColor: greyTextColor)
                             .paddingSymmetric(horizontal: w * 0.015),
                       ),
                       AppTextField(
@@ -157,27 +179,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: w * 0.03,
-                            vertical: Responsive.isDesktop(context) ? h * 0.065 : h * 0.03),
-                        child: controller.registerApiResponse.status == Status.LOADING
+                            vertical: Responsive.isDesktop(context)
+                                ? h * 0.065
+                                : h * 0.03),
+                        child: controller.registerApiResponse.status ==
+                                Status.LOADING
                             ? showCircular()
                             : MaterialButton(
                                 onPressed: () {
                                   controller.userRegister();
                                 },
                                 color: Colors.black,
-                                height: Responsive.isDesktop(context) ? h * 0.078 : h * 0.058,
+                                height: Responsive.isDesktop(context)
+                                    ? h * 0.078
+                                    : h * 0.058,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(width: w * 0.05),
-                                    AppString.signUpText
-                                        .boldRobotoTextStyle(fontSize: 16, fontColor: backGroundColor),
+                                    AppString.signUpText.boldRobotoTextStyle(
+                                        fontSize: 16,
+                                        fontColor: backGroundColor),
                                     Padding(
                                       padding: EdgeInsets.only(right: w * 0.03),
-                                      child: assetImage(AppAssets.arrowIcon, height: h * 0.015),
+                                      child: assetImage(AppAssets.arrowIcon,
+                                          height: h * 0.015),
                                     )
                                   ],
                                 ),
@@ -186,7 +216,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Center(
                         child: Column(
                           children: [
-                            AppString.alreadyAccountText.regularRobotoTextStyle(fontSize: 15),
+                            AppString.alreadyAccountText
+                                .regularRobotoTextStyle(fontSize: 15),
                             GestureDetector(
                               onTap: () {
                                 Get.back();

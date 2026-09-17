@@ -423,7 +423,9 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
       backgroundColor: backGroundColor,
       floatingActionButton: const CommonBackToHomeButton(),
       appBar: AppBarWidget(
-        title: "Cube Details".boldRobotoTextStyle(fontSize: 20),
+                                                   backGroundColor: const Color(0xFF3498DB),
+
+        title: "Cube Details".boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

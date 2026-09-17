@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/responsive.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -10,7 +9,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leadingIcon;
   final bool? leading;
   final Color? color;
+  final Color? backGroundColor;
+
   final void Function()? onPressed;
+
   // final double? elevation;
 
   const AppBarWidget({
@@ -21,7 +23,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.color,
     this.leadingIcon,
-    this.onPressed,
+    this.onPressed, 
+    this.backGroundColor,
     // this.elevation,
   });
 
@@ -47,7 +50,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     },
                 icon: Padding(
                   padding: EdgeInsets.only(left: Responsive.isTablet(context) ? w * 0.02 : w * 0.03),
-                  child: const Icon(Icons.arrow_back_ios, size: 22, color: Colors.black),
+                  child: const Icon(Icons.arrow_back_ios, size: 22, color: Colors.white),
                 ),
               ),
     );

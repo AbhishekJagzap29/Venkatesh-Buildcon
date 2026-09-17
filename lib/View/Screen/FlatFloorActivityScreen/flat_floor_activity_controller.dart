@@ -6,6 +6,7 @@ import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/project_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checklist_by_activity_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_flat_data_res_model.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_flat_floor_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_floor_data_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/success_data_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
@@ -25,6 +26,10 @@ class FlatFloorActivityController extends GetxController {
   int flatDataLength = 0;
   int floorDataLength = 0;
   bool load = false;
+
+  List<ListFlatData> dummyActivity = [];
+    GetFlatFloorDataResponseModel? flatFloorRes;
+
 
   setFlatDataLength(bool isFirst) async {
     if (!isFirst) {
@@ -100,6 +105,8 @@ class FlatFloorActivityController extends GetxController {
 
   /// FLAT ACTIVITY API
 
+///// orginal code
+
   ApiResponse _getFlatApiResponse =
       ApiResponse.initial(message: 'Initialization');
 
@@ -131,6 +138,60 @@ class FlatFloorActivityController extends GetxController {
     update();
   }
 
+//// code for dummy activity testing
+
+  // ApiResponse _getFlatApiResponse =
+  //     ApiResponse.initial(message: 'Initialization');
+
+  // ApiResponse get getFlatApiResponse => _getFlatApiResponse;
+
+  // Future<dynamic> getFlatController({Map<String, dynamic>? body}) async {
+  //   _getFlatApiResponse = ApiResponse.loading(message: 'Loading');
+  //   listOfActivityData = [];
+  //   searchListOfActivityData = [];
+
+  //   update();
+  //   try {
+  //     flatActivityRes = await ProjectRepo().getFlatRepo(body: body);
+  //     _getFlatApiResponse = ApiResponse.complete(flatActivityRes);
+
+  //     listOfActivityData = flatActivityRes?.activityData?.listFlatData ?? [];
+
+  //     // Check if the list is empty and add dummy activity
+  //     if (listOfActivityData.isEmpty) {
+  //       addDummyActivity();
+  //     } else {
+  //       listOfActivityData.sort(
+  //         (a, b) => "${a.name}".compareTo("${b.name}"),
+  //       );
+  //     }
+
+  //     searchListOfActivityData = listOfActivityData;
+  //     setFlatDataLength(true);
+  //     log("_getFlatApiResponse==>$flatActivityRes");
+  //   } catch (e) {
+  //     _getFlatApiResponse = ApiResponse.error(message: e.toString());
+  //     log("_getFlatApiResponse=ERROR=>$e");
+  //   }
+  //   update();
+  // }
+
+  // void addDummyActivity() {
+  //   // Create a dummy activity
+  //   ListFlatData dummyActivity = ListFlatData(
+  //     name: "Dummy Activity",
+  //     //activityId: "1",
+  //     desc: "Description for activity",
+  //     color: "green",
+  //     activity_type_status: true,
+  //     writeDate: DateTime.now(),
+  //   );
+
+  //   // Add the dummy activity to the list
+  //   listOfActivityData.add(dummyActivity);
+  //   searchListOfActivityData.add(dummyActivity);
+  // }
+
   setFloorDataLength(bool isFirst) async {
     if (!isFirst) {
       load = true;
@@ -148,42 +209,6 @@ class FlatFloorActivityController extends GetxController {
     load = false;
     update();
   }
-
-  // fetchFloorActivityData({String? floorId}) async {
-  //   loading = true;
-  //   update();
-  //
-  //   final fetchFoorData = await dbHelper.getSingleDataFromTable(
-  //       tableName: 'FloorData', id: int.parse(floorId.toString()), where: 'floorId');
-  //   FloorDataModel floorDataModel = FloorDataModel.fromJson(fetchFoorData!);
-  //
-  //   final fetchFloorActivityData = await dbHelper.getDataFromTable(
-  //       tableName: 'FloorActivity', where: "floorId", id: int.parse(floorId.toString()));
-  //
-  //   List<FloorActivityDataModel> floorActivityData = List<FloorActivityDataModel>.from(
-  //       fetchFloorActivityData.map((x) => FloorActivityDataModel.fromJson(x)));
-  //
-  //   for (var element in floorActivityData) {
-  //     ListFloorData data = ListFloorData(
-  //       activityId: element.id,
-  //       desc: element.description,
-  //       writeDate: DateTime.parse(element.writeDate.toString()),
-  //       name: element.name,
-  //     );
-  //     listOfFloorActivityData.add(data);
-  //   }
-  //
-  //   searchListFloorOfActivityData = listOfFloorActivityData;
-  //
-  //   activityFloorData.ActivityData finalData = activityFloorData.ActivityData(
-  //       listFloorData: listOfFloorActivityData,
-  //       floorName: floorDataModel.floorName,
-  //       floorId: floorDataModel.floorId);
-  //   floorActivityRes = GetFloorDataResponseModel(activityData: finalData);
-  //   setFloorDataLength(true);
-  //   loading = false;
-  //   update();
-  // }
 
   searchFloorActivity() {
     floorDataLength = 0;

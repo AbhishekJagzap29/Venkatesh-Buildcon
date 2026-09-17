@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: h * 0.05),
                         child: Center(
-                          child: assetImage(AppAssets.appLogo, scale: 2),
+                          child: assetImage(AppAssets.appLogo, scale: 2)
                         ),
                       ),
                       AppString.loginHeadingText.boldRobotoTextStyle(fontSize: 22),

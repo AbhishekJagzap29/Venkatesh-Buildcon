@@ -15,3 +15,4 @@ Color redColor = const Color(0xffB8220D);
 Color orangeColor = const Color(0xffEFAF4F);
 Color lightGreyColor = const Color(0xffD9D9D9);
 Color blackColor = Colors.black;
+Color yellowColor =  Color.fromARGB(255, 238, 220, 55);

@@ -58,10 +58,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: backGroundColor,
                 child: Scaffold(
                   appBar: AppBarWidget(
+                    backGroundColor: const Color(0xFF3498DB),
                     leading: false,
-                    centerTitle: false,
+                    centerTitle: true,
                     title:
-                        AppString.dashboard.boldRobotoTextStyle(fontSize: 20),
+                        AppString.dashboard.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
                   ),
                   backgroundColor: backGroundColor,
                   body: KeyboardVisibilityBuilder(

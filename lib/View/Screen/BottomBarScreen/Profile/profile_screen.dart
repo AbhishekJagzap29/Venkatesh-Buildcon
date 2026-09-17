@@ -30,12 +30,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         appBar: AppBarWidget(
           leading: false,
-          centerTitle: false,
-          title: AppString.profile.boldRobotoTextStyle(fontSize: 20),
+          centerTitle: true,
+                              backGroundColor: const Color(0xFF3498DB),
+
+          title: AppString.profile.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
           action: [
             Center(
               child: PopupMenuButton(
-                iconColor: Colors.black,
+                iconColor: Colors.white,
                 initialValue: profileScreenController.selectedItem,
                 onSelected: (item) {
                   profileScreenController.selectedItem = item;
@@ -63,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
                         ),
                         (w * 0.03).addWSpace(),
-                        "Change Password".regularRobotoTextStyle(fontSize: 16, fontColor: Colors.grey.shade600),
+                        AppString.changePassword.regularRobotoTextStyle(fontSize: 16, fontColor: Colors.grey.shade600),
                       ],
                     ),
                   ),
@@ -77,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
                         ),
                         (w * 0.03).addWSpace(),
-                        "Logout".regularRobotoTextStyle(fontSize: 16, fontColor: Colors.grey.shade600),
+                        AppString.logout.regularRobotoTextStyle(fontSize: 16, fontColor: Colors.grey.shade600),
                       ],
                     ),
                   ),
@@ -134,7 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 width: w * 0.058,
                                 child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: "Name".regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
+                                  child: AppString.name
+                                      .regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
                                 )),
                             trailing: SizedBox(
                               width: w * 0.4,
@@ -150,7 +153,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Icons.switch_account_outlined,
                               size: Responsive.isTablet(context) ? h * 0.031 : h * 0.025,
                             ),
-                            title: "Username".regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
+                            title: AppString.username
+                                .regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
                             trailing: SizedBox(
                                 width: w * 0.4,
                                 child: Align(
@@ -165,15 +169,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             title: SizedBox(
                               width: w * 0.2,
-                              child: "User type".regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
+                              child: AppString.userType
+                                  .regularRobotoTextStyle(fontSize: 18, fontColor: Colors.grey.shade600),
                             ),
-                            trailing: SizedBox(
-                                width: w * 0.4,
-                                child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: (controller.profileData?.userType ?? "").boldRobotoTextStyle(fontSize: 18))),
-                          ),
-                          (h * 0.01).addHSpace(),
+                          //   trailing: SizedBox(
+                          //       width: w * 0.4,
+                          //       child: Align(
+                          //           alignment: Alignment.centerRight,
+                          //           child: (controller.profileData?.userType ?? "").boldRobotoTextStyle(fontSize: 18))),
+                          // ),
+               trailing: SizedBox(
+  width: w * 0.4,
+  child: Align(
+    alignment: Alignment.centerRight,
+    child: controller.profileData?.userType != null && controller.profileData!.userType!.isNotEmpty
+        ? controller.profileData!.userType!.join(", ").boldRobotoTextStyle(fontSize: 18)
+        : "".boldRobotoTextStyle(fontSize: 18),
+  ),
+),
+
+
+                         // (h * 0.01).addHSpace(),
 
                           /// logout
                           // Padding(
@@ -208,6 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           //   ),
                           // ),
                           // (h * 0.1).addHSpace(),
+                       )
                         ],
                       ),
                     ),

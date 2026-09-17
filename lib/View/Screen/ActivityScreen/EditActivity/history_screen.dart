@@ -29,8 +29,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         builder: (controller) {
           return Scaffold(
             backgroundColor: backGroundColor,
+
             appBar: AppBarWidget(
-              title: "History".boldRobotoTextStyle(fontSize: 20),
+                               backGroundColor: const Color(0xFF3498DB),
+
+              title: "History".boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
             ),
             body: controller.history.isEmpty
                 ? const Center(

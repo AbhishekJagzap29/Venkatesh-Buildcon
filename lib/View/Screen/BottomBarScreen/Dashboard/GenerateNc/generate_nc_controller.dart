@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, unnecessary_cast
 
 import 'dart:developer';
 
@@ -14,6 +13,7 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_floor_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_project_responsible_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_tower_res_model.dart';
+
 
 class GenerateNcController extends GetxController {
   int? project_id;

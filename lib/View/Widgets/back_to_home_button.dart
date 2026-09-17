@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
-import 'package:venkatesh_buildcon_app/View/Screen/bottom_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
+
 
 class CommonBackToHomeButton extends StatefulWidget {
   const CommonBackToHomeButton({super.key});
@@ -30,7 +29,8 @@ class _CommonBackToHomeButtonState extends State<CommonBackToHomeButton> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(35)),
-          color: blackColor,
+          color:  const Color(0xFF3498DB)
+,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

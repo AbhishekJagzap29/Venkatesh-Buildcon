@@ -27,6 +27,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+
 class GenerateNcScreen extends StatefulWidget {
   final int project_id;
   final int tower_id;
@@ -535,9 +536,16 @@ class _GenerateNcScreenState extends State<GenerateNcScreen> {
     final w = MediaQuery.of(context).size.width;
 
     return Scaffold(
+        // appBar: AppBarWidget(
+        //   title: AppString.generatenc.boldRobotoTextStyle(fontSize: 20),
+        // ),
         appBar: AppBarWidget(
-          title: AppString.generatenc.boldRobotoTextStyle(fontSize: 20),
-        ),
+  backGroundColor: const Color(0xFF3498DB), // Sky Blue
+  title: AppString.generatenc.boldRobotoTextStyle(
+    fontSize: 20,
+    fontColor: Colors.white,
+  ),
+),
         body: SafeArea(
             child: GetBuilder<GenerateNcController>(builder: (controller) {
           return Form(
@@ -1069,60 +1077,149 @@ controller.floor_id = floor?.floor_id;
     );
   }
 
-  Widget _buildDateField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Date:",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey[800],
-          ),
+
+
+Widget _buildDateField() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Date:",
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[800],
         ),
-        SizedBox(height: 8),
-        GestureDetector(
-          onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-            );
-            if (pickedDate != null) {
-              setState(() {
-                selectedDate = pickedDate;
-              });
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[400]!),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  selectedDate != null
-                      ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
-                      : "Select Date",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color:
-                        selectedDate != null ? Colors.black : Colors.grey[600],
+      ),
+      SizedBox(height: 8),
+      GestureDetector(
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+
+            // Black calendar theme
+            builder: (context, child) {
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: blackColor.withOpacity(0.9),
+                    onPrimary: Colors.white,
+                    onSurface: blackColor.withOpacity(0.9),
+                  ),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                    ),
                   ),
                 ),
-                Icon(Icons.calendar_today, color: Colors.grey[800], size: 20),
-              ],
+                child: child!,
+              );
+            },
+          );
+
+          if (pickedDate != null) {
+            setState(() {
+              selectedDate = pickedDate;
+            });
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 14,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey[400]!,
             ),
           ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                selectedDate != null
+                    ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
+                    : "Select Date",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: selectedDate != null
+                      ? Colors.black
+                      : Colors.grey[600],
+                ),
+              ),
+              Icon(
+                Icons.calendar_today,
+                color: Colors.grey[800],
+                size: 20,
+              ),
+            ],
+          ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
+  // Widget _buildDateField() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         "Date:",
+  //         style: TextStyle(
+  //           fontSize: 16,
+  //           fontWeight: FontWeight.w500,
+  //           color: Colors.grey[800],
+  //         ),
+  //       ),
+  //       SizedBox(height: 8),
+  //       GestureDetector(
+  //         onTap: () async {
+  //           DateTime? pickedDate = await showDatePicker(
+  //             context: context,
+  //             initialDate: DateTime.now(),
+  //             firstDate: DateTime(1900),
+  //             lastDate: DateTime(2100),
+  //           );
+  //           if (pickedDate != null) {
+  //             setState(() {
+  //               selectedDate = pickedDate;
+  //             });
+  //           }
+  //         },
+  //         child: Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+  //           decoration: BoxDecoration(
+  //             color: Colors.grey[200],
+  //             borderRadius: BorderRadius.circular(12),
+  //             border: Border.all(color: Colors.grey[400]!),
+  //           ),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 selectedDate != null
+  //                     ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
+  //                     : "Select Date",
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                   fontWeight: FontWeight.w400,
+  //                   color:
+  //                       selectedDate != null ? Colors.black : Colors.grey[600],
+  //                 ),
+  //               ),
+  //               Icon(Icons.calendar_today, color: Colors.grey[800], size: 20),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+}
+

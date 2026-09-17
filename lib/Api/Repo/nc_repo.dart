@@ -10,7 +10,6 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/nc_tower_res_model.dart
 import 'package:venkatesh_buildcon_app/Api/Services/api_service.dart';
 import 'package:venkatesh_buildcon_app/Api/Services/base_service.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
-
 class NcRepo {
   Map<String, String> header1 = {
     'Content-Type': 'application/json',

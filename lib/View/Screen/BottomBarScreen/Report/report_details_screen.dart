@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/responsive.dart';
+import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Report/edit_report_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Report/report_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
@@ -25,6 +27,8 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     super.initState();
   }
 
+  DateFormat formattedDateTime = DateFormat('hh:mm aa');
+
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
@@ -37,10 +41,29 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           return Scaffold(
             backgroundColor: backGroundColor,
             appBar: AppBarWidget(
+               backGroundColor: const Color(0xFF3498DB),
               title: controller.selectedTowerData!.trainerName
                   .toString()
                   .capitalizeFirst
-                  ?.boldRobotoTextStyle(fontSize: 20),
+                  ?.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
+              action: [
+                preferences.getString(SharedPreference.userType) == "checker"
+                    ? InkWell(
+                        onTap: () {
+                          if (controller.selectedTowerData != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditReportScreen(
+                                        towerDatum:
+                                            controller.selectedTowerData!)));
+                          }
+                        },
+                        child: const Icon(Icons.edit_outlined,
+                                size: 23, color: Colors.black)
+                            .paddingOnly(right: w * 0.02))
+                    : const SizedBox()
+              ],
             ),
             body: Stack(
               children: [
@@ -62,6 +85,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                   Border.all(color: const Color(0xffE6E6E6)),
                               borderRadius: BorderRadius.circular(16)),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment:
@@ -111,6 +135,11 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                       "${DateFormat('dd-MM-yyyy').format(controller.selectedTowerData!.trainingDatedOn!)}"),
                               (h * 0.007).addHSpace(),
                               buildRow(
+                                  title: "Trainer Name : ",
+                                  subTitle:
+                                      "${controller.selectedTowerData!.trainerName}"),
+                              (h * 0.007).addHSpace(),
+                              buildRow(
                                   title: "Topic of Training : ",
                                   subTitle:
                                       "${controller.selectedTowerData!.topicOfTraining}"),
@@ -118,12 +147,12 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                               buildRow(
                                   title: "Start Time : ",
                                   subTitle:
-                                      "${controller.selectedTowerData!.trainingStartTime}"),
+                                      "${formattedDateTime.format(DateFormat('HH:mm').parse(controller.selectedTowerData!.trainingStartTime!.trim()))}"),
                               (h * 0.007).addHSpace(),
                               buildRow(
                                   title: "End Time : ",
                                   subTitle:
-                                      "${controller.selectedTowerData!.trainingEndTime}"),
+                                      "${formattedDateTime.format(DateFormat('HH:mm').parse(controller.selectedTowerData!.trainingEndTime.toString()))}"),
                               (h * 0.007).addHSpace(),
                               buildRow(
                                   title: "Total Duration: ",
@@ -140,29 +169,111 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                   subTitle:
                                       "${controller.selectedTowerData!.description}"),
                               (h * 0.007).addHSpace(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+
+                              // Padding(
+                              //   padding: EdgeInsets.only(),
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(context, MaterialPageRoute(builder: (context) => EditReportScreen(towerDatum: controller.selectedTowerData!)));
+                              //     },
+                              //     child: Container(
+                              //       width: w*0.08,
+                              //       height: h*0.038,
+                              //       decoration: BoxDecoration(
+                              //         color: blackColor,
+                              //         borderRadius: BorderRadius.circular(10)
+                              //       ),
+                              //       child: const Center(
+                              //         child: Icon(Icons.edit_outlined,size: 18,color: Colors.white),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // )
+                              //   ],
+                              // ),
+                              "Training given to: "
+                                  .toString()
+                                  .boldRobotoTextStyle(
+                                      fontSize: 13, textAlign: TextAlign.start),
+
+                              SizedBox(
+                                height: h * 0.01,
+                              ),
+                              Table(
+                                border: TableBorder.all(color: Colors.black),
+                                columnWidths: const <int, TableColumnWidth>{
+                                  0: FixedColumnWidth(40),
+                                  1: FlexColumnWidth(),
+                                  2: FlexColumnWidth(),
+                                },
                                 children: [
-                                  "Training given to: "
-                                      .toString()
-                                      .boldRobotoTextStyle(
-                                        fontSize: 13,
-                                      ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: controller.selectedTowerData!
-                                          .trainingGivenTo?.length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return "${index + 1}. ${controller.selectedTowerData!.trainingGivenTo?[index]}"
-                                            .toString()
-                                            .regularRobotoTextStyle(
-                                                fontSize: 13);
-                                      },
-                                    ),
-                                  )
+                                  TableRow(
+                                    children: [
+                                      'Sr.'.boldRobotoTextStyle(
+                                          fontSize: 13,
+                                          textAlign: TextAlign.center),
+                                      'Name'.boldRobotoTextStyle(
+                                          fontSize: 13,
+                                          textAlign: TextAlign.center),
+                                      'Organization'.boldRobotoTextStyle(
+                                          fontSize: 13,
+                                          textAlign: TextAlign.center),
+                                    ],
+                                  ),
+                                  ...List.generate(
+                                      controller.selectedTowerData
+                                              ?.trainingGivenTo?.length ??
+                                          0, (index) {
+                                    return TableRow(children: [
+                                      Text("${index + 1}",
+                                          textAlign: TextAlign.center),
+                                      Text(
+                                          controller
+                                                  .selectedTowerData
+                                                  ?.trainingGivenTo?[index]
+                                                  .name ??
+                                              '',
+                                          textAlign: TextAlign.center),
+                                      Text(
+                                          controller
+                                                      .selectedTowerData!
+                                                      .trainingGivenTo?[index]
+                                                      .tag ==
+                                                  "contractor"
+                                              ? "Contractor"
+                                             // : "VJ Developers",
+                                             :"Dreamwarez",
+                                             
+                                          textAlign: TextAlign.center),
+                                    ]);
+                                  }),
                                 ],
                               ),
+                              //  Row(
+                              //   children: [
+                              //     Expanded(flex: 1,child: "Sr.".boldRobotoTextStyle(
+                              //       fontSize: 13,
+                              //     ),),
+                              //     Expanded(flex:2,child:"Name".boldRobotoTextStyle(
+                              //       fontSize: 13,
+                              //     )),
+                              //     Expanded(flex: 2,child: "Organization".boldRobotoTextStyle(
+                              //       fontSize: 13,
+                              //     )),
+                              //   ],
+                              // ).paddingOnly(left: w*0.01,right: w*0.01,bottom: h*0.005),
+                              // ListView.builder(
+                              //   itemCount: controller.selectedTowerData!
+                              //       .trainingGivenTo?.length,
+                              //   shrinkWrap: true,
+                              //   itemBuilder: (context, index) {
+                              //     return buildDemo(w: w,index: index,title:controller.selectedTowerData!.trainingGivenTo?[index].name,subTitle: controller.selectedTowerData!.trainingGivenTo?[index].tag=="contractor"?"Contractor":"VJ Developers" ).paddingSymmetric(horizontal: w*0.02);
+                              //   },
+                              // ),
                             ],
                           ),
                         ),
@@ -220,6 +331,25 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           child: subTitle!.toString().regularRobotoTextStyle(fontSize: 13),
         ),
       ],
+    );
+  }
+
+  Container buildDemo(
+      {String? title,
+      String? subTitle,
+      required int index,
+      required double w}) {
+    return Container(
+      color: Colors.blueGrey.shade100,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 1, child: Text("${index + 1}")),
+          Expanded(flex: 2, child: Text(title!)),
+          SizedBox(width: w * 0.008),
+          Expanded(flex: 2, child: Text(subTitle!))
+        ],
+      ),
     );
   }
 

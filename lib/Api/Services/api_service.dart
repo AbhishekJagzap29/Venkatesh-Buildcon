@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 
+
 import '../apis/app_exception.dart';
 
 enum APIType { aPost, aGet, aPut, aDelete, aFileUpload }
@@ -17,7 +18,7 @@ enum HeaderType {
 }
 
 class APIService {
-  var response;  
+  var response;
 
   Future getResponse({
     required String url,
@@ -25,12 +26,12 @@ class APIService {
     Map<String, dynamic>? body,
     Map<String, String>? header,
   }) async {
-    log("url ===-----URL-----===>>>>> $url");     
+    log("url ===-----URL-----===>>>>> $url");
     try {
       if (apiType == APIType.aGet) {
         final result = await http.get(Uri.parse(url), headers: header);
         response = returnResponse(result.statusCode, result.body);
-        log("res${result.body}"); 
+        log("res${result.body}");
       } else if (apiType == APIType.aPut) {
         log("REQUEST PARAMETER ======>>>>> ${jsonEncode(body)}");
 
@@ -62,7 +63,7 @@ class APIService {
         response = returnResponse(result.statusCode!, jsonEncode(result.data));
       } else {
         log("REQUEST PARAMETER ======>>>>> ${json.encode(body)}");
-    
+
         final result = await http.post(Uri.parse(url),
             body: jsonEncode(body), headers: header);
 
@@ -89,7 +90,7 @@ class APIService {
   }
 
   returnResponse(int status, String result) {
-    switch (status) {  
+    switch (status) {
       case 200:
         return jsonDecode(result);
       case 201:

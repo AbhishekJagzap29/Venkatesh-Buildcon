@@ -63,12 +63,13 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
             return Scaffold(
               backgroundColor: backGroundColor,
               appBar: AppBarWidget(
+                 backGroundColor: const Color(0xFF3498DB),
                 title: (controller.constData?.activityName?.isNotEmpty ?? false
                         ? controller.constData?.activityName
                         : controller.activityData?.activity_name)
                     .toString()
                     .capitalizeFirst
-                    ?.boldRobotoTextStyle(fontSize: 20),
+                    ?.boldRobotoTextStyle(fontSize: 20,fontColor: Colors.white),
               ),
               body: Stack(
                 children: [
