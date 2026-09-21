@@ -459,22 +459,12 @@ class _HQLFlatScreenState extends State<HQLFlatScreen> {
                                                           flex: 1,
                                                           child: CircleAvatar(
                                                             radius: 8,
-                                                            backgroundColor: controller
+                                                            backgroundColor:
+                                                                getColorFromString(
+                                                                    controller
                                                                         .locationdata[
                                                                             index]
-                                                                        .color ==
-                                                                    'green'
-                                                                ? greenColor
-                                                                : controller
-                                                                            .locationdata[
-                                                                                index]
-                                                                            .color ==
-                                                                        'orange'
-                                                                    ? orangeColor
-                                                                    : controller.locationdata[index].color ==
-                                                                            'yellow'
-                                                                        ? yellowColor
-                                                                        : redColor,
+                                                                        .color),
                                                           ),
                                                         ),
                                                         (w * 0.03).addWSpace(),

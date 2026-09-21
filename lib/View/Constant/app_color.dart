@@ -16,3 +16,22 @@ Color orangeColor = const Color(0xffEFAF4F);
 Color lightGreyColor = const Color(0xffD9D9D9);
 Color blackColor = Colors.black;
 Color yellowColor =  Color.fromARGB(255, 238, 220, 55);
+Color blueColor = const Color(0xff1167EE);
+
+Color getColorFromString(String? colorStr) {
+  switch (colorStr?.toLowerCase()) {
+    case 'green':
+      return greenColor;
+    case 'orange':
+      return orangeColor;
+    case 'yellow':
+      return yellowColor;
+    case 'blue':
+      return blueColor;
+    case 'red':
+      return redColor;
+    default:
+      return redColor;
+  }
+}
+

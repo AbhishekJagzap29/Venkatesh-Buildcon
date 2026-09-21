@@ -743,7 +743,7 @@ class FlatVisitDataOffline {
                       locationId: loc.locationId,
                       unitType: loc.unitType,
                       locationName: loc.locationName,
-                      color: loc.color,
+                      color: loc.color ?? loc.locationOverallColor,
                       activity_type_status: false,
                       desc: null,
                       writeDate: null,

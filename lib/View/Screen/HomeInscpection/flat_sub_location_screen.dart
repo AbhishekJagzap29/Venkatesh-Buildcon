@@ -511,15 +511,9 @@ class _FlatSubLocationScreenState extends State<FlatSubLocationScreen>
 
                                                 CircleAvatar(
                                                   radius: 8,
-                                                  backgroundColor: obs.color ==
-                                                          'green'
-                                                      ? greenColor
-                                                      : obs.color == 'orange'
-                                                          ? orangeColor
-                                                          : obs.color ==
-                                                                  'yellow'
-                                                              ? yellowColor
-                                                              : redColor,
+                                                  backgroundColor:
+                                                      getColorFromString(
+                                                          obs.color),
                                                 ),
                                                 SizedBox(width: w * 0.03),
                                                 Expanded(
@@ -538,14 +532,8 @@ class _FlatSubLocationScreenState extends State<FlatSubLocationScreen>
                                                 Icon(
                                                   Icons.done_all,
                                                   size: 16,
-                                                  color: obs.color == 'green'
-                                                      ? greenColor
-                                                      : obs.color == 'orange'
-                                                          ? orangeColor
-                                                          : obs.color ==
-                                                                  'yellow'
-                                                              ? yellowColor
-                                                              : redColor,
+                                                  color: getColorFromString(
+                                                      obs.color),
                                                 ),
                                                 IconButton(
                                                   icon: const Icon(
