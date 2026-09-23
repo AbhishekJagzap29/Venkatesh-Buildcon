@@ -947,7 +947,8 @@ class _GenerateNcDetailsScreenState extends State<GenerateNcDetailsScreen> {
       }
 
       if (widget.fromMaker == true ||
-          (userType ?? "").trim().toLowerCase() == "approver") {
+          (userType ?? "").trim().toLowerCase().contains("approver") ||
+          (userType ?? "").trim().toLowerCase().contains("checker")) {
         filteredList = filteredList.where((nc) {
           final status = (nc.status ?? "").toLowerCase();
           return status == "open" ||
@@ -964,7 +965,8 @@ class _GenerateNcDetailsScreenState extends State<GenerateNcDetailsScreen> {
       return Column(
         children: [
           if (widget.fromMaker == true ||
-              (userType ?? "").trim().toLowerCase() == "approver")
+              (userType ?? "").trim().toLowerCase().contains("approver") ||
+              (userType ?? "").trim().toLowerCase().contains("checker"))
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: w * 0.06, vertical: h * 0.015),

@@ -30,7 +30,9 @@ class _BottomBarState extends State<BottomBar> {
     super.dispose();
   }
 
-  final List<Widget> bottomBarPages = preferences.getString(SharedPreference.userType) == "checker"
+  // final List<Widget> bottomBarPages = preferences.getString(SharedPreference.userType) == "checker" 
+  final List<Widget> bottomBarPages =
+    preferences.getString(SharedPreference.userType)?.contains("checker") == true
       ? [
           const HomeScreen(),
           const DashboardScreen(),
@@ -60,11 +62,13 @@ class _BottomBarState extends State<BottomBar> {
         color: Colors.white,
         showLabel: false,
        // notchColor: Colors.black87,
-notchColor: const Color(0xFF3498DB),
+      notchColor: const Color(0xFF3498DB),
         removeMargins: false,
         bottomBarWidth: MediaQuery.of(context).size.width,
         durationInMilliSeconds: 300,
-        bottomBarItems: preferences.getString(SharedPreference.userType) == "checker"
+        // bottomBarItems: preferences.getString(SharedPreference.userType) == "checker"
+        bottomBarItems:
+    preferences.getString(SharedPreference.userType)?.contains("checker") == true
             ? [
                 const BottomBarItem(
                   inActiveItem: Icon(

@@ -76,7 +76,9 @@ class _PdfViewScreen extends State<PdfViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
-        title: title.boldRobotoTextStyle(fontSize: 18),
+              backGroundColor: const Color(0xFF3498DB),
+
+        title: title.boldRobotoTextStyle(fontSize: 18, fontColor: Colors.white),
         action: [
           IconButton(
             icon: const Icon(Icons.download, size: 22),

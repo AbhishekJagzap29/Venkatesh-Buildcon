@@ -520,9 +520,9 @@ class ProjectRepo {
 
   Future<dynamic> updateChecklistRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: preferences.getString(SharedPreference.userType) == "checker"
+      url: (preferences.getString(SharedPreference.userType)?.contains("checker") ?? false)
           ? ApiRouts.updateCheckerData
-          : preferences.getString(SharedPreference.userType) == "approver"
+          : (preferences.getString(SharedPreference.userType)?.contains("approver") ?? false)
               ? ApiRouts.updateApproverData
               : ApiRouts.updateMakerData,
       apiType: APIType.aPost,
@@ -544,7 +544,7 @@ class ProjectRepo {
 
   Future<dynamic> rejectChecklistRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: preferences.getString(SharedPreference.userType) == "checker"
+      url: (preferences.getString(SharedPreference.userType)?.contains("checker") ?? false)
           ? ApiRouts.rejectMakerData
           : ApiRouts.rejectCheckerData,
       apiType: APIType.aPost,
@@ -650,9 +650,9 @@ class ProjectRepo {
     log('body----------updateMaterialRepo- ${body}');
 
     var response = await APIService().getResponse(
-      url: preferences.getString(SharedPreference.userType) == "checker"
+      url: (preferences.getString(SharedPreference.userType)?.contains("checker") ?? false)
           ? ApiRouts.updateChecker
-          : preferences.getString(SharedPreference.userType) == "approver"
+          : (preferences.getString(SharedPreference.userType)?.contains("approver") ?? false)
               ? ApiRouts.updateApprover
               : ApiRouts.updateMaker,
       apiType: APIType.aPost,
@@ -669,7 +669,7 @@ class ProjectRepo {
   /// REJECT
   Future<dynamic> rejectMakerRepo({Map<String, dynamic>? body}) async {
     var response = await APIService().getResponse(
-      url: preferences.getString(SharedPreference.userType) == "checker"
+      url: (preferences.getString(SharedPreference.userType)?.contains("checker") ?? false)
           ? ApiRouts.rejectChecker
           : ApiRouts.rejectApprover,
       apiType: APIType.aPost,

@@ -136,7 +136,11 @@ class EditActivityController extends GetxController {
             if (activityData?.activityStatus == "approve") {
               isEdit = false;
             } else if (preferences.getString(SharedPreference.userType) ==
-                status) {
+                    status ||
+                (preferences
+                        .getString(SharedPreference.userType)
+                        ?.contains(status) ??
+                    false)) {
               isEdit = true;
             } else {
               isEdit = false;
@@ -165,7 +169,11 @@ class EditActivityController extends GetxController {
     log('status----------- $status');
     if (activityData?.activityStatus == "approve") {
       isEdit = false;
-    } else if (preferences.getString(SharedPreference.userType) == status) {
+    } else if (preferences.getString(SharedPreference.userType) == status ||
+        (preferences
+                .getString(SharedPreference.userType)
+                ?.contains(status) ??
+            false)) {
       isEdit = true;
     } else {
       isEdit = false;
@@ -409,7 +417,10 @@ class EditActivityController extends GetxController {
             activityData?.checkerRemark.toString().trim(),
         "overall_remarks_approver":
             activityData?.approverRemark.toString().trim(),
-        if (preferences.getString(SharedPreference.userType) == "maker" &&
+        if ((preferences
+                    .getString(SharedPreference.userType)
+                    ?.contains("maker") ??
+                false) &&
             overallImageListData.isNotEmpty)
           "overall_images": overallImageListData,
       };

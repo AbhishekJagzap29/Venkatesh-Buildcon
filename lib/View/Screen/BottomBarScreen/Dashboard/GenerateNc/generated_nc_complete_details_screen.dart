@@ -535,7 +535,8 @@ class _GenerateNcCompleteDetailsScreenState
       mergedApproverImages = widget.approverImages ?? [];
     }
 
-    bool isMaker = userType?.toLowerCase() == "maker";
+    bool isMaker = (userType?.toLowerCase().contains("maker") ?? false) ||
+        (userType?.toLowerCase().contains("hqi_maker") ?? false);
 
     bool backendClosed = backendStatus == "close";
 
@@ -737,7 +738,8 @@ class _GenerateNcCompleteDetailsScreenState
                 if (mergedApproverImages.isNotEmpty)
                   _buildApproverImages(mergedApproverImages),
 
-                if (userType?.toLowerCase() == "approver" &&
+                if (((userType?.toLowerCase().contains("approver") ?? false) ||
+                        (userType?.toLowerCase().contains("checker") ?? false)) &&
                     backendStatus == "submit") ...[
                   const SizedBox(height: 20),
                   TextField(

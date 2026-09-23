@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -51,6 +50,8 @@ class _FlatSubLocationScreenState extends State<FlatSubLocationScreen>
   int visitSequence = 0;
   String visitName = "";
   int visitId = 0;
+
+  final userType = preferences.getString(SharedPreference.userType) ?? '';
 
   // LocationData? locationData = Get.arguments['data'];
 
@@ -367,13 +368,12 @@ class _FlatSubLocationScreenState extends State<FlatSubLocationScreen>
                           //     );
                           //   }),
                           const SizedBox(height: 10),
-                          // if (preferences
-                          //         .getString(SharedPreference.userType) ==
-                          //     "hqi_checker")
-                          if (preferences
-                                      .getString(SharedPreference.userType) ==
-                                  "hqi_checker" &&
+                         
+
+                          if (userType.contains('hqi_checker') &&
+                              userType.contains('checker') &&
                               visitSequence != 3)
+                          
                             Padding(
                               padding: const EdgeInsets.only(left: 200),
                               child: ElevatedButton(
@@ -409,18 +409,21 @@ class _FlatSubLocationScreenState extends State<FlatSubLocationScreen>
                           SizedBox(
                             height: 20,
                           ),
-                          if (preferences
-                                      .getString(SharedPreference.userType) ==
-                                  "hqi_checker" ||
-                              (preferences
-                                      .getString(SharedPreference.userType)
-                                      ?.contains("hqi_maker") ??
-                                  false) ||
+                          // if (preferences
+                          //             .getString(SharedPreference.userType) ==
+                          //         "hqi_checker" ||
+                          //     (preferences
+                          //             .getString(SharedPreference.userType)
+                          //             ?.contains("hqi_maker") ??
+                          //         false) ||
 
-                              //   preferences.getString(SharedPreference.userType) == "hqi_maker" ||
-                              preferences
-                                      .getString(SharedPreference.userType) ==
-                                  "hqi_approver")
+                          //     //   preferences.getString(SharedPreference.userType) == "hqi_maker" ||
+                          //     preferences
+                          //             .getString(SharedPreference.userType) ==
+                          //         "hqi_approver")
+                          if ((preferences.getString(SharedPreference.userType)?.contains("hqi_checker") ?? false) ||
+    (preferences.getString(SharedPreference.userType)?.contains("hqi_maker") ?? false) ||
+    (preferences.getString(SharedPreference.userType)?.contains("hqi_approver") ?? false))
                             if (controller.filteredObservationList.isEmpty)
                               SizedBox(
                                 height: h * 0.3,

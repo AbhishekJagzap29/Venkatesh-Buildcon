@@ -1721,8 +1721,10 @@ class _AttachmentDialogPopupState extends State<AttachmentDialogPopup> {
                           () async => await _handleMakerSubmission(),
                         ),
                       ],
-                    ] else if (userType == "hqi_checker" ||
-                        userType == "hqi_approver") ...[
+                    // ] else if (userType == "hqi_checker" ||
+                    //     userType == "hqi_approver") ...[
+                    ] else if (userType!.contains("hqi_checker") ||
+    userType!.contains("hqi_approver")) ...[
                       if (widget.observationData.syncStatus != "pending" &&
                           !isNewlyAddedOffline &&
                           !isUpdatedOffline &&

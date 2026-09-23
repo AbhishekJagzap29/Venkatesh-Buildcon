@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
@@ -16,6 +14,7 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/success_data_res_model.
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/ActivityScreen/EditActivity/image_capture_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
+import 'package:venkatesh_buildcon_app/View/Utils/image_compress_util.dart';
 
 /// VJ Material Inspection  ==========================================================
 // class MaterialInspectionScreenController extends GetxController {
@@ -1115,23 +1114,21 @@ class MaterialInspectionScreenController extends GetxController {
   /// Overall Image Capture
   captureOverallImage({required BuildContext context, String? screen}) async {
     final ImagePicker picker = ImagePicker();
-    XFile? image = await picker
+    await picker
         .pickImage(imageQuality: 15, source: ImageSource.camera)
         .then(
       (value) async {
         if (value != null) {
-          Uint8List imageBytes = await value.readAsBytes();
-          img.Image? image = img.decodeImage(imageBytes);
-          img.Image resizedImage = img.copyResize(image!, width: 800);
-          List<int> compressedBytes = img.encodeJpg(resizedImage, quality: 35);
-          File compressedFile = File(value.path)
-            ..writeAsBytesSync(compressedBytes);
+          File compressedFile = await ImageCompressUtil.compressImage(
+            File(value.path),
+            quality: 60,
+          );
 
           return Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ImageCaptureScreen(
-                  image: File(compressedFile.path.toString()),
+                  image: compressedFile,
                   title: screen == "CreateMaterialInspectionScreen"
                       ? "Test Project"
                       : (selectedReport?.seqNo ?? "").toString()),
@@ -1831,22 +1828,20 @@ class MaterialInspectionScreenController extends GetxController {
   /// Capture Image
   capturePhoto({required BuildContext context}) async {
     final ImagePicker picker = ImagePicker();
-    XFile? image = await picker
+    await picker
         .pickImage(imageQuality: 15, source: ImageSource.camera)
         .then(
       (value) async {
         if (value != null) {
-          Uint8List imageBytes = await value.readAsBytes();
-          img.Image? image = img.decodeImage(imageBytes);
-          img.Image resizedImage = img.copyResize(image!, width: 800);
-          List<int> compressedBytes = img.encodeJpg(resizedImage, quality: 35);
-          File compressedFile = File(value.path)
-            ..writeAsBytesSync(compressedBytes);
+          File compressedFile = await ImageCompressUtil.compressImage(
+            File(value.path),
+            quality: 60,
+          );
           return Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ImageCaptureScreen(
-                image: File(compressedFile.path.toString()),
+                image: compressedFile,
                 title: seqNo,
               ),
             ),

@@ -300,7 +300,8 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
     }
 
     final userId =
-        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ?? 0;
+        int.tryParse(preferences.getString(SharedPreference.userId) ?? "0") ??
+            0;
 
     final body = {
       "user_id": userId,
@@ -526,7 +527,9 @@ class _CubeUpdateScreenState extends State<CubeUpdateScreen> {
       backgroundColor: backGroundColor,
       floatingActionButton: const CommonBackToHomeButton(),
       appBar: AppBarWidget(
-        title: "Update Cube Record".boldRobotoTextStyle(fontSize: 20),
+        backGroundColor: const Color(0xFF3498DB),
+        title: "Update Cube Record"
+            .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: w * 0.06),

@@ -395,22 +395,28 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                                 ],
 
                                                 /// ✅ Show Capture Photo button if previously added (like remark)
-                                                if ((preferences.getString(
+                                                if (((preferences
+                                                            .getString(
                                                                 SharedPreference
-                                                                    .userType) ==
-                                                            "maker" &&
-                                                        controller.isEdit) ||
-                                                    (preferences.getString(
+                                                                    .userType)
+                                                            ?.contains(
+                                                                "maker") ??
+                                                        false) &&
+                                                    controller.isEdit) ||
+                                                    ((preferences
+                                                            .getString(
                                                                 SharedPreference
-                                                                    .userType) ==
-                                                            "checker" &&
+                                                                    .userType)
+                                                            ?.contains(
+                                                                "checker") ??
+                                                        false) &&
                                                         controller.activityData
                                                                 ?.activityStatus
                                                                 ?.toLowerCase() ==
                                                             "approver_reject" &&
                                                         controller.isEdit &&
-                                                        data!.imageList
-                                                            .isNotEmpty))
+                                                         data.imageList
+                                                             .isNotEmpty))
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -598,9 +604,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                       //       "maker",
                                       // ),
 
-                                      isEditable: preferences.getString(
-                                                  SharedPreference.userType) ==
-                                              "maker" &&
+                                      isEditable: (preferences
+                                                  .getString(SharedPreference
+                                                      .userType)
+                                                  ?.contains("maker") ??
+                                              false) &&
                                           (controller
                                                   .activityData?.activityStatus
                                                   ?.toLowerCase() ==
@@ -615,9 +623,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                       controller.checkerRemarkController,
                                       w,
                                       h,
-                                      isEditable: preferences.getString(
-                                                  SharedPreference.userType) ==
-                                              "checker" &&
+                                      isEditable: (preferences
+                                                  .getString(SharedPreference
+                                                      .userType)
+                                                  ?.contains("checker") ??
+                                              false) &&
                                           (controller
                                                   .activityData?.activityStatus
                                                   ?.toLowerCase() ==
@@ -633,9 +643,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                       controller.approverRemarkController,
                                       w,
                                       h,
-                                      isEditable: preferences.getString(
-                                                  SharedPreference.userType) ==
-                                              "approver" &&
+                                      isEditable: (preferences
+                                                  .getString(SharedPreference
+                                                      .userType)
+                                                  ?.contains("approver") ??
+                                              false) &&
                                           (controller
                                                   .activityData?.activityStatus
                                                   ?.toLowerCase() ==
@@ -643,9 +655,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                     ),
 
                                     /// OVERALL IMAGE == maker
-                                    if (preferences.getString(
-                                                SharedPreference.userType) ==
-                                            "maker" &&
+                                    if ((preferences
+                                                .getString(
+                                                    SharedPreference.userType)
+                                                ?.contains("maker") ??
+                                            false) &&
                                         (controller.isEdit ||
                                             controller
                                                 .activityData!
@@ -742,9 +756,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                     ],
 
                                     /// OVERALL IMAGE == checker and approver
-                                    if (preferences.getString(
-                                                SharedPreference.userType) !=
-                                            "maker" &&
+                                    if (!(preferences
+                                                .getString(
+                                                    SharedPreference.userType)
+                                                ?.contains("maker") ??
+                                            false) &&
                                         controller.activityData!
                                             .overallImagesList!.isNotEmpty) ...[
                                       (h * 0.03).addHSpace(),
@@ -1026,6 +1042,9 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
 
   Widget bottomButtons(EditActivityController controller, double h, double w) {
     String userType = preferences.getString(SharedPreference.userType) ?? "";
+    bool isMaker = userType.contains("maker");
+    bool isChecker = userType.contains("checker");
+    bool isApprover = userType.contains("approver");
     String activityStatus =
         controller.activityData?.activityStatus?.toLowerCase() ?? "";
 
@@ -1039,7 +1058,7 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
     }
 
     // Case 1: Checker receives approver_reject → show all buttons
-    if (userType == "checker" && activityStatus == "approver_reject") {
+    if (isChecker && activityStatus == "approver_reject") {
       enableEdit();
       return Column(
         children: [
@@ -1061,7 +1080,7 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
     }
 
     // ✅ Case 2: Maker receives checker_reject → show only Save as Draft + Submit
-    if (userType == "maker" && activityStatus == "checker_reject") {
+    if (isMaker && activityStatus == "checker_reject") {
       enableEdit();
       return Column(
         children: [
@@ -1078,9 +1097,9 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
 
     // ✅ Already Submitted cases
     if (!controller.isEdit ||
-        (userType == "checker" && activityStatus == "checked") ||
-        (userType == "approver" && activityStatus == "approve") ||
-        (userType == "maker" && activityStatus == "submit")) {
+        (isChecker && activityStatus == "checked") ||
+        (isApprover && activityStatus == "approve") ||
+        (isMaker && activityStatus == "submit")) {
       // Make form non-editable
       if (controller.isEdit) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1099,7 +1118,7 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
       } else {
         return Row(
           children: [
-            if (userType != "maker") ...[
+            if (!isMaker) ...[
               saveRejectButton(h, controller, context),
               (w * 0.03).addWSpace()
             ],
@@ -1115,11 +1134,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
         saveAsDraftButton(h, controller, context),
         Row(
           children: [
-            if (userType != "maker") ...[
+            if (!isMaker) ...[
               rejectButton(controller, h, context, onRejectDone: () {
-                if (userType == "checker") {
+                if (isChecker) {
                   controller.activityData?.activityStatus = "checker_reject";
-                } else if (userType == "approver") {
+                } else if (isApprover) {
                   controller.activityData?.activityStatus = "approver_reject";
                 }
                 controller.isEdit = false;
@@ -1128,7 +1147,7 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
               (w * 0.03).addWSpace()
             ],
             // Maker submit button logic
-            userType == "maker" &&
+            isMaker &&
                     ((controller.isNetwork.isNotEmpty &&
                             controller.savedLineData.isNotEmpty)
                         ? controller.savedLineData.any(

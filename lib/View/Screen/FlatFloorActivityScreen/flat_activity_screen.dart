@@ -376,9 +376,17 @@ class _FlatActivityScreenState extends State<FlatActivityScreen> {
                                                                       PopupMenuItem(
                                                                         onTap:
                                                                             () {
+                                                                          // Get.toNamed(
+                                                                          //     Routes.viewPdf,
+                                                                          //     arguments: "${
+                                                                          //       controller.searchListOfActivityData[index].name}".toString());
                                                                           Get.toNamed(
-                                                                              Routes.viewPdf,
-                                                                              arguments: "${controller.searchListOfActivityData[index].name}".toString());
+  Routes.viewPdf,
+  arguments: {
+    "activity_name":
+        controller.searchListOfActivityData[index].name ?? "",
+  },
+);
                                                                         },
                                                                         child:
                                                                             Row(

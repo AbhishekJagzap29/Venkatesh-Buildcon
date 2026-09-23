@@ -416,14 +416,14 @@ class _CubeDetailsScreenState extends State<CubeDetailsScreen> {
     final w = MediaQuery.of(context).size.width;
 
     final bool isApprover =
-        preferences.getString(SharedPreference.userType)!.toLowerCase() ==
-            "approver";
-
+        // preferences.getString(SharedPreference.userType)!.toLowerCase() ==
+        //     "approver";
+(preferences.getString(SharedPreference.userType)?.toLowerCase().contains("approver") ?? false);
     return Scaffold(
       backgroundColor: backGroundColor,
       floatingActionButton: const CommonBackToHomeButton(),
       appBar: AppBarWidget(
-                                                   backGroundColor: const Color(0xFF3498DB),
+       backGroundColor: const Color(0xFF3498DB),
 
         title: "Cube Details".boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
       ),

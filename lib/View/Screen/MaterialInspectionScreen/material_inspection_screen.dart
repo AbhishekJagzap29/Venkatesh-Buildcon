@@ -514,7 +514,9 @@ class _MaterialInspectionScreenState extends State<MaterialInspectionScreen> {
           title: AppString.materialInspection
               .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white)),
       floatingActionButton:
-          preferences.getString(SharedPreference.userType) == "maker"
+         // preferences.getString(SharedPreference.userType) == "maker"
+         (preferences.getString(SharedPreference.userType)?.contains("maker") ?? false) 
+
               ? FloatingActionButton(
                   onPressed: () {
                     Get.toNamed(Routes.createMaterialInspectionScreen);

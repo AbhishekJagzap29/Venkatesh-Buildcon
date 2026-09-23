@@ -1727,9 +1727,7 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                       //     controller.select == 0)
 
 
-if ((preferences.getString(SharedPreference.userType)?.contains("hqi_maker") == true ) &&
-// ||
-    // preferences.getString(SharedPreference.userType)?.contains("maker") == true) &&
+if ((preferences.getString(SharedPreference.userType)?.contains("maker") == true) &&
     controller.select == 0)
                                         Positioned(
                                           top: h * 0.01,

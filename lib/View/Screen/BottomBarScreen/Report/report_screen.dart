@@ -46,7 +46,8 @@ class _ReportScreenState extends State<ReportScreen> {
               leading: false,
               centerTitle: false,
               backGroundColor: const Color(0xFF3498DB),
-              title: AppString.trainingReport.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white ),
+              title: AppString.trainingReport
+                  .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
             ),
             body: netController.isResult == true
                 ? NoInternetWidget(
@@ -55,50 +56,74 @@ class _ReportScreenState extends State<ReportScreen> {
                     onPressed: () {},
                   ).paddingOnly(bottom: h * 0.178)
                 : Padding(
-                    padding: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.02),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: w * 0.05, vertical: h * 0.02),
                     child: GetBuilder<ReportController>(
                       builder: (controller) {
-                        if (controller.getReportResponse.status == Status.LOADING) {
+                        if (controller.getReportResponse.status ==
+                            Status.LOADING) {
                           return showCircular();
-                        } else if (controller.getReportResponse.status == Status.COMPLETE) {
+                        } else if (controller.getReportResponse.status ==
+                            Status.COMPLETE) {
                           return Column(
                             children: [
                               Expanded(
-                                child: (controller.towerDataList == null || controller.towerDataList!.isEmpty)
+                                child: (controller.towerDataList == null ||
+                                        controller.towerDataList!.isEmpty)
                                     ? const Center(
                                         child: Text('No Report Found!'),
                                       ).paddingOnly(bottom: h * 0.15)
                                     : ListView.builder(
-                                        padding: EdgeInsets.zero.copyWith(bottom: h * 0.12),
+                                        padding: EdgeInsets.zero
+                                            .copyWith(bottom: h * 0.12),
                                         physics: const BouncingScrollPhysics(),
-                                        itemCount: controller.towerDataList?.length,
+                                        itemCount:
+                                            controller.towerDataList?.length,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                             onTap: () async {
-                                              Get.toNamed(Routes.reportDetailScreen, arguments: controller.towerDataList![index]);
+                                              Get.toNamed(
+                                                  Routes.reportDetailScreen,
+                                                  arguments: controller
+                                                      .towerDataList![index]);
                                             },
                                             child: Container(
                                               padding: EdgeInsets.all(w * 0.02),
-                                              margin: EdgeInsets.only(bottom: w * 0.038),
+                                              margin: EdgeInsets.only(
+                                                  bottom: w * 0.038),
                                               decoration: BoxDecoration(
                                                 color: containerColor,
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                                 border: Border.all(
-                                                  color: const Color(0xffE6E6E6),
+                                                  color:
+                                                      const Color(0xffE6E6E6),
                                                 ),
                                               ),
                                               child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   (h * 0.01).addWSpace(),
                                                   Expanded(
                                                     child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
-                                                        (controller.towerDataList![index].trainerName ?? '').boldRobotoTextStyle(
-                                                          textOverflow: TextOverflow.ellipsis,
+                                                        (controller
+                                                                    .towerDataList![
+                                                                        index]
+                                                                    .trainerName ??
+                                                                '')
+                                                            .boldRobotoTextStyle(
+                                                          textOverflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
                                                           fontSize: 17,
                                                           fontColor: blackColor,
                                                         ),
@@ -110,16 +135,22 @@ class _ReportScreenState extends State<ReportScreen> {
                                                         //         "${controller.towerDataList![index].towerId}"),
                                                         (h * 0.005).addHSpace(),
                                                         buildRow(
-                                                            title: "Topic of Training : ",
-                                                            subTitle: "${controller.towerDataList![index].topicOfTraining}"),
+                                                            title:
+                                                                "Topic of Training : ",
+                                                            subTitle:
+                                                                "${controller.towerDataList![index].topicOfTraining}"),
                                                         (h * 0.005).addHSpace(),
                                                         buildRow(
-                                                            title: "Number of attendees : ",
-                                                            subTitle: "${controller.towerDataList![index].trainingGivenTo?.length}"),
+                                                            title:
+                                                                "Number of attendees : ",
+                                                            subTitle:
+                                                                "${controller.towerDataList![index].trainingGivenTo?.length}"),
                                                         (h * 0.005).addHSpace(),
                                                         buildRow(
-                                                            title: "Total manhours : ",
-                                                            subTitle: "${controller.towerDataList![index].totalManhours}"),
+                                                            title:
+                                                                "Total manhours : ",
+                                                            subTitle:
+                                                                "${controller.towerDataList![index].totalManhours}"),
                                                         (h * 0.005).addHSpace(),
                                                       ],
                                                     ),
@@ -127,14 +158,24 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   (h * 0.005).addWSpace(),
                                                   Builder(
                                                     builder: (context) {
-                                                      String formattedDateTime = DateFormat('dd MMM,yyyy')
-                                                          .format(DateTime.parse("${controller.towerDataList![index].trainingDatedOn}"));
+                                                      String formattedDateTime =
+                                                          DateFormat(
+                                                                  'dd MMM,yyyy')
+                                                              .format(DateTime
+                                                                  .parse(
+                                                                      "${controller.towerDataList![index].trainingDatedOn}"));
 
                                                       return Padding(
-                                                        padding: EdgeInsets.only(bottom: h * 0.025),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom:
+                                                                    h * 0.025),
                                                         child: formattedDateTime
                                                             .toString()
-                                                            .boldRobotoTextStyle(fontSize: 10, fontColor: appColor),
+                                                            .boldRobotoTextStyle(
+                                                                fontSize: 10,
+                                                                fontColor:
+                                                                    appColor),
                                                       );
                                                     },
                                                   )
@@ -147,7 +188,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                             ],
                           );
-                        } else if (controller.getReportResponse.status == Status.ERROR) {
+                        } else if (controller.getReportResponse.status ==
+                            Status.ERROR) {
                           return const Center(
                             child: Text('Server Error'),
                           );
@@ -157,7 +199,11 @@ class _ReportScreenState extends State<ReportScreen> {
                       },
                     ),
                   ),
-            floatingActionButton: preferences.getString(SharedPreference.userType) == "checker"
+            // floatingActionButton: preferences.getString(SharedPreference.userType) == "checker"
+            floatingActionButton: preferences
+                        .getString(SharedPreference.userType)
+                        ?.contains("checker") ??
+                    false
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 90, right: 10),
                     child: FloatingActionButton(
@@ -168,7 +214,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               builder: (context) => const AddReportScreen(),
                             ));
                       },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
                       backgroundColor: blackColor,
                       child: const Icon(Icons.add),
                     ),
@@ -184,8 +231,11 @@ class _ReportScreenState extends State<ReportScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        title!.boldRobotoTextStyle(fontSize: 13, fontColor: Colors.grey.shade700),
-        Expanded(child: subTitle!.regularRobotoTextStyle(fontSize: 13, fontColor: Colors.grey.shade700)),
+        title!
+            .boldRobotoTextStyle(fontSize: 13, fontColor: Colors.grey.shade700),
+        Expanded(
+            child: subTitle!.regularRobotoTextStyle(
+                fontSize: 13, fontColor: Colors.grey.shade700)),
       ],
     );
   }

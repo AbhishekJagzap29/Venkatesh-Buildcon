@@ -18,6 +18,7 @@ import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/Gen
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Dashboard/GenerateNc/generate_nc_details_screen.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
+import 'package:venkatesh_buildcon_app/View/Utils/image_compress_util.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_painter/image_painter.dart';
@@ -119,13 +120,12 @@ class _GenerateNcScreenState extends State<GenerateNcScreen> {
 
   //03/01/26
   Future<Uint8List> _compressImage(File file) async {
-    return await FlutterImageCompress.compressWithFile(
-          file.absolute.path,
-          quality: 60,
-          minWidth: 1280,
-          minHeight: 1280,
-        ) ??
-        await file.readAsBytes();
+    return await ImageCompressUtil.compressImageBytes(
+      file,
+      quality: 60,
+      minWidth: 1280,
+      minHeight: 1280,
+    );
   }
 
   ///=========================

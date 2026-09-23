@@ -592,7 +592,14 @@ class _NcDetailsScreenState extends State<NcDetailsScreen> {
 
 //===================================
         //25/11
-        floatingActionButton: userType == "maker"
+        floatingActionButton: ((preferences
+                    .getString(SharedPreference.userType)
+                    ?.contains("hqi_maker") ??
+                false) ||
+                (preferences
+                    .getString(SharedPreference.userType)
+                    ?.contains("maker") ??
+                false))
             // Simple FAB for maker — tap goes directly to GenerateNcDetailsScreen
             ? FloatingActionButton.extended(
                 backgroundColor:  const Color(0xFF3498DB),
