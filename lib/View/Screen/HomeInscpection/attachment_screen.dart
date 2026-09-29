@@ -2006,6 +2006,7 @@ class _AttachmentDialogPopupState extends State<AttachmentDialogPopup> {
         builder: (_) => ImageCaptureScreen(
           image: File(photo.path),
           title: locationName ?? "Captured Image",
+          showDescription: false,
         ),
       ),
     );

@@ -18,9 +18,13 @@ import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
 class ImageCaptureScreen extends StatefulWidget {
   final File image;
   final String title;
+  final bool showDescription;
 
   const ImageCaptureScreen(
-      {super.key, required this.image, required this.title});
+      {super.key,
+      required this.image,
+      required this.title,
+      this.showDescription = true});
 
   @override
   State<ImageCaptureScreen> createState() => _ImageCaptureScreenState();
@@ -216,52 +220,53 @@ class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
                     ),
 
                     /// Image Description field
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: w * 0.08, vertical: h * 0.015),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Image Description",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          SizedBox(height: h * 0.008),
-                          TextFormField(
-                            controller: descriptionController,
-                            minLines: 2,
-                            maxLines: 2,
-                            style: textFieldTextStyle,
-                            cursorWidth: 2,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: containerColor,
-                              hintText: AppString.writeHere,
-                              hintStyle: textFieldHintTextStyle,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: w * 0.045)
-                                      .copyWith(top: h * 0.03),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                  color: Color(0xffE6E6E6),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                  color: Color(0xffE6E6E6),
-                                ),
+                    if (widget.showDescription)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: w * 0.08, vertical: h * 0.015),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Image Description",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: h * 0.008),
+                            TextFormField(
+                              controller: descriptionController,
+                              minLines: 2,
+                              maxLines: 2,
+                              style: textFieldTextStyle,
+                              cursorWidth: 2,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: containerColor,
+                                hintText: AppString.writeHere,
+                                hintStyle: textFieldHintTextStyle,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: w * 0.045)
+                                        .copyWith(top: h * 0.03),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

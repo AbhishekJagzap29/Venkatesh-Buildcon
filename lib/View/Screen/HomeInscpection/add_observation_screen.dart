@@ -72,13 +72,20 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
 
     observationController.getImpactTypes();
     observationController.getIssueCategories();
-    locationId = Get.arguments['location_id'];
-    locationName = Get.arguments['location_name'];
+    final args = Get.arguments ?? {};
+    if (args['location_id'] != null) {
+      if (args['location_id'] is int) {
+        locationId = args['location_id'];
+      } else {
+        locationId = int.tryParse(args['location_id'].toString());
+      }
+    }
+    locationName = args['location_name']?.toString();
     locationController.text = locationName ?? '';
     isOfflineMode = isFlatInLocalStorage(
-      projectId: Get.arguments['project_id'] ?? '',
-      towerId: Get.arguments['tower_id'] ?? '',
-      flatId: Get.arguments['flat_id'] ?? '',
+      projectId: args['project_id']?.toString() ?? '',
+      towerId: args['tower_id']?.toString() ?? '',
+      flatId: args['flat_id']?.toString() ?? '',
     );
     log('isOfflineMode::::::::::::::::${isOfflineMode}');
   }
@@ -111,9 +118,9 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         for (var sublist in allOfflineData) {
           if (sublist.isNotEmpty) {
             var first = sublist.first;
-            if (first.projectId.toString() == projectId &&
-                first.towerId.toString() == towerId &&
-                first.flatId.toString() == flatId) {
+            if (first.projectId?.toString() == projectId.toString() &&
+                first.towerId?.toString() == towerId.toString() &&
+                first.flatId?.toString() == flatId.toString()) {
               return true; // ✅ Flat exists in local storage
             }
           }
@@ -168,25 +175,44 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
 
       log('🔹 Validation passed, creating image data...');
       List<ObservationImageData> imgDataList = [];
+      String userType = preferences.getString(SharedPreference.userType) ?? "";
+      bool isChecker = userType.contains("hqi_checker") || userType.contains("checker");
+      bool isMaker = userType.contains("hqi_maker") || userType.contains("maker");
+
       for (String imagePath in imageList) {
         if (imagePath.isNotEmpty && !imagePath.contains('http://')) {
           final file = File(imagePath);
           if (file.existsSync()) {
-            String userType =
-                preferences.getString(SharedPreference.userType) ?? "";
             imgDataList.add(ObservationImageData(
               imgUrl: imagePath, // Store local path
-              userChecker: userType == "hqi_checker",
-              checkerUploadedImg: userType == "hqi_checker" ? imagePath : null,
-              userMaker: userType.contains("hqi_maker") ? 1 : 0,
-              makerUploadedImg:
-                  userType.contains("hqi_maker") ? imagePath : null,
+              userChecker: isChecker,
+              checkerUploadedImg: isChecker ? imagePath : null,
+              userMaker: isMaker ? 1 : 0,
+              makerUploadedImg: isMaker ? imagePath : null,
             ));
           }
         }
       }
 
       log('🔹 Created ${imgDataList.length} image data entries');
+
+      DateTime parsedDate;
+      try {
+        parsedDate = dateController.text.trim().isNotEmpty
+            ? DateTime.parse(dateController.text.trim())
+            : DateTime.now();
+      } catch (_) {
+        parsedDate = DateTime.now();
+      }
+
+      DateTime parsedTargetDate;
+      try {
+        parsedTargetDate = targetDateController.text.trim().isNotEmpty
+            ? DateTime.parse(targetDateController.text.trim())
+            : DateTime.now();
+      } catch (_) {
+        parsedTargetDate = DateTime.now();
+      }
 
       // 🔹 Step 3: Create new observation data
       OfflineObservationData newObservation = OfflineObservationData(
@@ -200,12 +226,8 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         observationId: 0, // New observation, will get ID when synced
         name: locationName ?? locationController.text.trim(),
         state: state ?? "pending",
-        date: dateController.text.isNotEmpty
-            ? DateTime.parse(dateController.text.trim())
-            : DateTime.now(),
-        targetDate: targetDateController.text.isNotEmpty
-            ? DateTime.parse(targetDateController.text.trim())
-            : DateTime.now(),
+        date: parsedDate,
+        targetDate: parsedTargetDate,
         issueCategoryId: int.tryParse(selectedCategoryId ?? "0") ?? 0,
         issueCategoryName: selectedCategory ?? "",
         issueTypeId: int.tryParse(selectedIssueTypeId ?? "0") ?? 0,
@@ -216,14 +238,9 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         locationId: locationId ?? 0,
         impactType: selectedImpactType,
         observationCategory: selectedObservationCategory,
-        checkerSubmitted:
-            preferences.getString(SharedPreference.userType) == "hqi_checker",
-        makerSubmitted: preferences
-                .getString(SharedPreference.userType)
-                ?.contains("hqi_maker") ??
-            false,
+        checkerSubmitted: isChecker,
+        makerSubmitted: isMaker,
 
-        //  makerSubmitted: preferences.getString(SharedPreference.userType) == "hqi_maker",
         color: "red", // New observation - pending
         locationOverallColor: "red",
         // 🔹 Set sync tracking fields for newly added observation
@@ -234,14 +251,14 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         syncErrorMessage: null,
         // 🔹 Additional fields from FetchObservationData
         projectId:
-            int.tryParse(Get.arguments['project_id']?.toString() ?? "0") ?? 0,
+            int.tryParse(Get.arguments?['project_id']?.toString() ?? "0") ?? 0,
         towerId:
-            int.tryParse(Get.arguments['tower_id']?.toString() ?? "0") ?? 0,
-        flatId: int.tryParse(Get.arguments['flat_id']?.toString() ?? "0") ?? 0,
+            int.tryParse(Get.arguments?['tower_id']?.toString() ?? "0") ?? 0,
+        flatId: int.tryParse(Get.arguments?['flat_id']?.toString() ?? "0") ?? 0,
         userId: int.tryParse(
                 preferences.getString(SharedPreference.userId) ?? "0") ??
             0,
-        userType: preferences.getString(SharedPreference.userType) ?? "",
+        userType: userType,
         companyId:
             0, // Set to 0 since there's no SharedPreference key for companyId
         activity_type_status: false,
@@ -283,35 +300,28 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
           // Check if this flat contains the location we're looking for
           for (var location in flat.locationData ?? []) {
             log('🔹 Checking location: ${location.locationId} vs target: ${locationId}');
-            if (location.locationId == locationId) {
+            if (location.locationId?.toString() == locationId?.toString()) {
               log('🔹 Found matching location! Adding observation...');
               // Add observation to this location
               location.observations ??= [];
               location.observations!.add(newObservation);
 
               // Update counts
-              location.observationCount = (location.observationCount ?? 0);
+              location.observationCount = (location.observationCount ?? 0) + 1;
               location.pendingObservationCount =
-                  (location.pendingObservationCount ?? 0);
+                  (location.pendingObservationCount ?? 0) + 1;
 
-              if (preferences.getString(SharedPreference.userType) ==
-                  "hqi_checker") {
+              if (isChecker) {
                 location.checkerPendingCount =
-                    (location.checkerPendingCount ?? 0);
-              } else if (preferences
-                      .getString(SharedPreference.userType)
-                      ?.contains("hqi_maker") ??
-                  false)
-
-              //    (preferences.getString(SharedPreference.userType) == "hqi_maker")
-              {
-                location.makerPendingCount = (location.makerPendingCount ?? 0);
+                    (location.checkerPendingCount ?? 0) + 1;
+              } else if (isMaker) {
+                location.makerPendingCount = (location.makerPendingCount ?? 0) + 1;
               }
 
               // Update flat level counts
-              flat.totalObservationCount = (flat.totalObservationCount ?? 0);
+              flat.totalObservationCount = (flat.totalObservationCount ?? 0) + 1;
               flat.pendingObservationCount =
-                  (flat.pendingObservationCount ?? 0);
+                  (flat.pendingObservationCount ?? 0) + 1;
 
               observationAdded = true;
               log('🔹 Observation added successfully to location');
@@ -355,11 +365,11 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         Get.offNamed(Routes.flatSubLocationScreen, arguments: {
           "location_id": locationId,
           "location_name": locationName,
-          "project_id": Get.arguments['project_id']?.toString() ?? "0",
-          "tower_id": Get.arguments['tower_id']?.toString() ?? "0",
-          "flat_id": Get.arguments['flat_id']?.toString() ?? "0",
-          "tower_name": Get.arguments['tower_name'] ?? "",
-          "name": Get.arguments['name'] ?? "",
+          "project_id": Get.arguments?['project_id']?.toString() ?? "0",
+          "tower_id": Get.arguments?['tower_id']?.toString() ?? "0",
+          "flat_id": Get.arguments?['flat_id']?.toString() ?? "0",
+          "tower_name": Get.arguments?['tower_name'] ?? "",
+          "name": Get.arguments?['name'] ?? "",
           "offline": true,
         });
       } else {
@@ -506,30 +516,30 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
           var flatList = allOfflineData[i];
           if (flatList.isNotEmpty) {
             var first = flatList.first;
-            if (first.projectId.toString() == projectId &&
-                first.towerId.toString() == towerId &&
-                first.flatId.toString() == flatId) {
+            if (first.projectId?.toString() == projectId.toString() &&
+                first.towerId?.toString() == towerId.toString() &&
+                first.flatId?.toString() == flatId.toString()) {
               // Update the flat data with new observation counts
               for (var visit in flatList) {
                 for (var location in visit.locationData ?? []) {
-                  if (location.locationId == locationId) {
+                  if (location.locationId?.toString() == locationId?.toString()) {
                     // Update observation counts
                     location.observationCount =
                         (location.observationCount ?? 0);
                     location.pendingObservationCount =
                         (location.pendingObservationCount ?? 0);
 
-                    if (preferences.getString(SharedPreference.userType) ==
-                        "hqi_checker") {
+                    String userType =
+                        preferences.getString(SharedPreference.userType) ?? "";
+                    bool isChecker = userType.contains("hqi_checker") ||
+                        userType.contains("checker");
+                    bool isMaker = userType.contains("hqi_maker") ||
+                        userType.contains("maker");
+
+                    if (isChecker) {
                       location.checkerPendingCount =
                           (location.checkerPendingCount ?? 0);
-                    } else if (preferences
-                            .getString(SharedPreference.userType)
-                            ?.contains("hqi_maker") ??
-                        false)
-
-                    // (preferences.getString(SharedPreference.userType) == "hqi_maker")
-                    {
+                    } else if (isMaker) {
                       location.makerPendingCount =
                           (location.makerPendingCount ?? 0);
                     }
@@ -815,6 +825,7 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         builder: (_) => ImageCaptureScreen(
           image: File(photo.path),
           title: locationName ?? "Captured Image",
+          showDescription: false,
         ),
       ),
     );
@@ -862,6 +873,7 @@ class _AddObservationScreenState extends State<AddObservationScreen> {
         builder: (_) => ImageCaptureScreen(
           image: File(photo.path),
           title: locationName ?? "Gallery Image",
+          showDescription: false,
         ),
       ),
     );
