@@ -188,8 +188,6 @@
 // }
 
 //UPDATED 15/12
-import 'dart:io';
-import 'package:flutter/material.dart';
 
 class FetchAllNcDataResponseModel {
   final String status;

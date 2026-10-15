@@ -125,11 +125,31 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
   double avgStrength = 0;
   double strengthPercent = 0;
 
-  void calculateAge() {
-    if (castingDate != null && testingDate != null) {
-      ageDays = testingDate!.difference(castingDate!).inDays;
-    }
+  // void calculateAge() {
+  //   if (castingDate != null && testingDate != null) {
+  //     ageDays = testingDate!.difference(castingDate!).inDays;
+  //   }
+  // }
+  
+void calculateAge() {
+  if (castingDate != null && testingDate != null) {
+    final casting = DateTime(
+      castingDate!.year,
+      castingDate!.month,
+      castingDate!.day,
+    );
+
+    final testing = DateTime(
+      testingDate!.year,
+      testingDate!.month,
+      testingDate!.day,
+    );
+
+    ageDays = testing.difference(casting).inDays;
+  } else {
+    ageDays = 0;
   }
+}
 
   void calculateValues() {
     double total = 0;
@@ -521,11 +541,18 @@ class _CubeTestingFormScreenState extends State<CubeTestingFormScreen> {
       },
     );
 
+    // if (selectedDate != null) {
+    //   setState(() {
+    //     castingDate = selectedDate;
+    //   });
+    // }
     if (selectedDate != null) {
-      setState(() {
-        castingDate = selectedDate;
-      });
-    }
+  setState(() {
+    castingDate = selectedDate;
+    fieldErrors.remove("date_casting");
+    calculateAge();
+  });
+}
   },
   fieldKey: "date_casting",
 ),
@@ -600,11 +627,18 @@ buildDateField(
       },
     );
 
+    // if (selectedDate != null) {
+    //   setState(() {
+    //     testingDate = selectedDate;
+    //   });
+    // }
     if (selectedDate != null) {
-      setState(() {
-        testingDate = selectedDate;
-      });
-    }
+  setState(() {
+    testingDate = selectedDate;
+    fieldErrors.remove("date_testing");
+    calculateAge();
+  });
+}
   },
   fieldKey: "date_testing",
 ),

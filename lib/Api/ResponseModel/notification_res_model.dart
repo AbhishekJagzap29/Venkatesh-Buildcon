@@ -53,8 +53,11 @@ class NotificationData {
   bool? isSubmitted;
   //08/12
   String? approverRemark;
+  int? locationId;
+   int? handoverLocationId;
+ String? makerRemark;
+String? checkerRemark; 
 
-  
   NotificationData({
     this.id,
     this.title,
@@ -72,6 +75,11 @@ class NotificationData {
     this.isSubmitted,
     //08/12
     this.approverRemark,
+    this.locationId,
+    this.handoverLocationId,
+    this.makerRemark,
+    this.checkerRemark,
+
   });
 
   factory NotificationData.fromJson(Map<String, dynamic> json) {
@@ -93,7 +101,19 @@ class NotificationData {
           json["activity_id"] is bool ? (json["activity_id"] ? 1 : 0) : json["activity_id"],
       activityName: json["activity_name"].toString(),
       //08/12
-      approverRemark: json["approver_remark"]?.toString() ?? '',
+      approverRemark: json["overall_remarks_approver"]?.toString() ?? '',
+      makerRemark: json["overall_remarks_maker"]?.toString() ?? '',
+      checkerRemark: json["overall_remarks_checker"]?.toString() ?? '',
+
+
+      locationId: json["location_id"] is bool
+    ? null
+    : int.tryParse(json["location_id"]?.toString() ?? ''),
+     handoverLocationId: json["handover_location_id"] is bool
+          ? null
+          : int.tryParse(
+              json["handover_location_id"]?.toString() ?? '',
+            ),
 
 
 
@@ -116,7 +136,8 @@ class NotificationData {
         "activity_name": activityName,
         //08/12
         "approver_remark": approverRemark,
-
+        "location_id" : locationId,
+        "handover_location_id": handoverLocationId,
       };
 }
 

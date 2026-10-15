@@ -128,6 +128,9 @@ class EditActivityController extends GetxController {
             GetCheckPointDetailsByActivityTypeId res =
                 getCheckpointDataApiResponse.data;
             activityData = res.activityData;
+            makerRemarkController.text = activityData?.makerRemark ?? "";
+            checkerRemarkController.text = activityData?.checkerRemark ?? "";
+            approverRemarkController.text = activityData?.approverRemark ?? "";
             status = activityData?.activityStatus == "draft"
                 ? 'maker'
                 : activityData?.activityStatus == "submit"

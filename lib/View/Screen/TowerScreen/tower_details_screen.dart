@@ -1,4 +1,3 @@
-
 // //14/04/2026  UPDATE - CUBE TESTING MODULE INTEGRATION
 // import 'dart:developer';
 
@@ -20,7 +19,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:step_progress_indicator/step_progress_indicator.dart';
-
 
 // class TowerDetailsScreen extends StatefulWidget {
 //   const TowerDetailsScreen({super.key});
@@ -472,15 +470,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
 //13/03/2026  UPDATE - CUBE TESTING MODULE INTEGRATION
 import 'dart:developer';
 
@@ -506,6 +495,7 @@ import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/back_to_home_button.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/search_filter_row.dart';
 import 'package:venkatesh_buildcon_app/View/utils/extension.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/UnitHandover/unit_handover_locations_screen.dart';
 
 class TowerDetailsScreen extends StatefulWidget {
   const TowerDetailsScreen({super.key});
@@ -520,15 +510,32 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
   bool isCubeTesting = false;
 
   @override
+  // void initState() {
+  //   super.initState();
+  //   cName = (Get.arguments is Map && Get.arguments.containsKey('cName'))
+  //       ? Get.arguments['cName'] ?? ""
+  //       : "";
+  //   isCubeTesting = cName == "Cube Testing";
+  //   if (isCubeTesting) {
+  //     // Force floor view for Cube Testing
+  //     towerController.selectFlatFloor(1);
+  //   }
+  // }
+
+/////////////////////// changes for unit handover
   void initState() {
     super.initState();
+
     cName = (Get.arguments is Map && Get.arguments.containsKey('cName'))
         ? Get.arguments['cName'] ?? ""
         : "";
+
     isCubeTesting = cName == "Cube Testing";
+
     if (isCubeTesting) {
-      // Force floor view for Cube Testing
       towerController.selectFlatFloor(1);
+    } else if (cName == "Unit Handover") {
+      towerController.selectFlatFloor(0);
     }
   }
 
@@ -543,8 +550,9 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
         floatingActionButton: const CommonBackToHomeButton(),
         backgroundColor: backGroundColor,
         appBar: AppBarWidget(
-          backGroundColor: const Color(0xFF3498DB),
-            title: AppString.towerDetails.boldRobotoTextStyle(fontSize: 20,fontColor: Colors.white)),
+            backGroundColor: const Color(0xFF3498DB),
+            title: AppString.towerDetails
+                .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white)),
         body: SafeArea(
           child: GetBuilder<TowerController>(
             builder: (controller) {
@@ -602,29 +610,31 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                         ],
                                       ),
                                     ),
-                                    CircularStepProgressIndicator(
-                                      totalSteps: 10,
-                                      stepSize: 10,
-                                      currentStep: controller
-                                              .flatFloorRes?.towerData?.progress
-                                              ?.toInt() ??
-                                          0,
-                                      padding: 0.05,
-                                      height: Responsive.isDesktop(context)
-                                          ? h * 0.13
-                                          : h * 0.1,
-                                      width: Responsive.isDesktop(context)
-                                          ? h * 0.13
-                                          : h * 0.1,
-                                      selectedColor: greenColor,
-                                      unselectedColor: const Color(0xffBCCCBF),
-                                      child: Center(
-                                        child:
-                                            "${controller.flatFloorRes?.towerData?.progress?.toInt()}%"
-                                                .boldRobotoTextStyle(
-                                                    fontSize: 18),
+                                    if (cName != "Unit Handover")
+                                      CircularStepProgressIndicator(
+                                        totalSteps: 10,
+                                        stepSize: 10,
+                                        currentStep: controller.flatFloorRes
+                                                ?.towerData?.progress
+                                                ?.toInt() ??
+                                            0,
+                                        padding: 0.05,
+                                        height: Responsive.isDesktop(context)
+                                            ? h * 0.13
+                                            : h * 0.1,
+                                        width: Responsive.isDesktop(context)
+                                            ? h * 0.13
+                                            : h * 0.1,
+                                        selectedColor: greenColor,
+                                        unselectedColor:
+                                            const Color(0xffBCCCBF),
+                                        child: Center(
+                                          child:
+                                              "${controller.flatFloorRes?.towerData?.progress?.toInt()}%"
+                                                  .boldRobotoTextStyle(
+                                                      fontSize: 18),
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                                 Divider(
@@ -632,146 +642,173 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                   thickness: 2,
                                   height: h * 0.02,
                                 ),
-                                Row(
-                                  children: [
-                                    'Total Checklists           : '
-                                        .boldRobotoTextStyle(fontSize: 12),
-                                    ((controller.select == 0
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.flatTotalCount ??
-                                                    0)
-                                                : controller.select == 1
-                                                    ? (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.floorTotalCount ??
-                                                        0)
-                                                    : (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.comTotal ??
-                                                        0)) +
-                                            (controller.flatFloorRes?.towerData
-                                                        ?.towerName
-                                                        ?.toLowerCase() ==
-                                                    'development'
-                                                ? (controller.flatFloorRes
-                                                        ?.towerData?.devTotal ??
-                                                    0)
-                                                : 0))
-                                        .toString()
-                                        .regularRobotoTextStyle(fontSize: 10),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    'Maker Submitted        :  '
-                                        .boldRobotoTextStyle(fontSize: 12),
-                                    ((controller.select == 0
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.flatMakerCount ??
-                                                    0)
-                                                : controller.select == 1
-                                                    ? (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.floorMakerCount ??
-                                                        0)
-                                                    : (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.comMaker ??
-                                                        0)) +
-                                            (controller.flatFloorRes?.towerData
-                                                        ?.towerName
-                                                        ?.toLowerCase() ==
-                                                    'development'
-                                                ? (controller.flatFloorRes
-                                                        ?.towerData?.devMaker ??
-                                                    0)
-                                                : 0))
-                                        .toString()
-                                        .regularRobotoTextStyle(fontSize: 10),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    'Checker Submitted    :  '
-                                        .boldRobotoTextStyle(fontSize: 12),
-                                    ((controller.select == 0
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.flatCheckerCount ??
-                                                    0)
-                                                : controller.select == 1
-                                                    ? (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.floorCheckerCount ??
-                                                        0)
-                                                    : (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.comChecker ??
-                                                        0)) +
-                                            (controller.flatFloorRes?.towerData
-                                                        ?.towerName
-                                                        ?.toLowerCase() ==
-                                                    'development'
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.devChecker ??
-                                                    0)
-                                                : 0))
-                                        .toString()
-                                        .regularRobotoTextStyle(fontSize: 10),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    'Approver Submitted  :  '
-                                        .boldRobotoTextStyle(fontSize: 12),
-                                    ((controller.select == 0
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.flatApproverCount ??
-                                                    0)
-                                                : controller.select == 1
-                                                    ? (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.floorApproverCount ??
-                                                        0)
-                                                    : (controller
-                                                            .flatFloorRes
-                                                            ?.towerData
-                                                            ?.comApprover ??
-                                                        0)) +
-                                            (controller.flatFloorRes?.towerData
-                                                        ?.towerName
-                                                        ?.toLowerCase() ==
-                                                    'development'
-                                                ? (controller
-                                                        .flatFloorRes
-                                                        ?.towerData
-                                                        ?.devApprover ??
-                                                    0)
-                                                : 0))
-                                        .toString()
-                                        .regularRobotoTextStyle(fontSize: 10),
-                                  ],
-                                ),
+                                if (cName != "Unit Handover") ...[
+                                  Row(
+                                    children: [
+                                      'Total Checklists           : '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      ((controller.select == 0
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.flatTotalCount ??
+                                                      0)
+                                                  : controller.select == 1
+                                                      ? (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.floorTotalCount ??
+                                                          0)
+                                                      : (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.comTotal ??
+                                                          0)) +
+                                              (controller.flatFloorRes
+                                                          ?.towerData?.towerName
+                                                          ?.toLowerCase() ==
+                                                      'development'
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.devTotal ??
+                                                      0)
+                                                  : 0))
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      'Maker Submitted        :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      ((controller.select == 0
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.flatMakerCount ??
+                                                      0)
+                                                  : controller.select == 1
+                                                      ? (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.floorMakerCount ??
+                                                          0)
+                                                      : (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.comMaker ??
+                                                          0)) +
+                                              (controller.flatFloorRes
+                                                          ?.towerData?.towerName
+                                                          ?.toLowerCase() ==
+                                                      'development'
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.devMaker ??
+                                                      0)
+                                                  : 0))
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      'Checker Submitted    :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      ((controller.select == 0
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.flatCheckerCount ??
+                                                      0)
+                                                  : controller.select == 1
+                                                      ? (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.floorCheckerCount ??
+                                                          0)
+                                                      : (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.comChecker ??
+                                                          0)) +
+                                              (controller.flatFloorRes
+                                                          ?.towerData?.towerName
+                                                          ?.toLowerCase() ==
+                                                      'development'
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.devChecker ??
+                                                      0)
+                                                  : 0))
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      'Approver Submitted  :  '
+                                          .boldRobotoTextStyle(fontSize: 12),
+                                      ((controller.select == 0
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.flatApproverCount ??
+                                                      0)
+                                                  : controller.select == 1
+                                                      ? (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.floorApproverCount ??
+                                                          0)
+                                                      : (controller
+                                                              .flatFloorRes
+                                                              ?.towerData
+                                                              ?.comApprover ??
+                                                          0)) +
+                                              (controller.flatFloorRes
+                                                          ?.towerData?.towerName
+                                                          ?.toLowerCase() ==
+                                                      'development'
+                                                  ? (controller
+                                                          .flatFloorRes
+                                                          ?.towerData
+                                                          ?.devApprover ??
+                                                      0)
+                                                  : 0))
+                                          .toString()
+                                          .regularRobotoTextStyle(fontSize: 10),
+                                    ],
+                                  ),
+                                ],
                               ],
                             ),
                           ),
                         ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(
+                        //     vertical: Responsive.isDesktop(context)
+                        //         ? h * 0.028
+                        //         : h * 0.014,
+                        //   ),
+                        //   child: SearchAndFilterRow(
+                        //     onChanged: (p0) {
+                        //       controller.searchData();
+                        //     },
+                        //     controller: controller.searchController,
+                        //     hintText: isDevelopmentTower
+                        //         ? "Search Activity"
+                        //         : controller.select == 0
+                        //             ? "Search Flat"
+                        //             : controller.select == 1
+                        //                 ? "Search Floor"
+                        //                 : "Search Activity",
+                        //   ),
+                        // ),
+
                         Padding(
                           padding: EdgeInsets.symmetric(
                             vertical: Responsive.isDesktop(context)
@@ -783,108 +820,237 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                               controller.searchData();
                             },
                             controller: controller.searchController,
-                            hintText: isDevelopmentTower
-                                ? "Search Activity"
-                                : controller.select == 0
-                                    ? "Search Flat"
-                                    : controller.select == 1
-                                        ? "Search Floor"
-                                        : "Search Activity",
+                            hintText: cName == "Unit Handover"
+                                ? "Search Flat"
+                                : isDevelopmentTower
+                                    ? "Search Activity"
+                                    : controller.select == 0
+                                        ? "Search Flat"
+                                        : controller.select == 1
+                                            ? "Search Floor"
+                                            : "Search Activity",
                           ),
                         ),
+
                         if (!isDevelopmentTower && !isCubeTesting) ...[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  controller.searchController.clear();
-                                  controller.selectFlatFloor(0);
-                                },
-                                child: Container(
-                                  height: Responsive.isDesktop(context)
-                                      ? h * 0.068
-                                      : h * 0.048,
-                                  width: w * 0.15,
-                                  decoration: BoxDecoration(
-                                    color: controller.select == 0
-                                        ?  const Color(0xFF3498DB)
-
-                                        : containerColor,
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      bottomLeft: Radius.circular(10),
+                          if (cName == "Unit Handover")
+                            // ================= UNIT HANDOVER =================
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.searchController.clear();
+                                    controller.selectFlatFloor(0);
+                                  },
+                                  child: Container(
+                                    height: Responsive.isDesktop(context)
+                                        ? h * 0.068
+                                        : h * 0.048,
+                                    width: w * 0.20,
+                                    decoration: BoxDecoration(
+                                      color: controller.select == 0
+                                          ? const Color(0xFF3498DB)
+                                          : containerColor,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: AppString.flat.boldRobotoTextStyle(
-                                      fontSize: 13,
-                                      fontColor: controller.select == 0
-                                          ? backGroundColor
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  controller.searchController.clear();
-                                  controller.selectFlatFloor(1);
-                                },
-                                child: Container(
-                                  height: Responsive.isDesktop(context)
-                                      ? h * 0.068
-                                      : h * 0.048,
-                                  width: w * 0.15,
-                                  decoration: BoxDecoration(
-                                    color: controller.select == 1
-                                        ?  const Color(0xFF3498DB)
-
-                                        : containerColor,
-                                  ),
-                                  child: Center(
-                                    child: AppString.floor.boldRobotoTextStyle(
-                                      fontSize: 13,
-                                      fontColor: controller.select == 1
-                                          ? backGroundColor
-                                          : Colors.black,
+                                    child: Center(
+                                      child: AppString.flat.boldRobotoTextStyle(
+                                        fontSize: 13,
+                                        fontColor: controller.select == 0
+                                            ? backGroundColor
+                                            : Colors.black,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  controller.searchController.clear();
-                                  controller.selectCommonTab(2);
-                                },
-                                child: Container(
-                                  height: Responsive.isDesktop(context)
-                                      ? h * 0.068
-                                      : h * 0.048,
-                                  width: w * 0.20,
-                                  decoration: BoxDecoration(
-                                    color: controller.select == 2
-                                        ?  const Color(0xFF3498DB)
-
-                                        : containerColor,
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
+                              ],
+                            )
+                          else
+                            // ================= OTHER CHECKLISTS =================
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.searchController.clear();
+                                    controller.selectFlatFloor(0);
+                                  },
+                                  child: Container(
+                                    height: Responsive.isDesktop(context)
+                                        ? h * 0.068
+                                        : h * 0.048,
+                                    width: w * 0.15,
+                                    decoration: BoxDecoration(
+                                      color: controller.select == 0
+                                          ? const Color(0xFF3498DB)
+                                          : containerColor,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: AppString.common.boldRobotoTextStyle(
-                                      fontSize: 13,
-                                      fontColor: controller.select == 2
-                                          ? backGroundColor
-                                          : Colors.black,
+                                    child: Center(
+                                      child: AppString.flat.boldRobotoTextStyle(
+                                        fontSize: 13,
+                                        fontColor: controller.select == 0
+                                            ? backGroundColor
+                                            : Colors.black,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.searchController.clear();
+                                    controller.selectFlatFloor(1);
+                                  },
+                                  child: Container(
+                                    height: Responsive.isDesktop(context)
+                                        ? h * 0.068
+                                        : h * 0.048,
+                                    width: w * 0.15,
+                                    decoration: BoxDecoration(
+                                      color: controller.select == 1
+                                          ? const Color(0xFF3498DB)
+                                          : containerColor,
+                                    ),
+                                    child: Center(
+                                      child:
+                                          AppString.floor.boldRobotoTextStyle(
+                                        fontSize: 13,
+                                        fontColor: controller.select == 1
+                                            ? backGroundColor
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.searchController.clear();
+                                    controller.selectCommonTab(2);
+                                  },
+                                  child: Container(
+                                    height: Responsive.isDesktop(context)
+                                        ? h * 0.068
+                                        : h * 0.048,
+                                    width: w * 0.20,
+                                    decoration: BoxDecoration(
+                                      color: controller.select == 2
+                                          ? const Color(0xFF3498DB)
+                                          : containerColor,
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child:
+                                          AppString.common.boldRobotoTextStyle(
+                                        fontSize: 13,
+                                        fontColor: controller.select == 2
+                                            ? backGroundColor
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
+
+                        //  if (!isDevelopmentTower && !isCubeTesting) ...[
+
+                        //   Row(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       GestureDetector(
+                        //         onTap: () {
+                        //           controller.searchController.clear();
+                        //           controller.selectFlatFloor(0);
+                        //         },
+                        //         child: Container(
+                        //           height: Responsive.isDesktop(context)
+                        //               ? h * 0.068
+                        //               : h * 0.048,
+                        //           width: w * 0.15,
+                        //           decoration: BoxDecoration(
+                        //             color: controller.select == 0
+                        //                 ? const Color(0xFF3498DB)
+                        //                 : containerColor,
+                        //             borderRadius: const BorderRadius.only(
+                        //               topLeft: Radius.circular(10),
+                        //               bottomLeft: Radius.circular(10),
+                        //             ),
+                        //           ),
+                        //           child: Center(
+                        //             child: AppString.flat.boldRobotoTextStyle(
+                        //               fontSize: 13,
+                        //               fontColor: controller.select == 0
+                        //                   ? backGroundColor
+                        //                   : Colors.black,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       GestureDetector(
+                        //         onTap: () {
+                        //           controller.searchController.clear();
+                        //           controller.selectFlatFloor(1);
+                        //         },
+                        //         child: Container(
+                        //           height: Responsive.isDesktop(context)
+                        //               ? h * 0.068
+                        //               : h * 0.048,
+                        //           width: w * 0.15,
+                        //           decoration: BoxDecoration(
+                        //             color: controller.select == 1
+                        //                 ? const Color(0xFF3498DB)
+                        //                 : containerColor,
+                        //           ),
+                        //           child: Center(
+                        //             child: AppString.floor.boldRobotoTextStyle(
+                        //               fontSize: 13,
+                        //               fontColor: controller.select == 1
+                        //                   ? backGroundColor
+                        //                   : Colors.black,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       GestureDetector(
+                        //         onTap: () {
+                        //           controller.searchController.clear();
+                        //           controller.selectCommonTab(2);
+                        //         },
+                        //         child: Container(
+                        //           height: Responsive.isDesktop(context)
+                        //               ? h * 0.068
+                        //               : h * 0.048,
+                        //           width: w * 0.20,
+                        //           decoration: BoxDecoration(
+                        //             color: controller.select == 2
+                        //                 ? const Color(0xFF3498DB)
+                        //                 : containerColor,
+                        //             borderRadius: const BorderRadius.only(
+                        //               topRight: Radius.circular(10),
+                        //               bottomRight: Radius.circular(10),
+                        //             ),
+                        //           ),
+                        //           child: Center(
+                        //             child: AppString.common.boldRobotoTextStyle(
+                        //               fontSize: 13,
+                        //               fontColor: controller.select == 2
+                        //                   ? backGroundColor
+                        //                   : Colors.black,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ],
                         if (isDevelopmentTower) ...[
                           if (controller
                               .searchDevelopmentActivityCommonData.isEmpty) ...[
@@ -1658,6 +1824,14 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                         "floorName": responseData.name,
                                       },
                                     );
+                                  } else if (cName == "Unit Handover") {
+                                    int flatId = responseData.floorId ?? 0;
+                                    Get.to(
+                                      () => UnitHandoverLocationsScreen(
+                                        flatId: flatId,
+                                        flatName: responseData.name ?? "",
+                                      ),
+                                    );
                                   } else {
                                     Get.toNamed(
                                         controller.select == 0
@@ -1668,8 +1842,8 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                           "count": count,
                                           "progress":
                                               responseData.progress ?? "0.00",
-                                          "tower_data":
-                                              controller.flatFloorRes?.towerData,
+                                          "tower_data": controller
+                                              .flatFloorRes?.towerData,
                                           "flat_floor_data":
                                               controller.select == 0
                                                   ? controller
@@ -1726,9 +1900,19 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                       //         "hqi_maker" &&
                                       //     controller.select == 0)
 
-
-if ((preferences.getString(SharedPreference.userType)?.contains("maker") == true) &&
-    controller.select == 0)
+                                      // if ((preferences
+                                      //             .getString(
+                                      //                 SharedPreference.userType)
+                                      //             ?.contains("maker") ==
+                                      //         true) &&
+                                      //     controller.select == 0)
+                                      if ((preferences
+                                                  .getString(
+                                                      SharedPreference.userType)
+                                                  ?.contains("maker") ==
+                                              true) &&
+                                          controller.select == 0 &&
+                                          cName != "Unit Handover")
                                         Positioned(
                                           top: h * 0.01,
                                           right: h * 0.01,

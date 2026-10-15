@@ -1,11 +1,9 @@
 import 'dart:developer';
-
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/login_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/register_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/success_data_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/Services/api_service.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
-
 import '../Services/base_service.dart';
 
 class AuthRepo {
@@ -77,28 +75,4 @@ class AuthRepo {
 
     return successDataResponseModel;
   }
-
-
-
-
-  // ///LOCATION AUTH REPO
-  //
-  // Future<dynamic> locationRepo({Map<String, dynamic>? body}) async {
-  //   log("------->>>>>header----$header1");
-  //   var response = await APIService().getResponse(
-  //     url: ApiRouts.userLocation,
-  //     apiType: APIType.aPost,
-  //     body: body,
-  //     header: header1,
-  //   );
-  //
-  //   log('locationResponseModel----123----response>> $response');
-  //
-  //   SuccessDataResponseModel locationResponseModel =
-  //       SuccessDataResponseModel.fromJson(response);
-  //
-  //   log('locationResponseModel --- response>> $locationResponseModel');
-  //
-  //   return locationResponseModel;
-  // }
 }

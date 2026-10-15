@@ -599,10 +599,6 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                       controller.makerRemarkController,
                                       w,
                                       h,
-                                      //   isEditable: preferences.getString(
-                                      //           SharedPreference.userType) ==
-                                      //       "maker",
-                                      // ),
 
                                       isEditable: (preferences
                                                   .getString(SharedPreference

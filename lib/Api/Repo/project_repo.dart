@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/approver_close_nc_response_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/fetch_allnc_data_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_activity_checklist_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_activity_res_model.dart';
@@ -12,7 +11,6 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_project_responsible_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_nc_tower_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_routing_through_notification_res_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_submit_button_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/complete_for_hqi_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/download_pdf_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/HomeInspection/fetch_obs_resubmit_maker_checker_res_model.dart';
@@ -54,7 +52,6 @@ import 'package:venkatesh_buildcon_app/Api/ResponseModel/success_data_res_model.
 import 'package:venkatesh_buildcon_app/Api/Services/api_service.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import '../Services/base_service.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/generate_approver_reject_nc_model.dart';
 
 
 class ProjectRepo {

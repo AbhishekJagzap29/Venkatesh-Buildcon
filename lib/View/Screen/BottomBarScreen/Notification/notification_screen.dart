@@ -5,12 +5,15 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/cube_testing_repo.dart';
+import 'package:venkatesh_buildcon_app/Api/ResponseModel/UnitHandover/unit_handover_categories_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/no_internet.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Controller/network_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/Notification/notification_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/UnitHandover/checkpoint_form_screen.dart';
+import 'package:venkatesh_buildcon_app/View/Screen/UnitHandover/unit_handover_controller.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 import 'package:venkatesh_buildcon_app/View/Widgets/app_bar.dart';
@@ -75,9 +78,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
             appBar: AppBarWidget(
               leading: false,
               centerTitle: true,
-                                  backGroundColor: const Color(0xFF3498DB),
-
-              title: AppString.notification.boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
+              backGroundColor: const Color(0xFF3498DB),
+              title: AppString.notification
+                  .boldRobotoTextStyle(fontSize: 20, fontColor: Colors.white),
             ),
             body: netController.isResult == true
                 ? NoInternetWidget(
@@ -132,23 +135,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                               .copyWith(bottom: h * 0.12),
                                           physics:
                                               const AlwaysScrollableScrollPhysics(),
-                                          itemCount:
-                                              uniqueNotifications.length,
+                                          itemCount: uniqueNotifications.length,
                                           itemBuilder: (context, index) {
                                             var notification =
                                                 uniqueNotifications[index];
 
                                             return GestureDetector(
                                               onTap: () async {
-
                                                 // =========================
                                                 // ✅ CUBE FLOW (ADDED)
                                                 // =========================
-                                                final detailLine =
-                                                    notification.detailLine
-                                                            ?.toString()
-                                                            .toLowerCase() ??
-                                                        "";
+                                                final detailLine = notification
+                                                        .detailLine
+                                                        ?.toString()
+                                                        .toLowerCase() ??
+                                                    "";
 
                                                 if (detailLine == "cube") {
                                                   final recordId = int.tryParse(
@@ -166,8 +167,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                   try {
                                                     final repo =
                                                         CubeTestingRepository();
-                                                    final record =
-                                                        await repo.getSingleRecord(
+                                                    final record = await repo
+                                                        .getSingleRecord(
                                                             recordId);
 
                                                     if (record == null ||
@@ -200,7 +201,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                         ?.toString()
                                                         .toLowerCase() ??
                                                     "";
-                                                final seqNo = notification.seq_no
+                                                final seqNo = notification
+                                                        .seq_no
                                                         ?.toString()
                                                         .toLowerCase() ??
                                                     "";
@@ -249,7 +251,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                   return;
                                                 }
 
-                                                /// 🔹 EXISTING FLOW (UNCHANGED)
+////////////////////////////    ROUTING   ////////////////////////////////////////////////////
+
                                                 if (notification.redirectId !=
                                                     null) {
                                                   final detail = notification
@@ -258,6 +261,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                       "";
 
                                                   if (detail == "mi") {
+                                                    // Existing MI routing - KEEP AS IT IS
                                                     Get.toNamed(
                                                       Routes
                                                           .updateMaterialInspectionScreen,
@@ -269,8 +273,149 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                       },
                                                     );
                                                   } else if (detail == "hqi") {
-                                                    // ✅ YOUR EXISTING HQI LOGIC (UNCHANGED)
-                                                    // (kept same — no edits)
+                                                    // Existing HQI routing - KEEP AS IT IS
+
+                                                    // YOUR EXISTING HQI CODE HERE
+                                                    // } else if (detail ==
+                                                    //     "unit_handover") {
+                                                    //   final handoverLocationId =
+                                                    //       int.tryParse(
+                                                    //     notification.redirectId
+                                                    //             ?.toString() ??
+                                                    //         "",
+                                                    //   );
+
+                                                    //   if (handoverLocationId ==
+                                                    //           null ||
+                                                    //       handoverLocationId <=
+                                                    //           0) {
+                                                    //     errorSnackBar(
+                                                    //       "Error",
+                                                    //       "Invalid Unit Handover",
+                                                    //     );
+                                                    //     return;
+                                                    //   }
+
+                                                    //   log("UNIT HANDOVER NOTIFICATION");
+                                                    //   log("handover_location_id: $handoverLocationId");
+                                                    //   Get.to(
+                                                    //     () => ChecklistFormScreen(
+                                                    //       handoverLocationId:
+                                                    //           handoverLocationId,
+                                                    //       categoryId: null,
+                                                    //       categoryName: notification
+                                                    //                   .seq_no
+                                                    //                   ?.toString()
+                                                    //                   .split('/')
+                                                    //                   .last
+                                                    //                   .trim()
+                                                    //                   .isNotEmpty ==
+                                                    //               true
+                                                    //           ? notification
+                                                    //               .seq_no!
+                                                    //               .toString()
+                                                    //               .split('/')
+                                                    //               .last
+                                                    //               .trim()
+                                                    //           : "Checklist Form",
+                                                    //     ),
+                                                    //   );
+                                                  } else if (detail ==
+                                                      "unit_handover") {
+                                                    final handoverLocationId =
+                                                        int.tryParse(
+                                                      notification.redirectId
+                                                              ?.toString() ??
+                                                          "",
+                                                    );
+
+                                                    if (handoverLocationId ==
+                                                            null ||
+                                                        handoverLocationId <=
+                                                            0) {
+                                                      errorSnackBar(
+                                                        "Error",
+                                                        "Invalid Unit Handover location ID",
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    // Get category name from the last part of seq_no
+                                                    final seqNo = notification
+                                                            .seq_no
+                                                            ?.toString() ??
+                                                        "";
+
+                                                    final categoryName = seqNo
+                                                        .split('/')
+                                                        .last
+                                                        .trim();
+
+                                                    if (categoryName.isEmpty) {
+                                                      errorSnackBar(
+                                                        "Error",
+                                                        "Invalid Unit Handover category",
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    log("UNIT HANDOVER NOTIFICATION");
+                                                    log("handover_location_id: $handoverLocationId");
+                                                    log("category_name from seq_no: $categoryName");
+
+                                                    final controller = Get.put(
+                                                        UnitHandoverController());
+
+                                                    await controller
+                                                        .fetchUnitHandoverLocationCategories(
+                                                      handoverLocationId:
+                                                          handoverLocationId,
+                                                    );
+
+                                                    final categories = controller
+                                                            .getCategoriesApiResponse
+                                                            .data
+                                                            ?.data
+                                                            ?.categories ??
+                                                        [];
+                                                    final matchedCategory =
+                                                        categories
+                                                            .firstWhereOrNull(
+                                                      (category) =>
+                                                          category.categoryName
+                                                              ?.trim()
+                                                              .toLowerCase() ==
+                                                          categoryName
+                                                              .toLowerCase(),
+                                                    );
+
+                                                    final int? categoryId =
+                                                        matchedCategory
+                                                            ?.categoryId;
+
+                                                    log("matched category: ${matchedCategory?.categoryName}");
+                                                    log("matched category_id: $categoryId");
+
+                                                    if (categoryName
+                                                                .toLowerCase() !=
+                                                            "uncategorized" &&
+                                                        categoryId == null) {
+                                                      errorSnackBar(
+                                                        "Error",
+                                                        "Invalid Unit Handover",
+                                                      );
+                                                      return;
+                                                    }
+
+                                                    Get.to(
+                                                      () => ChecklistFormScreen(
+                                                        handoverLocationId:
+                                                            handoverLocationId,
+                                                        categoryId: categoryId,
+                                                        categoryName:
+                                                            categoryName,
+                                                      ),
+                                                    );
                                                   } else {
                                                     await Get.toNamed(
                                                       Routes.editActivityScreen,
@@ -282,10 +427,49 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                                 .redirectId,
                                                         "seq_no":
                                                             notification.seq_no,
+
                                                       },
                                                     );
                                                   }
                                                 }
+
+                                                /// 🔹 EXISTING FLOW (UNCHANGED)
+                                                // if (notification.redirectId !=
+                                                //     null) {
+                                                //   final detail = notification
+                                                //           .detailLine
+                                                //           ?.toLowerCase() ??
+                                                //       "";
+
+                                                //   if (detail == "mi") {
+                                                //     Get.toNamed(
+                                                //       Routes
+                                                //           .updateMaterialInspectionScreen,
+                                                //       arguments: {
+                                                //         "screen":
+                                                //             "notification",
+                                                //         "id": notification
+                                                //             .redirectId,
+                                                //       },
+                                                //     );
+                                                //   } else if (detail == "hqi") {
+                                                //     // ✅ YOUR EXISTING HQI LOGIC (UNCHANGED)
+                                                //     // (kept same — no edits)
+                                                //   } else {
+                                                //     await Get.toNamed(
+                                                //       Routes.editActivityScreen,
+                                                //       arguments: {
+                                                //         "screen":
+                                                //             "notification",
+                                                //         "activity_type_id":
+                                                //             notification
+                                                //                 .redirectId,
+                                                //         "seq_no":
+                                                //             notification.seq_no,
+                                                //       },
+                                                //     );
+                                                //   }
+                                                // }
                                               },
                                               child: Container(
                                                 padding:
@@ -355,23 +539,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                     (h * 0.005).addWSpace(),
                                                     Builder(
                                                       builder: (context) {
-                                                        String formattedDateTime =
-                                                            DateFormat(
-                                                                    'dd MMM, hh:mm a')
-                                                                .format(DateTime
-                                                                        .parse(
-                                                                            "${notification.notificationDt}")
-                                                                    .add(const Duration(
-                                                                        hours:
-                                                                            5,
-                                                                        minutes:
-                                                                            30)));
+                                                        String formattedDateTime = DateFormat(
+                                                                'dd MMM, hh:mm a')
+                                                            .format(DateTime.parse(
+                                                                    "${notification.notificationDt}")
+                                                                .add(const Duration(
+                                                                    hours: 5,
+                                                                    minutes:
+                                                                        30)));
 
                                                         return Padding(
                                                           padding:
                                                               EdgeInsets.only(
-                                                                  bottom:
-                                                                      h * 0.025),
+                                                                  bottom: h *
+                                                                      0.025),
                                                           child: formattedDateTime
                                                               .toString()
                                                               .boldRobotoTextStyle(

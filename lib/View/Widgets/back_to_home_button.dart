@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_string.dart';
 import 'package:venkatesh_buildcon_app/View/Utils/extension.dart';
 

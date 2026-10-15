@@ -1,7 +1,4 @@
-import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/app_color.dart';
@@ -13,31 +10,22 @@ import 'package:venkatesh_buildcon_app/View/Utils/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await preferences.init();
-  OneSignal.initialize("3dbd7654-0443-42a0-b8f1-10f0b4770d8d");
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+ OneSignal.initialize("372b0e53-5037-4ca5-a4bd-8ecb65c2aa78");
+ // OneSignal.initialize("3dbd7654-0443-42a0-b8f1-10f0b4770d8d");
+
+  await OneSignal.Notifications.requestPermission(true);
 
   OneSignal.Notifications.addClickListener((event) {
-    // Get.to(() => const HomeScreen());
     print('event----------- ${event}');
 
-    debugPrint(
-        "NOTIFICATION :::::::::: ${event.notification.notificationId}"); //
+    debugPrint("NOTIFICATION :::::::::: ${event.notification.notificationId}");
     debugPrint("TITLE :::::::::: ${event.notification.title}");
     debugPrint("BODY :::::::::: ${event.notification.body}");
   });
 
   OneSignal.Notifications.addForegroundWillDisplayListener((event) {
     print(
-        'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}'); //
-
-    /// Display Notification, preventDefault to not display
-    // event.preventDefault();
-
-    /// notification.display() to display after preventing default
-    // event.notification.display();
+        'NOTIFICATION WILL DISPLAY LISTENER CALLED WITH: ${event.notification.jsonRepresentation()}');
   });
 
   OneSignal.InAppMessages.addClickListener((event) {
@@ -61,8 +49,8 @@ class _MyAppState extends State<MyApp> {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
           textScaler: TextScaler.linear(Responsive.isDesktop(context)
-              ? 1.6  
-              : Responsive.isTablet(context) 
+              ? 1.6
+              : Responsive.isTablet(context)
                   ? 1.7
                   : 1.1)),
       child: GetMaterialApp(

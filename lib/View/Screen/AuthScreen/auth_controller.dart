@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
