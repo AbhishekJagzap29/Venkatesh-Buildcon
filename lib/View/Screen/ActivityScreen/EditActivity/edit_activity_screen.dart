@@ -394,29 +394,11 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                                       index, h, context, w),
                                                 ],
 
-                                                /// ✅ Show Capture Photo button if previously added (like remark)
-                                                if (((preferences
-                                                            .getString(
-                                                                SharedPreference
-                                                                    .userType)
-                                                            ?.contains(
-                                                                "maker") ??
-                                                        false) &&
-                                                    controller.isEdit) ||
-                                                    ((preferences
-                                                            .getString(
-                                                                SharedPreference
-                                                                    .userType)
-                                                            ?.contains(
-                                                                "checker") ??
-                                                        false) &&
-                                                        controller.activityData
-                                                                ?.activityStatus
-                                                                ?.toLowerCase() ==
-                                                            "approver_reject" &&
-                                                        controller.isEdit &&
-                                                         data.imageList
-                                                             .isNotEmpty))
+                                                /// ✅ Show Capture Photo button only if checkpoint was previously marked 'No'
+                                                if (controller.isEdit &&
+                                                    (data.history != null &&
+                                                        data.history!.isNotEmpty &&
+                                                        data.history!.first.isPass?.toLowerCase() == "no"))
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
