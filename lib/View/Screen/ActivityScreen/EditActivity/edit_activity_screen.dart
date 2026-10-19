@@ -394,11 +394,52 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                                       index, h, context, w),
                                                 ],
 
-                                                /// ✅ Show Capture Photo button only if checkpoint was previously marked 'No'
-                                                if (controller.isEdit &&
-                                                    (data.history != null &&
-                                                        data.history!.isNotEmpty &&
-                                                        data.history!.first.isPass?.toLowerCase() == "no"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                // /// ✅ Show Capture Photo button if previously added (like remark)
+                                                if (((preferences
+                                                            .getString(
+                                                                SharedPreference
+                                                                    .userType)
+                                                            ?.contains(
+                                                                "maker") ??
+                                                        false) &&
+                                                    controller.isEdit) ||
+                                                    ((preferences
+                                                            .getString(
+                                                                SharedPreference
+                                                                    .userType)
+                                                            ?.contains(
+                                                                "checker") ??
+                                                        false) &&
+                                                        controller.activityData
+                                                                ?.activityStatus
+                                                                ?.toLowerCase() ==
+                                                            "approver_reject" ||
+                                                        controller.isEdit &&
+                                                         data.imageList
+                                                             .isNotEmpty ))
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -564,15 +605,6 @@ class _EditActivityScreenState extends State<EditActivityScreen> {
                                         );
                                       },
                                     ),
-
-                                    /// OVERALL REMARK TEXT
-
-                                    // AppString.overAllRemark
-                                    //     .boldRobotoTextStyle(fontSize: 18)
-                                    //     .paddingOnly(bottom: h * 0.01),
-
-                                    // /// OVERALL REMARK TEXTFIELD
-                                    // overAllRemark(controller, w, h),
 
                                     AppString.overAllRemarkbym
                                         .boldRobotoTextStyle(fontSize: 18)
@@ -1648,3 +1680,6 @@ Future<void> downloadImage(String imagePath) async {
     errorSnackBar("Error", "Failed to download image");
   }
 }
+
+
+
