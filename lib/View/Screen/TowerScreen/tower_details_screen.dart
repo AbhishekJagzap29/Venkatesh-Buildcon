@@ -539,6 +539,19 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
     }
   }
 
+  Color getCubeColor(String? color) {
+    switch (color?.toLowerCase()) {
+      case 'red':
+        return Colors.red;
+      case 'yellow':
+        return Colors.yellow;
+      case 'green':
+        return Colors.green;
+      default:
+        return lightGreyColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
@@ -1882,14 +1895,31 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
                                             padding: EdgeInsets.symmetric(
                                                     horizontal: h * 0.012)
                                                 .copyWith(bottom: h * 0.015),
+                                            // child: StepProgressIndicator(
+                                            //   totalSteps: 5,
+                                            //   roundedEdges:
+                                            //       const Radius.circular(10),
+                                            //   currentStep: count,
+                                            //   unselectedSize: h * 0.007,
+                                            //   size: h * 0.007,
+                                            //   selectedColor: greenColor,
+                                            //   unselectedColor: lightGreyColor,
+                                            // ),
                                             child: StepProgressIndicator(
                                               totalSteps: 5,
                                               roundedEdges:
                                                   const Radius.circular(10),
-                                              currentStep: count,
+                                              currentStep: isCubeTesting &&
+                                                      controller.select == 1
+                                                  ? 5
+                                                  : count,
                                               unselectedSize: h * 0.007,
                                               size: h * 0.007,
-                                              selectedColor: greenColor,
+                                              selectedColor: isCubeTesting &&
+                                                      controller.select == 1
+                                                  ? getColorFromString(
+                                                      responseData.cubeColor)
+                                                  : greenColor,
                                               unselectedColor: lightGreyColor,
                                             ),
                                           ),

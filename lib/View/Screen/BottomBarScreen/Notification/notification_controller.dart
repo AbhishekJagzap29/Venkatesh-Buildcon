@@ -4,19 +4,12 @@ import 'package:get/get.dart';
 import 'package:venkatesh_buildcon_app/Api/Apis/api_response.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/notification_repo.dart';
 import 'package:venkatesh_buildcon_app/Api/Repo/project_repo.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_routing_through_notification_res_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/GenerateNcResponseModel/nc_submit_button_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/constructor_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_checklist_by_activity_res_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_flat_data_res_model.dart';
-import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_floor_data_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/get_tower_checklist_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/notification_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/project_details_res_model.dart';
 import 'package:venkatesh_buildcon_app/Api/ResponseModel/project_screen_res_model.dart';
 import 'package:venkatesh_buildcon_app/View/Constant/shared_prefs.dart';
 import 'package:venkatesh_buildcon_app/View/Screen/BottomBarScreen/HomeScreen/home_screen_controller.dart';
-import 'package:venkatesh_buildcon_app/View/Utils/app_layout.dart';
 class NotificationController extends GetxController {
   HomeScreenController homeScreenController = Get.find();
 
